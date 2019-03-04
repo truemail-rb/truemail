@@ -1,0 +1,60 @@
+defaults: &defaults
+  working_directory: ~/truemail
+  docker:
+    - image: circleci/ruby:2.6.0-node
+
+references:
+  restore_bundle_cache: &restore_bundle_cache
+    restore_cache:
+      keys:
+        - truemail-{{ checksum "truemail.gemspec" }}
+
+  bundle_install: &bundle_install
+    run:
+      name: Installing gems
+      command: bundle install --path vendor/bundle
+
+  save_bundle_cache: &save_bundle_cache
+    save_cache:
+      key: truemail-{{ checksum "truemail.gemspec" }}
+      paths:
+        - vendor/bundle
+
+version: 2
+jobs:
+  linters:
+    <<: *defaults
+
+    steps:
+      - checkout
+
+      - <<: *restore_bundle_cache
+      - <<: *bundle_install
+      - <<: *save_bundle_cache
+
+      - run:
+          name: Running overcommit
+          command: |
+            bundle exec overcommit -s
+            SKIP=AuthorEmail,AuthorName bundle exec overcommit -r
+
+  tests:
+    <<: *defaults
+
+    steps:
+      - checkout
+
+      - <<: *restore_bundle_cache
+      - <<: *bundle_install
+      - <<: *save_bundle_cache
+
+      - run:
+          name: Running tests
+          command: bundle exec rspec
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - linters
+      - tests
