@@ -23,6 +23,13 @@ PreCommit:
   AuthorName:
     enabled: false
 
+  BundleAudit:
+    enabled: true
+
+  Brakeman:
+    enabled: true
+    flags: ['--exit-on-warn', '--quiet', '--summary']
+
   RuboCop:
     enabled: true
     flags: ['--format=emacs', '--force-exclusion', '--display-cop-names']
