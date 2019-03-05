@@ -11,6 +11,9 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    bundler-audit (0.6.1)
+      bundler (>= 1.2.0, < 3)
+      thor (~> 0.18)
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     codeclimate-engine-rb (0.4.1)
@@ -74,6 +77,7 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    thor (0.20.3)
     thread_safe (0.3.6)
     unicode-display_width (1.4.1)
     virtus (1.0.5)
@@ -87,6 +91,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.17)
+  bundler-audit (>= 0.6.1)
   overcommit (>= 0.46.0)
   rake (~> 10.0)
   reek (>= 5.3.1)
