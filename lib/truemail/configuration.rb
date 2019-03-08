@@ -3,11 +3,11 @@ module Truemail
     attr_reader :email_pattern, :verifier_email, :verifier_domain
 
     REGEX_DOMAIN = /[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,9}/
-    REGEX_PATTERN = /(?=\A.{6,255}\z)(\A([\w|-]+)@(#{REGEX_DOMAIN})\z)/
+    REGEX_EMAIL_PATTERN = /(?=\A.{6,255}\z)(\A([\w|-]+)@(#{REGEX_DOMAIN})\z)/
     REGEX_DOMAIN_PATTERN = /\A#{REGEX_DOMAIN}\z/
 
     def initialize
-      @email_pattern = REGEX_PATTERN
+      @email_pattern = REGEX_EMAIL_PATTERN
     end
 
     def email_pattern=(regex_pattern)
@@ -15,15 +15,13 @@ module Truemail
       @email_pattern = regex_pattern
     end
 
-    def verifier_email=(email)
-      raise ArgumentError.new(email, 'valid email') unless REGEX_PATTERN.match?(email.to_s)
-      @verifier_email = email
-      @verifier_domain = email[REGEX_PATTERN, 3]
-    end
-
-    def verifier_domain=(domain)
-      raise ArgumentError.new(domain, 'valid domain') unless REGEX_DOMAIN_PATTERN.match?(domain.to_s)
-      @verifier_domain = domain
+    %i[email domain].each do |method|
+      define_method(:"verifier_#{method}=") do |argument|
+        constant = Configuration.const_get("regex_#{method}_pattern".upcase)
+        raise ArgumentError.new(argument, "valid #{method}") unless constant.match?(argument.to_s)
+        instance_variable_set(:"@verifier_#{method}", argument)
+        default_verifier_domain if method.eql?(:email)
+      end
     end
 
     def complete?
@@ -32,6 +30,10 @@ module Truemail
 
     private
 
+    def default_verifier_domain
+      self.verifier_domain ||= verifier_email[REGEX_EMAIL_PATTERN, 3]
+    end
+
     class ArgumentError < StandardError
       def initialize(current_param, class_name)
         super("#{current_param} is not a #{class_name}")
@@ -39,3 +41,14 @@ module Truemail
     end
   end
 end
+
+    # def verifier_email=(email)
+    #   raise ArgumentError.new(email, 'valid email') unless REGEX_EMAIL_PATTERN.match?(email.to_s)
+    #   @verifier_email = email
+    #   default_verifier_domain
+    # end
+
+    # def verifier_domain=(domain)
+    #   raise ArgumentError.new(domain, 'valid domain') unless REGEX_DOMAIN_PATTERN.match?(domain.to_s)
+    #   @verifier_domain = domain
+    # end
