@@ -41,14 +41,3 @@ module Truemail
     end
   end
 end
-
-    # def verifier_email=(email)
-    #   raise ArgumentError.new(email, 'valid email') unless REGEX_EMAIL_PATTERN.match?(email.to_s)
-    #   @verifier_email = email
-    #   default_verifier_domain
-    # end
-
-    # def verifier_domain=(domain)
-    #   raise ArgumentError.new(domain, 'valid domain') unless REGEX_DOMAIN_PATTERN.match?(domain.to_s)
-    #   @verifier_domain = domain
-    # end
