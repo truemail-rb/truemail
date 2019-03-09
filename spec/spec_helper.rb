@@ -1,4 +1,5 @@
 require 'bundler/setup'
+require 'ffaker'
 require 'pry'
 require 'truemail'
 

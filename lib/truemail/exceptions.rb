@@ -1,3 +1,5 @@
 module Truemail
-  class ConfigurationError < StandardError; end
+  class ConfigurationError < StandardError
+    INCOMPLETE_CONFIG = 'verifier_email is required parameter'.freeze
+  end
 end

@@ -1,6 +1,5 @@
 require 'truemail/version'
 require 'truemail/exceptions'
-require 'truemail/error'
 require 'truemail/configuration'
 
 module Truemail
@@ -11,7 +10,7 @@ module Truemail
       return unless block_given?
       self.configuration ||= Configuration.new
       yield(configuration)
-      raise ConfigurationError, Error::CONFIGURATION_INCOMPLETE unless configuration.complete?
+      raise ConfigurationError, ConfigurationError::INCOMPLETE_CONFIG unless configuration.complete?
       configuration
     end
   end

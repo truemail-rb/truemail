@@ -18,3 +18,14 @@ Style/ParallelAssignment:
 
 Style/DoubleNegation:
   Enabled: false
+
+require: rubocop-rspec
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
