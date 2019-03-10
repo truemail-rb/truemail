@@ -34,10 +34,11 @@ TODO: Complete usage instructions here.
 
 ```ruby
 Truemail.configure do |config|
-  # Required parameter. It should be an existing email on behalf of which verification will be performed
+  # Required parameter. Should be an existing email on behalf of which verification will be performed
   config.verifier_email = 'email@example.com'
 
-  # Optional parameter. It should be an existing domain on behalf of which verification will be performed. By default verifier domain based on verifier email
+  # Optional parameter. Should be an existing domain on behalf of which verification will be performed.
+  # By default verifier domain based on verifier email
   # config.verifier_domain = 'somedomain.com'
 
   # Optional parameter. You can override default regex pattern
