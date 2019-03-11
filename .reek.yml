@@ -3,13 +3,5 @@ detectors:
     enabled: false
 
   NestedIterators:
-    enabled: false
-
-  Attribute:
     exclude:
-      - Truemail#configuration
-      - Truemail::Configuration#verifier_domain
-
-  UtilityFunction:
-    exclude:
-      - Truemail::Configuration#email_valid?
+      - Truemail::ConfigurationHelper#configuration_block
