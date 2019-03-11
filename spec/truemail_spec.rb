@@ -1,6 +1,7 @@
 module Truemail
   RSpec.describe Truemail do
     specify { expect(described_class).to be_const_defined(:VERSION) }
+    specify { expect(described_class).to be_const_defined(:RegexConstant) }
     specify { expect(described_class).to be_const_defined(:Configuration) }
     specify { expect(described_class).to be_const_defined(:ConfigurationError) }
 

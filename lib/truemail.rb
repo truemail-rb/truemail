@@ -1,5 +1,6 @@
 require 'truemail/version'
 require 'truemail/exceptions'
+require 'truemail/regex_constant'
 require 'truemail/configuration'
 
 module Truemail
