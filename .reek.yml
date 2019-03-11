@@ -1,3 +1,11 @@
 detectors:
   IrresponsibleModule:
     enabled: false
+
+  NestedIterators:
+    exclude:
+      - Truemail::ConfigurationHelper#configuration_block
+
+  ControlParameter:
+    exclude:
+      - Truemail::GenerateEmailHelper#calculate_email_size
