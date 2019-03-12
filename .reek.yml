@@ -6,6 +6,21 @@ detectors:
     exclude:
       - Truemail::ConfigurationHelper#configuration_block
 
+  TooManyStatements:
+    exclude:
+      - Truemail::Validate::Smtp::Request#run
+      - Truemail::Validate::Smtp#run
+
+  TooManyInstanceVariables:
+    exclude:
+     - Truemail::Configuration
+
+  UtilityFunction:
+    exclude:
+      - Truemail::Validate::Mx#mx_records
+      - Truemail::Validate::Smtp::Request#configuration
+      - Truemail::Validate::Smtp::Request#compose_from
+
   ControlParameter:
     exclude:
       - Truemail::GenerateEmailHelper#calculate_email_size

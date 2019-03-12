@@ -1,6 +1,19 @@
 module Truemail
-  RSpec.describe RegexConstant do
-    describe 'REGEX_EMAIL_PATTERN' do
+  RSpec.describe Truemail::ArgumentError do
+    subject(:argument_error_instance) { described_class.new('parameter', Array) }
+
+    specify { expect(argument_error_instance).to be_an_instance_of(described_class) }
+    specify { expect(argument_error_instance.to_s).to eq('parameter is not a valid Array') }
+  end
+
+  RSpec.describe Truemail::RegexConstant do
+    describe 'defined constants' do
+      specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN) }
+      specify { expect(described_class).to be_const_defined(:REGEX_EMAIL_PATTERN) }
+      specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_PATTERN) }
+    end
+
+    describe 'Truemail::RegexConstant::REGEX_EMAIL_PATTERN' do
       subject(:regex_pattern) { described_class::REGEX_EMAIL_PATTERN }
 
       it 'allows from 6 to 255 chars' do
@@ -34,7 +47,7 @@ module Truemail
       end
     end
 
-    describe 'REGEX_DOMAIN_PATTERN' do
+    describe 'Truemail::RegexConstant::REGEX_DOMAIN_PATTERN' do
       subject(:regex_pattern) { described_class::REGEX_DOMAIN_PATTERN }
 
       it 'allows from 4 to 255 chars' do
@@ -68,6 +81,15 @@ module Truemail
       it 'not allows number in tld' do
         expect(regex_pattern.match?('domain.42')).to be(false)
       end
+    end
+  end
+
+  RSpec.describe Truemail::Validate do
+    describe 'defined constants' do
+      specify { expect(described_class).to be_const_defined(:Base) }
+      specify { expect(described_class).to be_const_defined(:Regex) }
+      specify { expect(described_class).to be_const_defined(:Mx) }
+      specify { expect(described_class).to be_const_defined(:Smtp) }
     end
   end
 end

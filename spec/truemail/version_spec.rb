@@ -1,5 +1,3 @@
-module Truemail
-  RSpec.describe VERSION do
-    it { is_expected.not_to be_nil }
-  end
+RSpec.describe Truemail::VERSION do
+  it { is_expected.not_to be_nil }
 end

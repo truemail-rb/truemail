@@ -2,7 +2,7 @@ AllCops:
   DisplayCopNames:    true
   DisplayStyleGuide:  true
   StyleGuideCopsOnly: true
-  TargetRubyVersion:  2.4
+  TargetRubyVersion:  2.5
 
 Metrics/LineLength:
   Max: 140
@@ -28,4 +28,13 @@ RSpec/NestedGroups:
   Enabled: false
 
 RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/MessageChain:
+  Enabled: false
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/AnyInstance:
   Enabled: false

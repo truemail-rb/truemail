@@ -1,20 +1,34 @@
 require 'truemail/version'
-require 'truemail/exceptions'
-require 'truemail/regex_constant'
+require 'truemail/core'
 require 'truemail/configuration'
+require 'truemail/validator'
 
 module Truemail
-  def self.configuration
-    @configuration ||= begin
-      return unless block_given?
-      configuration = Configuration.new
-      yield(configuration)
-      raise ConfigurationError, ConfigurationError::INCOMPLETE_CONFIG unless configuration.complete?
-      configuration
-    end
-  end
+  INCOMPLETE_CONFIG = 'verifier_email is required parameter'.freeze
+  NOT_CONFIGURED = 'use Truemail.configure before'.freeze
 
-  def self.configure(&block)
-    configuration(&block)
+  class << self
+    def configuration
+      @configuration ||= begin
+        return unless block_given?
+        configuration = Truemail::Configuration.new
+        yield(configuration)
+        raise ConfigurationError, INCOMPLETE_CONFIG unless configuration.complete?
+        configuration
+      end
+    end
+
+    def configure(&block)
+      configuration(&block)
+    end
+
+    def reset_configuration!
+      @configuration = nil
+    end
+
+    def validate(email, **options)
+      raise ConfigurationError, NOT_CONFIGURED unless configuration
+      Truemail::Validator.new(email, **options).run
+    end
   end
 end
