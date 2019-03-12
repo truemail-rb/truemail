@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/truemail
   docker:
-    - image: circleci/ruby:2.4.5-node
+    - image: circleci/ruby:2.5.0-node
 
 references:
   restore_bundle_cache: &restore_bundle_cache

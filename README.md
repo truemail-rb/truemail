@@ -1,6 +1,8 @@
 # Truemail
 
-The main idea of this gem is to validate emails by regex pattern, presence of domain mx-records, and real existence of email account on a current email server.
+[![Maintainability](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/maintainability)](https://codeclimate.com/github/rubygarage/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/test_coverage)](https://codeclimate.com/github/rubygarage/truemail/test_coverage) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![CircleCI](https://circleci.com/gh/rubygarage/truemail/tree/develop.svg?style=svg)](https://circleci.com/gh/rubygarage/truemail/tree/develop)
+
+The Truemail gem helps you validate emails by regex pattern, presence of domain mx-records, and real existence of email account on a current email server.
 
 ## Installation
 
@@ -20,31 +22,198 @@ Or install it yourself as:
 
 ## Email Validation Methods
 
-Email validation is a tricky thing to do properly. There are a number of different ways to validate an email address. All checking mechanisms conform to best practices, and provide confident validation.
+Email validation is a tricky thing. There are a number of different ways to validate an email address and all mechanisms must conform with the best practices and provide proper validation.
 
-**Syntax Checking**: This checks the email addresses via regex pattern.
+**Syntax Checking**: Checks the email addresses via regex pattern.
 
-**Mail Server Existence Check**: This checks the availability of the email address domain using DNS MX records.
+**Mail Server Existence Check**: Checks the availability of the email address domain using DNS MX records.
 
-**Mail Existence Check**: This checks if the email address really exists and can receive email via SMTP connections and email-sending emulation techniques.
+**Mail Existence Check**: Checks if the email address really exists and can receive email via SMTP connections and email-sending emulation techniques.
 
 ## Usage
 
-TODO: Complete usage instructions here.
+### Configuration features 
+
+#### Set configuration
+
+To have an access for ```Truemail.configuration``` and gem features, you must configure it first as in the example below:
 
 ```ruby
 Truemail.configure do |config|
-  # Required parameter. Should be an existing email on behalf of which verification will be performed
-  config.verifier_email = 'email@example.com'
+  # Required parameter. Must be an existing email on behalf of which verification will be performed
+  config.verifier_email = 'verifier@example.com'
 
-  # Optional parameter. Should be an existing domain on behalf of which verification will be performed.
+  # Optional parameter. Must be an existing domain on behalf of which verification will be performed.
   # By default verifier domain based on verifier email
-  # config.verifier_domain = 'somedomain.com'
+  config.verifier_domain = 'somedomain.com'
 
   # Optional parameter. You can override default regex pattern
-  # config.email_pattern = /regex_pattern/
+  config.email_pattern = /regex_pattern/
+
+  # Optional parameter. Connection timeout is equal to 2 ms by default.
+  config.connection_timeout = 1
+
+  # Optional parameter. A SMTP server response timeout is equal to 2 ms by default.
+  config.response_timeout = 1
+
+  # Optional parameter. You can predefine which type of validation will be used for domains.
+  # Available validation types: :regex, :mx, :smtp
+  # This configuration will be used over current or default validation type parameter
+  # All of validations for 'somedomain.com' will be processed with mx validation only
+  config.validation_type_for = { 'somedomain.com' => :mx }
 end
 ```
+
+#### Read configuration
+
+After successful configuration, you can read current Truemail configuration instance anywhere in your application.
+
+```ruby
+Truemail.configuration
+
+=> #<Truemail::Configuration:0x000055590cb17b40
+ @connection_timeout=1,
+ @email_pattern=/regex_pattern/,
+ @response_timeout=1,
+ @validation_type_by_domain={},
+ @verifier_domain="somedomain.com",
+ @verifier_email="verifier@example.com">
+```
+
+#### Update configuration
+
+```ruby
+Truemail.configuration.connection_timeout = 3
+=> 3
+Truemail.configuration.response_timeout = 4
+=> 4
+
+Truemail.configuration
+=> #<Truemail::Configuration:0x000055590cb17b40
+ @connection_timeout=3,
+ @email_pattern=/regex_pattern/,
+ @response_timeout=4,
+ @validation_type_by_domain={},
+ @verifier_domain="somedomain.com",
+ @verifier_email="verifier@example.com">
+```
+
+#### Reset configuration
+
+Also you can reset Truemail configuration.
+
+```ruby
+Truemail.reset_configuration!
+=> nil
+Truemail.configuration
+=> nil
+```
+
+### Validation features
+
+#### Regex validation
+
+Validation with regex pattern is the first validation level.
+
+Example of usage:
+
+1. With default regex pattern
+
+```ruby
+Truemail.configure do |config| 
+  config.verifier_email = 'verifier@example.com'
+end
+
+Truemail.validate('email@example.com', with: :regex)
+
+=> #<Truemail::Validator:0x000055590cc9bdb8
+ @result=<struct Truemail::Validator::Result success=true, email="email@example.com", domain=nil, mail_servers=[], errors={}, smtp_debug=nil>,
+ @validation_type=:regex>
+```
+
+2. With custom regex pattern. You should define your custom regex pattern in a gem configuration before.
+
+```ruby
+Truemail.configure do |config| 
+  config.verifier_email = 'verifier@example.com'
+  config.config.email_pattern = /regex_pattern/
+end
+
+Truemail.validate('email@example.com', with: :regex)
+
+=> #<Truemail::Validator:0x000055590ca8b3e8
+@result=<struct Truemail::Validator::Result success=true, email="email@example.com", domain=nil, mail_servers=[], errors={}, smtp_debug=nil>, @validation_type=:regex>
+```
+
+#### MX validation
+
+Validation by MX records is second validation level. It uses Regex validation before launch. When regex validation has completed successfully then runs itself.
+
+Example of usage:
+
+```ruby
+Truemail.configure do |config| 
+  config.verifier_email = 'verifier@example.com'
+end
+
+Truemail.validate('email@example.com', with: :mx)
+
+=> #<Truemail::Validator:0x000055590c9c1c50
+ @result=<struct Truemail::Validator::Result success=true, email="email@example.com", domain="example.com", mail_servers=["mx1.example.com", "mx2.example.com"], errors={}, smtp_debug=nil>,
+ @validation_type=:mx>
+```
+
+#### SMTP validation
+
+SMTP validation is a final, third validation level. This type of validation tries to check real existence of email account on a current email server. This validation runs a chain of previous validations, and if they're complete, successfully runs itself.
+
+```code
+[Regex validation] -> [MX validation] -> [SMTP validation]
+```
+
+By default, you don't need pass with-parameter to use it. Example of usage is specified below:
+
+```ruby
+Truemail.configure do |config| 
+  config.verifier_email = 'verifier@example.com'
+end
+
+Truemail.validate('email@example.com')
+
+# Successful SMTP validation
+=> #<Truemail::Validator:0x000055590c4dc118
+ @result=<struct Truemail::Validator::Result success=true, email="email@example.com", domain="example.com", mail_servers=["mx1.example.com", "mx2.example.com"], errors={}, smtp_debug=nil>,
+ @validation_type=:smtp>
+
+# SMTP validation failed
+=> #<Truemail::Validator:0x000055590cc88150
+ @result=
+  #<struct Truemail::Validator::Result
+   success=false,
+   email="email@example.com",
+   domain="example.com",
+   mail_servers=["mx1.example.com", "mx2.example.com"],
+   errors={:smtp=>"smtp error"},
+   smtp_debug=
+    [#<struct Truemail::Validate::Smtp::Request
+      host="mx1.example.com",
+      email="email@example.com",
+      response=
+       #<struct Truemail::Validate::Smtp::Response
+        port_opened=true,
+        connection=true,
+        helo=#<Net::SMTP::Response:0x000055590cc74678 @status="250", @string="250 mx1.example.com\n">,
+        mailfrom=#<Net::SMTP::Response:0x000055590cc74308 @status="250", @string="250 2.1.0 <verifier@example.com> ok\n">,
+        rcptto=false,
+        errors={:rcptto=>"550 5.7.1 No such user!\n"}>>]>,
+ @validation_type=:smtp>
+```
+
+## ToDo
+
+1. Gem compatibility with Ruby 2.3
+2. Fail validations logger
+3. The ability to use a proxy
 
 ## Contributing
 
