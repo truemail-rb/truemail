@@ -56,6 +56,18 @@ RSpec.describe Truemail::Validate::Smtp do
         end
       end
 
+      context 'until request run fails or rcptto error' do
+        it 'creates smtp request instances' do
+          allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
+          allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
+          allow_any_instance_of(Truemail::Validate::Smtp::Response).to receive(:errors).and_return({ rcptto: 'error' })
+
+          expect { smtp_validator_instance.send(:establish_smtp_connection) }
+            .to change(smtp_results, :size)
+            .from(0).to(1)
+        end
+      end
+
       context 'when request port check run completed successfully' do
         it 'stops creating smtp request instances' do
           allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
