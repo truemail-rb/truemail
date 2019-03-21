@@ -207,6 +207,12 @@ Truemail.validate('email@example.com')
  @validation_type=:smtp>
 ```
 
+## ToDo
+
+1. Gem compatibility with Ruby 2.3
+2. Fail validations logger
+3. The ability to use a proxy
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/rubygarage/truemail. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
