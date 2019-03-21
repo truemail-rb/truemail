@@ -184,7 +184,6 @@ Truemail.validate('email@example.com')
  @validation_type=:smtp>
 
 # SMTP validation failed
-
 => #<Truemail::Validator:0x000055590cc88150
  @result=
   #<struct Truemail::Validator::Result
