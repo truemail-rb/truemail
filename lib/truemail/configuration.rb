@@ -7,12 +7,14 @@ module Truemail
                 :verifier_email,
                 :verifier_domain,
                 :connection_timeout,
-                :response_timeout
+                :response_timeout,
+                :validation_type_by_domain
 
     def initialize
       @email_pattern = Truemail::RegexConstant::REGEX_EMAIL_PATTERN
       @connection_timeout = DEFAULT_CONNECTION_TIMEOUT
       @response_timeout = DEFAULT_RESPONSE_TIMEOUT
+      @validation_type_by_domain = {}
     end
 
     def email_pattern=(regex_pattern)
@@ -38,6 +40,11 @@ module Truemail
       end
     end
 
+    def validation_type_for=(settings)
+      validate_validation_type(settings)
+      validation_type_by_domain.merge!(settings)
+    end
+
     def complete?
       !!verifier_email
     end
@@ -47,6 +54,15 @@ module Truemail
     def validate_arguments(argument, method)
       constant = Truemail::RegexConstant.const_get("regex_#{method[/\A.+_(.+)\=\z/, 1]}_pattern".upcase)
       raise Truemail::ArgumentError.new(argument, method) unless constant.match?(argument.to_s)
+    end
+
+    def validate_validation_type(settings)
+      settings.each do |domain, validation_type|
+        raise Truemail::ArgumentError.new(domain, 'domain') unless
+          Truemail::RegexConstant::REGEX_DOMAIN_PATTERN.match?(domain.to_s)
+        raise Truemail::ArgumentError.new(validation_type, 'validation type') unless
+          Truemail::Validator::VALIDATION_TYPES.include?(validation_type)
+      end
     end
 
     def default_verifier_domain

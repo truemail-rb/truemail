@@ -14,12 +14,19 @@ module Truemail
 
     def initialize(email, with: :smtp)
       raise ArgumentError.new(with, :argument) unless VALIDATION_TYPES.include?(with)
-      @validation_type, @result = with, Result.new(email: email)
+      @validation_type, @result = select_validation_type(email, with), Result.new(email: email)
     end
 
     def run
       Truemail::Validate.const_get(validation_type.capitalize).check(result)
       self
+    end
+
+    private
+
+    def select_validation_type(email, current_validation_type)
+      domain = email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
+      Truemail.configuration&.validation_type_by_domain[domain] || current_validation_type
     end
   end
 end

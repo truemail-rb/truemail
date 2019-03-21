@@ -20,7 +20,12 @@ detectors:
       - Truemail::Validate::Mx#mx_records
       - Truemail::Validate::Smtp::Request#configuration
       - Truemail::Validate::Smtp::Request#compose_from
+      - Truemail::Validator#select_validation_type
 
   ControlParameter:
     exclude:
       - Truemail::GenerateEmailHelper#calculate_email_size
+
+  NilCheck:
+    exclude:
+      - Truemail::Validator#select_validation_type

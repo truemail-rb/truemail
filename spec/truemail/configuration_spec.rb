@@ -8,6 +8,15 @@ RSpec.describe Truemail::Configuration do
 
   describe '.new' do
     include_examples 'has attr_accessor'
+
+    it 'has attribute reader :validation_type_by_domain' do
+      expect(configuration_instance.respond_to?(:validation_type_by_domain)).to be(true)
+    end
+
+    it 'has attribute writer :validation_type_for=' do
+      expect(configuration_instance.respond_to?(:validation_type_for=)).to be(true)
+    end
+
     include_examples 'sets default configuration'
   end
 
@@ -27,10 +36,12 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :email_pattern)
           .and not_change(configuration_instance, :connection_timeout)
           .and not_change(configuration_instance, :response_timeout)
+          .and not_change(configuration_instance, :validation_type_by_domain)
 
         expect(configuration_instance.email_pattern).to eq(Truemail::RegexConstant::REGEX_EMAIL_PATTERN)
         expect(configuration_instance.connection_timeout).to eq(2)
         expect(configuration_instance.response_timeout).to eq(2)
+        expect(configuration_instance.validation_type_by_domain).to eq({})
       end
     end
 
@@ -120,6 +131,38 @@ RSpec.describe Truemail::Configuration do
           let(:setter) { :response_timeout= }
 
           include_examples 'raises argument error'
+        end
+      end
+
+      describe '#validation_type_for=' do
+        context 'with valid validation type attributes' do
+          let(:domain_1) { FFaker::Internet.domain_name }
+          let(:domain_2) { FFaker::Internet.domain_name }
+
+          it 'sets validation type for domain' do
+            expect { configuration_instance.validation_type_for = { domain_1 => :mx, domain_2 => :regex } }
+              .to change(configuration_instance, :validation_type_by_domain)
+              .from({}).to({ domain_1 => :mx, domain_2 => :regex  })
+          end
+        end
+
+        context 'with invalid domain' do
+          let(:domain) { 'not_valid_domain' }
+
+          specify do
+            expect { configuration_instance.validation_type_for = { domain => '' } }
+              .to raise_error(Truemail::ArgumentError, "#{domain} is not a valid domain")
+          end
+        end
+
+        context 'with invalid validation type' do
+          let(:domain)          { FFaker::Internet.domain_name }
+          let(:validation_type) { 'wrong_validation_type' }
+
+          specify do
+            expect { configuration_instance.validation_type_for = { domain => validation_type } }
+              .to raise_error(Truemail::ArgumentError, "#{validation_type} is not a valid validation type")
+          end
         end
       end
     end

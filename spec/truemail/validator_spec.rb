@@ -6,6 +6,8 @@ module Truemail
     let(:options) { {} }
     let(:validator_instance_result) { validator_instance.result }
 
+    before { Truemail.configure { |config| config.verifier_email = email } }
+
     describe 'defined constants' do
       specify { expect(described_class).to be_const_defined(:RESULT_ATTRS) }
       specify { expect(described_class).to be_const_defined(:VALIDATION_TYPES) }
@@ -51,6 +53,36 @@ module Truemail
         allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
         expect(validator_instance).to be_an_instance_of(Truemail::Validator)
         expect(Truemail::Validate::Regex).to have_received(:check)
+      end
+    end
+
+    describe '#select_validation_type' do
+      subject(:select_validation_type) do
+        described_class.new(email, with: current_validation_type).validation_type
+      end
+
+      let(:current_validation_type) { :regex }
+      let(:new_validation_type)     { :mx }
+      let(:domain)                  { FFaker::Internet.domain_name }
+
+      before do
+        Truemail.configuration.validation_type_for = { domain => new_validation_type }
+      end
+
+      context 'when domain of current email exists in configuration' do
+        let(:email) { "email@#{domain}" }
+
+        it 'returns predefined domain validation type' do
+          expect(select_validation_type).to eq(new_validation_type)
+        end
+      end
+
+      context 'when domain of current email not exists in configuration' do
+        let(:email) { 'email@other-great.domain' }
+
+        it 'uses current validation type' do
+          expect(select_validation_type).to eq(current_validation_type)
+        end
       end
     end
   end
