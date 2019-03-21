@@ -1,5 +1,7 @@
 # Truemail
 
+[![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![CircleCI](https://circleci.com/gh/rubygarage/truemail/tree/feature/validator-result-class.svg?style=svg)](https://circleci.com/gh/rubygarage/truemail/tree/feature/validator-result-class)
+
 The main idea of this gem is to validate emails by regex pattern, presence of domain mx-records, and real existence of email account on a current email server.
 
 ## Installation

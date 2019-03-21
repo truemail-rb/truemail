@@ -1,7 +1,10 @@
 require 'bundler/setup'
+require 'simplecov'
 require 'ffaker'
 require 'pry'
 require 'truemail'
+
+SimpleCov.start
 
 rspec_custom = File.join(File.dirname(__FILE__), 'support/**/*.rb')
 Dir[File.expand_path(rspec_custom)].each do |file|
