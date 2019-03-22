@@ -4,6 +4,7 @@ module Truemail
       SMTP_PORT = 25
       CONNECTION_TIMEOUT_ERROR = 'connection timed out'.freeze
       RESPONSE_TIMEOUT_ERROR = 'server response timeout'.freeze
+      CONNECTION_DROPPED = 'server dropped connection after response'.freeze
 
       Request = Struct.new(:host, :email, :response, keyword_init: true) do
         require 'net/smtp'
@@ -47,6 +48,7 @@ module Truemail
           case error.class.name
           when 'Net::OpenTimeout' then Truemail::Validate::Smtp::CONNECTION_TIMEOUT_ERROR
           when 'Net::ReadTimeout' then Truemail::Validate::Smtp::RESPONSE_TIMEOUT_ERROR
+          when 'EOFError' then Truemail::Validate::Smtp::CONNECTION_DROPPED
           else error.message
           end
         end

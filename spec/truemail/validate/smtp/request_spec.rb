@@ -123,6 +123,23 @@ RSpec.describe Truemail::Validate::Smtp::Request do
         end
       end
 
+      context 'when remote server has dropped connection during session' do
+        specify do
+          allow(session).to receive(:start).and_yield(session).and_raise(EOFError)
+          allow(session).to receive(:helo).and_raise(StandardError)
+
+          expect { request_instance.run }
+            .to change(response_instance, :connection).from(nil).to(false)
+            .and change(response_instance, :errors)
+            .from({}).to({ connection: Truemail::Validate::Smtp::CONNECTION_DROPPED, helo: 'StandardError' })
+            .and change(response_instance, :helo).from(nil).to(false)
+            .and not_change(response_instance, :mailfrom)
+            .and not_change(response_instance, :rcptto)
+
+          expect(request_instance.run).to be(false)
+        end
+      end
+
       context 'when connection other errors' do
         specify do
           allow(session).to receive(:start).and_raise(StandardError, error_message)
