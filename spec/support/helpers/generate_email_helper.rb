@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Truemail
   class GenerateEmailHelper
     def self.call(**options)
@@ -6,7 +8,8 @@ module Truemail
 
     def initialize(size: :auto, symbols: %w[- _ .], invalid_email_with: [])
       @size = calculate_email_size(size)
-      @symbols, @invalid_symbols = symbols, invalid_email_with
+      @symbols = symbols
+      @invalid_symbols = invalid_email_with
       user_name
     end
 
@@ -28,7 +31,8 @@ module Truemail
     end
 
     def sample_size
-      symbols_size, invalid_symbols_size = symbols.size, invalid_symbols.size
+      symbols_size = symbols.size
+      invalid_symbols_size = invalid_symbols.size
       size < (symbols_size + invalid_symbols_size + 1) ? 1 : size - symbols_size - invalid_symbols_size - 1
     end
 

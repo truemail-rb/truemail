@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Truemail
   RSpec.describe ConfigurationHelper, type: :helper do
     describe '.configuration_block' do

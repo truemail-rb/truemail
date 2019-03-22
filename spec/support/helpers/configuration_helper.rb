@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Truemail
   module ConfigurationHelper
     def configuration_block(**configuration_settings)

@@ -1,0 +1,103 @@
+---
+- !ruby/object:Resolv::DNS::Resource::IN::MX
+  preference: 10
+  exchange: !ruby/object:Resolv::DNS::Name
+    labels:
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: alt1
+      downcase: alt1
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: gmail-smtp-in
+      downcase: gmail-smtp-in
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: l
+      downcase: l
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: google
+      downcase: google
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: com
+      downcase: com
+    absolute: true
+  ttl: 107
+- !ruby/object:Resolv::DNS::Resource::IN::MX
+  preference: 5
+  exchange: !ruby/object:Resolv::DNS::Name
+    labels:
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: gmail-smtp-in
+      downcase: gmail-smtp-in
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: l
+      downcase: l
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: google
+      downcase: google
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: com
+      downcase: com
+    absolute: true
+  ttl: 107
+- !ruby/object:Resolv::DNS::Resource::IN::MX
+  preference: 30
+  exchange: !ruby/object:Resolv::DNS::Name
+    labels:
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: alt3
+      downcase: alt3
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: gmail-smtp-in
+      downcase: gmail-smtp-in
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: l
+      downcase: l
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: google
+      downcase: google
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: com
+      downcase: com
+    absolute: true
+  ttl: 107
+- !ruby/object:Resolv::DNS::Resource::IN::MX
+  preference: 40
+  exchange: !ruby/object:Resolv::DNS::Name
+    labels:
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: alt4
+      downcase: alt4
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: gmail-smtp-in
+      downcase: gmail-smtp-in
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: l
+      downcase: l
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: google
+      downcase: google
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: com
+      downcase: com
+    absolute: true
+  ttl: 107
+- !ruby/object:Resolv::DNS::Resource::IN::MX
+  preference: 20
+  exchange: !ruby/object:Resolv::DNS::Name
+    labels:
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: alt2
+      downcase: alt2
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: gmail-smtp-in
+      downcase: gmail-smtp-in
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: l
+      downcase: l
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: google
+      downcase: google
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: com
+      downcase: com
+    absolute: true
+  ttl: 107

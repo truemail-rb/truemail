@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Truemail
   RSpec.describe GenerateEmailHelper, type: :helper do
     describe '.call' do
