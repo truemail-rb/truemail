@@ -1,0 +1,10 @@
+checks:
+  method-complexity:
+    enabled: false
+
+plugins:
+  rubocop:
+    enabled: true
+
+  reek:
+    enabled: true
