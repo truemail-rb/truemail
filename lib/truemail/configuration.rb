@@ -58,17 +58,25 @@ module Truemail
       raise Truemail::ArgumentError.new(argument, method) unless constant.match?(argument.to_s)
     end
 
-    def validate_validation_type(settings)
-      settings.each do |domain, validation_type|
-        raise Truemail::ArgumentError.new(domain, 'domain') unless
-          Truemail::RegexConstant::REGEX_DOMAIN_PATTERN.match?(domain.to_s)
-        raise Truemail::ArgumentError.new(validation_type, 'validation type') unless
-          Truemail::Validator::VALIDATION_TYPES.include?(validation_type)
-      end
-    end
-
     def default_verifier_domain
       self.verifier_domain ||= verifier_email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
+    end
+
+    def check_domain(domain)
+      raise Truemail::ArgumentError.new(domain, 'domain') unless
+        Truemail::RegexConstant::REGEX_DOMAIN_PATTERN.match?(domain.to_s)
+    end
+
+    def check_validation_type(validation_type)
+      raise Truemail::ArgumentError.new(validation_type, 'validation type') unless
+          Truemail::Validator::VALIDATION_TYPES.include?(validation_type)
+    end
+
+    def validate_validation_type(settings)
+      settings.each do |domain, validation_type|
+        check_domain(domain)
+        check_validation_type(validation_type)
+      end
     end
   end
 end
