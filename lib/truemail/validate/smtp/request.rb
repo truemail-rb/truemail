@@ -34,7 +34,7 @@ module Truemail
         private
 
         def configuration
-          Truemail.configuration.freeze
+          Truemail.configuration.dup.freeze
         end
 
         def session
