@@ -61,7 +61,7 @@ jobs:
       - run:
           name: Running tests
           command: |
-            mkdir ./tmp/test-results
+            mkdir /tmp/test-results
             ./cc-test-reporter before-build
             bundle exec rspec
 
