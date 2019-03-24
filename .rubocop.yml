@@ -13,6 +13,9 @@ Documentation:
 Style/DoubleNegation:
   Enabled: false
 
+Style/RescueStandardError:
+  Enabled: false
+
 require: rubocop-rspec
 
 RSpec/ExampleLength:
