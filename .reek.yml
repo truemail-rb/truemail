@@ -1,0 +1,25 @@
+detectors:
+  IrresponsibleModule:
+    enabled: false
+
+  NestedIterators:
+    exclude:
+      - Truemail::ConfigurationHelper#configuration_block
+
+  TooManyStatements:
+    exclude:
+      - Truemail::Validate::Smtp::Request#run
+      - Truemail::Validate::Smtp#run
+
+  TooManyInstanceVariables:
+    exclude:
+     - Truemail::Configuration
+
+  UtilityFunction:
+    exclude:
+      - Truemail::Validate::Smtp::Request#compose_from
+      - Truemail::Validator#select_validation_type
+
+  ControlParameter:
+    exclude:
+      - Truemail::GenerateEmailHelper#calculate_email_size

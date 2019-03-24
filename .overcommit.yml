@@ -1,0 +1,29 @@
+PreCommit:
+  AuthorEmail:
+    enabled: true
+    required: false
+
+  AuthorName:
+    enabled: false
+
+  BundleAudit:
+    enabled: true
+
+  Brakeman:
+    enabled: true
+    flags: ['--exit-on-warn', '--quiet', '--summary']
+
+  RuboCop:
+    enabled: true
+    flags: ['--format=emacs', '--force-exclusion', '--display-cop-names']
+
+  Reek:
+    enabled: true
+    flags: ['--force-exclusion']
+
+PostCheckout:
+  ALL:
+    quiet: true
+
+  IndexTags:
+    enabled: true
