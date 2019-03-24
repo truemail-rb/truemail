@@ -21,8 +21,7 @@ module Truemail
 
         def check_port
           Timeout.timeout(configuration.connection_timeout) do
-            return response.port_opened =
-              !TCPSocket.new(host, Truemail::Validate::Smtp::Request::SMTP_PORT).close
+            return response.port_opened = !TCPSocket.new(host, Truemail::Validate::Smtp::Request::SMTP_PORT).close
           end
         rescue Timeout::Error
           response.port_opened = false
