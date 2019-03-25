@@ -5,7 +5,7 @@ detectors:
   NestedIterators:
     exclude:
       - Truemail::ConfigurationHelper#configuration_block
-      - Truemail::Validate::Smtp#not_include_user_not_found_errors
+      - Truemail::Validate::Smtp#not_includes_user_not_found_errors
 
   TooManyStatements:
     exclude:
@@ -28,3 +28,8 @@ detectors:
   ControlParameter:
     exclude:
       - Truemail::GenerateEmailHelper#calculate_email_size
+      - Truemail::Validate::Base#success
+
+  FeatureEnvy:
+    exclude:
+      - Truemail::Validate::Smtp#not_includes_user_not_found_errors
