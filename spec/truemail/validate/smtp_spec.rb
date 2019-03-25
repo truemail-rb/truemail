@@ -171,7 +171,7 @@ RSpec.describe Truemail::Validate::Smtp do
               allow(result_instance.mail_servers).to receive(:each)
 
               expect { smtp_validator_instance.run }
-                .to change(result_instance, :success).from(true).to(false)
+                .to not_change(result_instance, :success)
                 .and not_change(result_instance, :errors)
                 .and change(result_instance, :smtp_debug).from(nil).to(smtp_results)
             end
