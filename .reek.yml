@@ -5,6 +5,7 @@ detectors:
   NestedIterators:
     exclude:
       - Truemail::ConfigurationHelper#configuration_block
+      - Truemail::Validate::Smtp#not_include_user_not_found_errors
 
   TooManyStatements:
     exclude:
@@ -14,6 +15,10 @@ detectors:
   TooManyInstanceVariables:
     exclude:
      - Truemail::Configuration
+
+  Attribute:
+    exclude:
+      - Truemail::Configuration#smtp_safe_check
 
   UtilityFunction:
     exclude:

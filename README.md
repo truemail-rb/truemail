@@ -39,6 +39,8 @@ Email validation is a tricky thing. There are a number of different ways to vali
 To have an access for ```Truemail.configuration``` and gem features, you must configure it first as in the example below:
 
 ```ruby
+require 'truemail'
+
 Truemail.configure do |config|
   # Required parameter. Must be an existing email on behalf of which verification will be performed
   config.verifier_email = 'verifier@example.com'
@@ -61,6 +63,11 @@ Truemail.configure do |config|
   # This configuration will be used over current or default validation type parameter
   # All of validations for 'somedomain.com' will be processed with mx validation only
   config.validation_type_for = { 'somedomain.com' => :mx }
+
+  # Optional parameter. This option will be parse bodies of SMTP errors. It will be helpful
+  # if SMTP server does not return an exact answer that the email does not exist
+  # By default this option is disabled
+  config.smtp_safe_check = true
 end
 ```
 

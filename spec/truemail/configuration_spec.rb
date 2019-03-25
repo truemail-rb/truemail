@@ -39,11 +39,13 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :connection_timeout)
           .and not_change(configuration_instance, :response_timeout)
           .and not_change(configuration_instance, :validation_type_by_domain)
+          .and not_change(configuration_instance, :smtp_safe_check)
 
         expect(configuration_instance.email_pattern).to eq(Truemail::RegexConstant::REGEX_EMAIL_PATTERN)
         expect(configuration_instance.connection_timeout).to eq(2)
         expect(configuration_instance.response_timeout).to eq(2)
         expect(configuration_instance.validation_type_by_domain).to eq({})
+        expect(configuration_instance.smtp_safe_check).to be(false)
       end
     end
 
@@ -165,6 +167,14 @@ RSpec.describe Truemail::Configuration do
             expect { configuration_instance.validation_type_for = { domain => validation_type } }
               .to raise_error(Truemail::ArgumentError, "#{validation_type} is not a valid validation type")
           end
+        end
+      end
+
+      describe '#smtp_safe_check=' do
+        it 'sets smtp safe check' do
+          expect { configuration_instance.smtp_safe_check = true }
+            .to change(configuration_instance, :smtp_safe_check)
+            .from(false).to(true)
         end
       end
     end

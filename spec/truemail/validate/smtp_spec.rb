@@ -3,7 +3,11 @@
 RSpec.describe Truemail::Validate::Smtp do
   let(:email) { FFaker::Internet.email }
 
+  before { Truemail.configure { |config| config.verifier_email = email } }
+
   describe 'defined constants' do
+    specify { expect(described_class).to be_const_defined(:ERROR) }
+    specify { expect(described_class).to be_const_defined(:ERROR_BODY) }
     specify { expect(described_class).to be_const_defined(:RESPONSE_ATTRS) }
     specify { expect(described_class).to be_const_defined(:Response) }
     specify { expect(described_class).to be_const_defined(:Request) }
@@ -111,6 +115,8 @@ RSpec.describe Truemail::Validate::Smtp do
       end
 
       context 'when smtp validation has only failed attempts' do
+        let(:smtp_error_context) { 'smtp error' }
+
         before do
           request_1 = Truemail::Validate::Smtp::Request.new(
             host: result_instance.mail_servers[0], email: result_instance.email
@@ -136,23 +142,61 @@ RSpec.describe Truemail::Validate::Smtp do
             response.helo = true
             response.mailfrom = true
             response.rcptto = false
-            response.errors[:rcptto] = 'smtp error'
+            response.errors[:rcptto] = smtp_error_context
           end
 
           smtp_results.push(request_1, request_2, request_3)
         end
 
-        specify do
-          allow(result_instance.mail_servers).to receive(:each)
+        context 'wihout smtp safe check' do
+          specify do
+            allow(result_instance.mail_servers).to receive(:each)
 
-          expect { smtp_validator_instance.run }
-            .to change(result_instance, :success).from(true).to(false)
-            .and change(result_instance, :errors).from({}).to({ smtp: Truemail::Validate::Smtp::ERROR })
-            .and change(result_instance, :smtp_debug).from(nil).to(smtp_results)
+            expect { smtp_validator_instance.run }
+              .to change(result_instance, :success).from(true).to(false)
+              .and change(result_instance, :errors).from({}).to({ smtp: Truemail::Validate::Smtp::ERROR })
+              .and change(result_instance, :smtp_debug).from(nil).to(smtp_results)
+          end
+
+          it 'returns false' do
+            expect(smtp_validator_instance.run).to be(false)
+          end
         end
 
-        it 'returns false' do
-          expect(smtp_validator_instance.run).to be(false)
+        context 'with smtp safe check' do
+          before { Truemail.configuration.smtp_safe_check = true }
+
+          context 'when smtp user error has been not detected' do
+            specify do
+              allow(result_instance.mail_servers).to receive(:each)
+
+              expect { smtp_validator_instance.run }
+                .to change(result_instance, :success).from(true).to(false)
+                .and not_change(result_instance, :errors)
+                .and change(result_instance, :smtp_debug).from(nil).to(smtp_results)
+            end
+
+            it 'returns false' do
+              expect(smtp_validator_instance.run).to be(true)
+            end
+          end
+
+          context 'when smtp user error has been detected' do
+            let(:smtp_error_context) { 'some 550 error with user or account in body' }
+
+            specify do
+              allow(result_instance.mail_servers).to receive(:each)
+
+              expect { smtp_validator_instance.run }
+                .to change(result_instance, :success).from(true).to(false)
+                .and change(result_instance, :errors).from({}).to({ smtp: Truemail::Validate::Smtp::ERROR })
+                .and change(result_instance, :smtp_debug).from(nil).to(smtp_results)
+            end
+
+            it 'returns false' do
+              expect(smtp_validator_instance.run).to be(false)
+            end
+          end
         end
       end
     end
