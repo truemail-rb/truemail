@@ -16,7 +16,7 @@ module Truemail
       private
 
       def success(condition)
-        result.success = condition
+        result.success = condition || false
       end
 
       def add_error(message)

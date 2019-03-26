@@ -12,11 +12,14 @@ module Truemail
                 :response_timeout,
                 :validation_type_by_domain
 
+    attr_accessor :smtp_safe_check
+
     def initialize
       @email_pattern = Truemail::RegexConstant::REGEX_EMAIL_PATTERN
       @connection_timeout = DEFAULT_CONNECTION_TIMEOUT
       @response_timeout = DEFAULT_RESPONSE_TIMEOUT
       @validation_type_by_domain = {}
+      @smtp_safe_check = false
     end
 
     def email_pattern=(regex_pattern)
