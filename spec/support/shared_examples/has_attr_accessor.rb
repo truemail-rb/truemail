@@ -8,6 +8,7 @@ module Truemail
       verifier_domain
       connection_timeout
       response_timeout
+      smtp_safe_check
     ].each do |attribute|
       it "has attr_accessor :#{attribute}" do
         expect(configuration_instance.respond_to?(attribute)).to be(true)
