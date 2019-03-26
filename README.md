@@ -129,6 +129,8 @@ Example of usage:
 1. With default regex pattern
 
 ```ruby
+require 'truemail'
+
 Truemail.configure do |config|
   config.verifier_email = 'verifier@example.com'
 end
@@ -136,13 +138,21 @@ end
 Truemail.validate('email@example.com', with: :regex)
 
 => #<Truemail::Validator:0x000055590cc9bdb8
- @result=<struct Truemail::Validator::Result success=true, email="email@example.com", domain=nil, mail_servers=[], errors={}, smtp_debug=nil>,
- @validation_type=:regex>
+  @result=
+    #<struct Truemail::Validator::Result
+      success=true, email="email@example.com",
+      domain=nil,
+      mail_servers=[],
+      errors={},
+      smtp_debug=nil>,
+  @validation_type=:regex>
 ```
 
 2. With custom regex pattern. You should define your custom regex pattern in a gem configuration before.
 
 ```ruby
+require 'truemail'
+
 Truemail.configure do |config|
   config.verifier_email = 'verifier@example.com'
   config.config.email_pattern = /regex_pattern/
@@ -151,7 +161,15 @@ end
 Truemail.validate('email@example.com', with: :regex)
 
 => #<Truemail::Validator:0x000055590ca8b3e8
-@result=<struct Truemail::Validator::Result success=true, email="email@example.com", domain=nil, mail_servers=[], errors={}, smtp_debug=nil>, @validation_type=:regex>
+  @result=
+    #<struct Truemail::Validator::Result
+      success=true,
+      email="email@example.com",
+      domain=nil,
+      mail_servers=[],
+      errors={},
+      smtp_debug=nil>,
+  @validation_type=:regex>
 ```
 
 #### MX validation
@@ -161,6 +179,8 @@ Validation by MX records is second validation level. It uses Regex validation be
 Example of usage:
 
 ```ruby
+require 'truemail'
+
 Truemail.configure do |config|
   config.verifier_email = 'verifier@example.com'
 end
@@ -168,8 +188,15 @@ end
 Truemail.validate('email@example.com', with: :mx)
 
 => #<Truemail::Validator:0x000055590c9c1c50
- @result=<struct Truemail::Validator::Result success=true, email="email@example.com", domain="example.com", mail_servers=["mx1.example.com", "mx2.example.com"], errors={}, smtp_debug=nil>,
- @validation_type=:mx>
+  @result=
+    #<struct Truemail::Validator::Result
+      success=true,
+      email="email@example.com",
+      domain="example.com",
+      mail_servers=["mx1.example.com", "mx2.example.com"],
+      errors={},
+      smtp_debug=nil>,
+  @validation_type=:mx>
 ```
 
 #### SMTP validation
@@ -185,6 +212,8 @@ By default, you don't need pass with-parameter to use it. Example of usage is sp
 With ```smtp_safe_check = false```
 
 ```ruby
+require 'truemail'
+
 Truemail.configure do |config|
   config.verifier_email = 'verifier@example.com'
 end
@@ -193,45 +222,60 @@ Truemail.validate('email@example.com')
 
 # Successful SMTP validation
 => #<Truemail::Validator:0x000055590c4dc118
- @result=<struct Truemail::Validator::Result success=true, email="email@example.com", domain="example.com", mail_servers=["mx1.example.com", "mx2.example.com"], errors={}, smtp_debug=nil>,
- @validation_type=:smtp>
+  @result=
+    #<struct Truemail::Validator::Result
+      success=true,
+      email="email@example.com",
+      domain="example.com",
+      mail_servers=["mx1.example.com", "mx2.example.com"],
+      errors={},
+      smtp_debug=nil>,
+  @validation_type=:smtp>
 
 # SMTP validation failed
 => #<Truemail::Validator:0x0000000002d5cee0
- @result=
-  #<struct Truemail::Validator::Result
-   success=false,
-   email="email@example.com",
-   domain="example.com",
-   mail_servers=["mx1.example.com", "mx2.example.com", "mx3.example.com"],
-   errors={:smtp=>"smtp error"},
-   smtp_debug=
-    [#<Truemail::Validate::Smtp::Request:0x0000000002d49b10
-      @configuration=
-       #<Truemail::Configuration:0x0000000002d49930
-        @connection_timeout=2,
-        @email_pattern=/regex_pattern/,
-        @response_timeout=2,
-        @smtp_safe_check=false,
-        @validation_type_by_domain={},
-        @verifier_domain="example.com",
-        @verifier_email="verifier@example.com">,
-      @email="email@example.com",
-      @host="mx1.example.com",
-      @response=
-       #<struct Truemail::Validate::Smtp::Response
-        port_opened=true,
-        connection=true,
-        helo=#<Net::SMTP::Response:0x0000000002d5aca8 @status="250", @string="250 mx1.example.com Hello example.com\n">,
-        mailfrom=#<Net::SMTP::Response:0x0000000002d5a618 @status="250", @string="250 OK\n">,
-        rcptto=false,
-        errors={:rcptto=>"550 User not found\n"}>>]>,
- @validation_type=:smtp>
+    @result=
+      #<struct Truemail::Validator::Result
+        success=false,
+        email="email@example.com",
+        domain="example.com",
+        mail_servers=["mx1.example.com", "mx2.example.com", "mx3.example.com"],
+        errors={:smtp=>"smtp error"},
+        smtp_debug=
+          [#<Truemail::Validate::Smtp::Request:0x0000000002d49b10
+            @configuration=
+              #<Truemail::Configuration:0x0000000002d49930
+              @connection_timeout=2,
+              @email_pattern=/regex_pattern/,
+              @response_timeout=2,
+              @smtp_safe_check=false,
+              @validation_type_by_domain={},
+              @verifier_domain="example.com",
+              @verifier_email="verifier@example.com">,
+            @email="email@example.com",
+            @host="mx1.example.com",
+            @response=
+              #<struct Truemail::Validate::Smtp::Response
+                port_opened=true,
+                connection=true,
+                helo=
+                  #<Net::SMTP::Response:0x0000000002d5aca8
+                    @status="250",
+                    @string="250 mx1.example.com Hello example.com\n">,
+                mailfrom=
+                  #<Net::SMTP::Response:0x0000000002d5a618
+                    @status="250",
+                    @string="250 OK\n">,
+                rcptto=false,
+                errors={:rcptto=>"550 User not found\n"}>>]>,
+    @validation_type=:smtp>
 ```
 
 With ```smtp_safe_check = true```
 
 ```ruby
+require 'truemail'
+
 Truemail.configure do |config|
   config.verifier_email = 'verifier@example.com'
   config.smtp_safe_check = true
@@ -241,67 +285,73 @@ Truemail.validate('email@example.com')
 
 # Successful SMTP validation
 => #<Truemail::Validator:0x0000000002ca2c70
- @result=
-  #<struct Truemail::Validator::Result
-   success=true,
-   email="email@example.com",
-   domain="example.com",
-   mail_servers=["mx1.example.com"],
-   errors={},
-   smtp_debug=
-    [#<Truemail::Validate::Smtp::Request:0x0000000002c95d40
-      @configuration=
-       #<Truemail::Configuration:0x0000000002c95b38
-        @connection_timeout=2,
-        @email_pattern=/regex_pattern/,
-        @response_timeout=2,
-        @smtp_safe_check=true,
-        @validation_type_by_domain={},
-        @verifier_domain="example.com",
-        @verifier_email="verifier@example.com">,
-      @email="email@example.com",
-      @host="mx1.example.com",
-      @response=
-       #<struct Truemail::Validate::Smtp::Response
-        port_opened=true,
-        connection=false,
-        helo=#<Net::SMTP::Response:0x0000000002c934c8 @status="250", @string="250 mx1.example.com\n">,
-        mailfrom=false,
-        rcptto=nil,
-        errors={:mailfrom=>"554 5.7.1 Client host blocked\n", :connection=>"server dropped connection after response"}>>,]>,
- @validation_type=:smtp>
+    @result=
+      #<struct Truemail::Validator::Result
+        success=true,
+        email="email@example.com",
+        domain="example.com",
+        mail_servers=["mx1.example.com"],
+        errors={},
+        smtp_debug=
+          [#<Truemail::Validate::Smtp::Request:0x0000000002c95d40
+            @configuration=
+              #<Truemail::Configuration:0x0000000002c95b38
+                @connection_timeout=2,
+                @email_pattern=/regex_pattern/,
+                @response_timeout=2,
+                @smtp_safe_check=true,
+                @validation_type_by_domain={},
+                @verifier_domain="example.com",
+                @verifier_email="verifier@example.com">,
+              @email="email@example.com",
+              @host="mx1.example.com",
+              @response=
+                #<struct Truemail::Validate::Smtp::Response
+                  port_opened=true,
+                  connection=false,
+                  helo=
+                    #<Net::SMTP::Response:0x0000000002c934c8
+                    @status="250",
+                    @string="250 mx1.example.com\n">,
+                  mailfrom=false,
+                  rcptto=nil,
+                  errors={:mailfrom=>"554 5.7.1 Client host blocked\n", :connection=>"server dropped connection after response"}>>,]>,
+    @validation_type=:smtp>
 
 # SMTP validation failed
 => #<Truemail::Validator:0x0000000002d5cee0
- @result=
-  #<struct Truemail::Validator::Result
-   success=false,
-   email="email@example.com",
-   domain="example.com",
-   mail_servers=["mx1.example.com", "mx2.example.com", "mx3.example.com"],
-   errors={:smtp=>"smtp error"},
-   smtp_debug=
-    [#<Truemail::Validate::Smtp::Request:0x0000000002d49b10
-      @configuration=
-       #<Truemail::Configuration:0x0000000002d49930
-        @connection_timeout=2,
-        @email_pattern=/regex_pattern/,
-        @response_timeout=2,
-        @smtp_safe_check=true,
-        @validation_type_by_domain={},
-        @verifier_domain="example.com",
-        @verifier_email="verifier@example.com">,
-      @email="email@example.com",
-      @host="mx1.example.com",
-      @response=
-       #<struct Truemail::Validate::Smtp::Response
-        port_opened=true,
-        connection=true,
-        helo=#<Net::SMTP::Response:0x0000000002d5aca8 @status="250", @string="250 mx1.example.com Hello example.com\n">,
-        mailfrom=#<Net::SMTP::Response:0x0000000002d5a618 @status="250", @string="250 OK\n">,
-        rcptto=false,
-        errors={:rcptto=>"550 User not found\n"}>>]>,
- @validation_type=:smtp>
+   @result=
+    #<struct Truemail::Validator::Result
+      success=false,
+      email="email@example.com",
+      domain="example.com",
+      mail_servers=["mx1.example.com", "mx2.example.com", "mx3.example.com"],
+      errors={:smtp=>"smtp error"},
+      smtp_debug=
+        [#<Truemail::Validate::Smtp::Request:0x0000000002d49b10
+          @configuration=
+            #<Truemail::Configuration:0x0000000002d49930
+              @connection_timeout=2,
+              @email_pattern=/regex_pattern/,
+              @response_timeout=2,
+              @smtp_safe_check=true,
+              @validation_type_by_domain={},
+              @verifier_domain="example.com",
+              @verifier_email="verifier@example.com">,
+          @email="email@example.com",
+          @host="mx1.example.com",
+          @response=
+            #<struct Truemail::Validate::Smtp::Response
+              port_opened=true,
+              connection=true,
+              helo=
+              #<Net::SMTP::Response:0x0000000002d5aca8
+                @status="250",
+                @string="250 mx1.example.com Hello example.com\n">,
+              mailfrom=#<Net::SMTP::Response:0x0000000002d5a618 @status="250", @string="250 OK\n">,
+              rcptto=false,
+              errors={:rcptto=>"550 User not found\n"}>>]>,
+    @validation_type=:smtp>
 ```
 
 ## ToDo
