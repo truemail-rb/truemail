@@ -4,7 +4,7 @@ module Truemail
   module Validate
     class Smtp < Truemail::Validate::Base
       ERROR = 'smtp error'
-      ERROR_BODY = /(?=.*550)(?=.*(user|account)).*/i.freeze
+      ERROR_BODY = /(?=.*550)(?=.*(user|account)).*/i
 
       attr_reader :smtp_results
 
