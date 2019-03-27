@@ -10,9 +10,10 @@ module Truemail
   end
 
   module RegexConstant
-    REGEX_DOMAIN = /[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,7}/
-    REGEX_EMAIL_PATTERN = /(?=\A.{6,255}\z)(\A([\w|\-|\.]+)@(#{REGEX_DOMAIN})\z)/
+    REGEX_DOMAIN = /[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,24}/i
+    REGEX_EMAIL_PATTERN = /(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@(#{REGEX_DOMAIN})\z)/
     REGEX_DOMAIN_PATTERN = /(?=\A.{4,255}\z)(\A#{REGEX_DOMAIN}\z)/
+    REGEX_DOMAIN_FROM_EMAIL = /\A.+@(.+)\z/
   end
 
   module Validate

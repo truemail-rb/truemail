@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Validate::Mx do
+  let(:email) { FFaker::Internet.email }
+
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:ERROR) }
   end
@@ -8,9 +10,10 @@ RSpec.describe Truemail::Validate::Mx do
   describe '.check' do
     subject(:mx_validator) { described_class.check(result_instance) }
 
-    let(:email) { FFaker::Internet.email }
     let(:result_instance) { Truemail::Validator::Result.new(email: email) }
     let(:mx_records_object) { YAML.load(File.open(mx_records_file, 'r')) }
+
+    before { Truemail.configure { |config| config.verifier_email = email } }
 
     context 'when validation pass' do
       let(:mx_records_file) { "#{File.expand_path('../../', __dir__)}/support/objects/mx_records.yml" }

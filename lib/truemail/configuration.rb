@@ -29,13 +29,13 @@ module Truemail
 
     def verifier_email=(email)
       validate_arguments(email, __method__)
-      @verifier_email = email
+      @verifier_email = email.downcase
       default_verifier_domain
     end
 
     def verifier_domain=(domain)
       validate_arguments(domain, __method__)
-      @verifier_domain = domain
+      @verifier_domain = domain.downcase
     end
 
     %i[connection_timeout response_timeout].each do |method|

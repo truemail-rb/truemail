@@ -6,7 +6,7 @@ module Truemail
       new(options).call
     end
 
-    def initialize(size: :auto, symbols: %w[- _ .], invalid_email_with: [])
+    def initialize(size: :auto, symbols: %w[- _ . +], invalid_email_with: [])
       @size = calculate_email_size(size)
       @symbols = symbols
       @invalid_symbols = invalid_email_with
@@ -23,7 +23,7 @@ module Truemail
 
     def calculate_email_size(size)
       case size
-      when :auto then rand(10..250)
+      when :auto then rand(15..250)
       when :min then 1
       when :max then 250
       when :out_of_range then rand(251..300)
@@ -36,15 +36,34 @@ module Truemail
       size < (symbols_size + invalid_symbols_size + 1) ? 1 : size - symbols_size - invalid_symbols_size - 1
     end
 
+    def invalid_symbols_empty?
+      invalid_symbols.empty?
+    end
+
+    def size_one?
+      size == 1
+    end
+
     def user_name
       @user_name ||=
-        if size == 1 && !invalid_symbols.empty?
+        if size_one? && !invalid_symbols_empty?
           invalid_symbols.sample
+        elsif size_one? && invalid_symbols_empty?
+          ('a'..'z').to_a.sample
         else
-          (
-            ('Aa'..'Zz').to_a.shuffle.join.chars.sample(sample_size).push(*symbols.shuffle) << rand(0..9)
-          ).shuffle.push(*invalid_symbols.sample(size)).shuffle[0...size].join
+          prepare_user_name(randomizer)
         end
+    end
+
+    def randomizer
+      (
+        ('Aa'..'Zz').to_a.shuffle.join.chars.sample(sample_size).push(*symbols.shuffle) << rand(0..9)
+      ).shuffle.push(*invalid_symbols.sample(size)).shuffle[0...size]
+    end
+
+    def prepare_user_name(sample)
+      sample.rotate!(1) while symbols.include?(sample.first)
+      sample.join
     end
   end
 end

@@ -17,7 +17,7 @@ module Truemail
     def initialize(email, with: :smtp)
       raise ArgumentError.new(with, :argument) unless VALIDATION_TYPES.include?(with)
       @validation_type = select_validation_type(email, with)
-      @result = Result.new(email: email)
+      @result = Truemail::Validator::Result.new(email: email)
     end
 
     def run

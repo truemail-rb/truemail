@@ -33,3 +33,4 @@ detectors:
   FeatureEnvy:
     exclude:
       - Truemail::Validate::Smtp#not_includes_user_not_found_errors
+      - Truemail::GenerateEmailHelper#prepare_user_name
