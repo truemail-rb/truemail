@@ -43,7 +43,7 @@ module Truemail
         expect(regex_pattern.match?(GenerateEmailHelper.call)).to be(true)
       end
 
-      it 'allows tld size between 2 and 24 chars' do
+      it 'allows tld size between 2 and 63 chars' do
         expect(regex_pattern.match?('i@i.io')).to be(true)
         expect(regex_pattern.match?('i@i.io' + 'z' * 61)).to be(true)
         expect(regex_pattern.match?('i@i.io' + 'z' * 62)).to be(false)
@@ -90,7 +90,7 @@ module Truemail
         expect(regex_pattern.match?('service.subdomain.company.domain')).to be(true)
       end
 
-      it 'allows tld size between 2 and 24 chars' do
+      it 'allows tld size between 2 and 63 chars' do
         expect(regex_pattern.match?('domain.io')).to be(true)
         expect(regex_pattern.match?('domain.iq' + 'z' * 61)).to be(true)
         expect(regex_pattern.match?('domain.iq' + 'z' * 62)).to be(false)
