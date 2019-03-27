@@ -45,8 +45,8 @@ module Truemail
 
       it 'allows tld size between 2 and 24 chars' do
         expect(regex_pattern.match?('i@i.io')).to be(true)
-        expect(regex_pattern.match?('i@i.io' + 'z' * 22)).to be(true)
-        expect(regex_pattern.match?('i@i.io' + 'z' * 23)).to be(false)
+        expect(regex_pattern.match?('i@i.io' + 'z' * 61)).to be(true)
+        expect(regex_pattern.match?('i@i.io' + 'z' * 62)).to be(false)
         expect(regex_pattern.match?('i@i.i')).to be(false)
       end
 
@@ -92,8 +92,8 @@ module Truemail
 
       it 'allows tld size between 2 and 24 chars' do
         expect(regex_pattern.match?('domain.io')).to be(true)
-        expect(regex_pattern.match?('domain.iq' + 'z' * 22)).to be(true)
-        expect(regex_pattern.match?('domain.iq' + 'z' * 23)).to be(false)
+        expect(regex_pattern.match?('domain.iq' + 'z' * 61)).to be(true)
+        expect(regex_pattern.match?('domain.iq' + 'z' * 62)).to be(false)
         expect(regex_pattern.match?('domain')).to be(false)
       end
 
