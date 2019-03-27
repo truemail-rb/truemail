@@ -27,6 +27,14 @@ RSpec.describe Truemail::Configuration do
     let(:default_verifier_domain) { valid_email[/\A(.+)@(.+)\z/, 2] }
 
     context 'when auto configuration' do
+      let(:configuration_instance_expectaions) do
+        expect(configuration_instance.email_pattern).to eq(Truemail::RegexConstant::REGEX_EMAIL_PATTERN)
+        expect(configuration_instance.connection_timeout).to eq(2)
+        expect(configuration_instance.response_timeout).to eq(2)
+        expect(configuration_instance.validation_type_by_domain).to eq({})
+        expect(configuration_instance.smtp_safe_check).to be(false)
+      end
+
       it 'sets configuration instance with default configuration template' do
         expect { configuration_instance.verifier_email = valid_email }
           .to change(configuration_instance, :verifier_email)
@@ -41,11 +49,41 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :validation_type_by_domain)
           .and not_change(configuration_instance, :smtp_safe_check)
 
-        expect(configuration_instance.email_pattern).to eq(Truemail::RegexConstant::REGEX_EMAIL_PATTERN)
-        expect(configuration_instance.connection_timeout).to eq(2)
-        expect(configuration_instance.response_timeout).to eq(2)
-        expect(configuration_instance.validation_type_by_domain).to eq({})
-        expect(configuration_instance.smtp_safe_check).to be(false)
+        configuration_instance_expectaions
+      end
+
+      it 'sets configuration instance with default configuration template for upcase email' do
+        expect { configuration_instance.verifier_email = valid_email.upcase }
+          .to change(configuration_instance, :verifier_email)
+          .from(nil).to(valid_email)
+          .and change(configuration_instance, :verifier_domain)
+          .from(nil).to(default_verifier_domain)
+          .and change(configuration_instance, :complete?)
+          .from(false).to(true)
+          .and not_change(configuration_instance, :email_pattern)
+          .and not_change(configuration_instance, :connection_timeout)
+          .and not_change(configuration_instance, :response_timeout)
+          .and not_change(configuration_instance, :validation_type_by_domain)
+          .and not_change(configuration_instance, :smtp_safe_check)
+
+        configuration_instance_expectaions
+      end
+
+      it 'sets configuration instance with default configuration template for mixcase email' do
+        expect { configuration_instance.verifier_email = valid_email.capitalize }
+          .to change(configuration_instance, :verifier_email)
+          .from(nil).to(valid_email)
+          .and change(configuration_instance, :verifier_domain)
+          .from(nil).to(default_verifier_domain)
+          .and change(configuration_instance, :complete?)
+          .from(false).to(true)
+          .and not_change(configuration_instance, :email_pattern)
+          .and not_change(configuration_instance, :connection_timeout)
+          .and not_change(configuration_instance, :response_timeout)
+          .and not_change(configuration_instance, :validation_type_by_domain)
+          .and not_change(configuration_instance, :smtp_safe_check)
+
+        configuration_instance_expectaions
       end
     end
 
@@ -75,6 +113,18 @@ RSpec.describe Truemail::Configuration do
         context 'with valid domain' do
           it 'sets custom verifier domain' do
             expect { configuration_instance.verifier_domain = valid_domain }
+              .to change(configuration_instance, :verifier_domain)
+              .from(nil).to(valid_domain)
+          end
+
+          it 'sets custom verifier domain for upcase domain' do
+            expect { configuration_instance.verifier_domain = valid_domain.upcase }
+              .to change(configuration_instance, :verifier_domain)
+              .from(nil).to(valid_domain)
+          end
+
+          it 'sets custom verifier domain for mixcase domain' do
+            expect { configuration_instance.verifier_domain = valid_domain.capitalize }
               .to change(configuration_instance, :verifier_domain)
               .from(nil).to(valid_domain)
           end
