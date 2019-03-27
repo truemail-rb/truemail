@@ -13,6 +13,7 @@ module Truemail
       specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN) }
       specify { expect(described_class).to be_const_defined(:REGEX_EMAIL_PATTERN) }
       specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_PATTERN) }
+      specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_FROM_EMAIL) }
     end
 
     describe 'Truemail::RegexConstant::REGEX_EMAIL_PATTERN' do
@@ -38,13 +39,32 @@ module Truemail
         ).to be(false)
       end
 
-      it "allows '-', '_', '.', numbers, letters case insensitive before @domain" do
+      it "allows '-', '_', '.', '+', numbers, letters case insensitive before @domain" do
         expect(regex_pattern.match?(GenerateEmailHelper.call)).to be(true)
+      end
+
+      it 'allows tld size between 2 and 63 chars' do
+        expect(regex_pattern.match?('i@i.io')).to be(true)
+        expect(regex_pattern.match?('i@i.io' + 'z' * 61)).to be(true)
+        expect(regex_pattern.match?('i@i.io' + 'z' * 62)).to be(false)
+        expect(regex_pattern.match?('i@i.i')).to be(false)
+      end
+
+      it 'case insensitive' do
+        %w[h@i.io H@i.io h@I.io h@i.Io H@i.Io Ho@iO.Io].each do |email|
+          expect(regex_pattern.match?(email)).to be(true)
+        end
       end
 
       it 'not allows special chars' do
         expect(
           regex_pattern.match?(GenerateEmailHelper.call(invalid_email_with: %w[! ~ , ' & %]))
+        ).to be(false)
+      end
+
+      it "not allows '-', '_', '.', '+' for one char username" do
+        expect(
+          regex_pattern.match?(GenerateEmailHelper.call(size: :min, invalid_email_with: %w[- _ . +]))
         ).to be(false)
       end
     end
@@ -70,9 +90,11 @@ module Truemail
         expect(regex_pattern.match?('service.subdomain.company.domain')).to be(true)
       end
 
-      it 'allows tld size between 2 and 7 chars' do
+      it 'allows tld size between 2 and 63 chars' do
         expect(regex_pattern.match?('domain.io')).to be(true)
-        expect(regex_pattern.match?('domain.rentals')).to be(true)
+        expect(regex_pattern.match?('domain.iq' + 'z' * 61)).to be(true)
+        expect(regex_pattern.match?('domain.iq' + 'z' * 62)).to be(false)
+        expect(regex_pattern.match?('domain')).to be(false)
       end
 
       it 'not allows dash as last char' do
@@ -83,6 +105,21 @@ module Truemail
       it 'not allows number in tld' do
         expect(regex_pattern.match?('domain.42')).to be(false)
       end
+
+      it 'case insensitive' do
+        %w[domain.io DOMAIN.IO Domain.io DoMain.Io].each do |domain|
+          expect(regex_pattern.match?(domain)).to be(true)
+        end
+      end
+    end
+
+    describe 'Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL' do
+      subject(:regex_pattern) { described_class::REGEX_DOMAIN_FROM_EMAIL }
+
+      let(:email) { 'i@domain' }
+
+      specify { expect(regex_pattern.match?(email)).to be(true) }
+      specify { expect(email[regex_pattern, 1]).to eq('domain') }
     end
   end
 
