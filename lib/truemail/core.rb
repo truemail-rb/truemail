@@ -19,6 +19,7 @@ module Truemail
   module Validate
     require 'truemail/validate/base'
     require 'truemail/validate/regex'
+    require 'truemail/validate/resolver_execution_wrapper'
     require 'truemail/validate/mx'
     require 'truemail/validate/smtp'
     require 'truemail/validate/smtp/response'

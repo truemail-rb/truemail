@@ -11,6 +11,9 @@ detectors:
     exclude:
       - Truemail::Validate::Smtp::Request#run
       - Truemail::Validate::Smtp#run
+      - Truemail::Validate::Mx#hosts_from_cname_records
+      - Truemail::Validate::Mx#mx_lookup
+      - Truemail::Configuration#initialize
 
   TooManyInstanceVariables:
     exclude:
@@ -19,11 +22,13 @@ detectors:
   Attribute:
     exclude:
       - Truemail::Configuration#smtp_safe_check
+      - Truemail::Validate::ResolverExecutionWrapper#attempts
 
   UtilityFunction:
     exclude:
       - Truemail::Validate::Smtp::Request#compose_from
       - Truemail::Validator#select_validation_type
+      - Truemail::Validate::Mx#mx_records
 
   ControlParameter:
     exclude:

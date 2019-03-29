@@ -6,6 +6,7 @@ RSpec.describe Truemail::Configuration do
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:DEFAULT_CONNECTION_TIMEOUT) }
     specify { expect(described_class).to be_const_defined(:DEFAULT_RESPONSE_TIMEOUT) }
+    specify { expect(described_class).to be_const_defined(:DEFAULT_RETRY_COUNT) }
   end
 
   describe '.new' do
@@ -31,6 +32,7 @@ RSpec.describe Truemail::Configuration do
         expect(configuration_instance.email_pattern).to eq(Truemail::RegexConstant::REGEX_EMAIL_PATTERN)
         expect(configuration_instance.connection_timeout).to eq(2)
         expect(configuration_instance.response_timeout).to eq(2)
+        expect(configuration_instance.retry_count).to eq(1)
         expect(configuration_instance.validation_type_by_domain).to eq({})
         expect(configuration_instance.smtp_safe_check).to be(false)
       end
@@ -178,6 +180,22 @@ RSpec.describe Truemail::Configuration do
             expect { configuration_instance.response_timeout = 5 }
               .to change(configuration_instance, :response_timeout)
               .from(2).to(5)
+          end
+        end
+
+        context 'with invalid response timeout' do
+          let(:setter) { :response_timeout= }
+
+          include_examples 'raises argument error'
+        end
+      end
+
+      describe '#retry_count=' do
+        context 'with valid retry count' do
+          it 'sets custom retry count' do
+            expect { configuration_instance.retry_count = 2 }
+              .to change(configuration_instance, :retry_count)
+              .from(1).to(2)
           end
         end
 

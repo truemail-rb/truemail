@@ -4,6 +4,12 @@
 
 The Truemail gem helps you validate emails by regex pattern, presence of domain mx-records, and real existence of email account on a current email server.
 
+## Features
+
+- Configurable validator, validate only what you need
+- Zero runtime dependencies
+- 100% test coverage
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -58,6 +64,9 @@ Truemail.configure do |config|
   # Optional parameter. A SMTP server response timeout is equal to 2 ms by default.
   config.response_timeout = 1
 
+  # Optional parameter. Total of timeout retry. It is equal to 1 by default.
+  config.retry_count = 2
+
   # Optional parameter. You can predefine which type of validation will be used for domains.
   # Available validation types: :regex, :mx, :smtp
   # This configuration will be used over current or default validation type parameter
@@ -82,6 +91,7 @@ Truemail.configuration
  @connection_timeout=1,
  @email_pattern=/regex_pattern/,
  @response_timeout=1,
+ @retry_count=2,
  @validation_type_by_domain={},
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com"
@@ -95,12 +105,15 @@ Truemail.configuration.connection_timeout = 3
 => 3
 Truemail.configuration.response_timeout = 4
 => 4
+Truemail.configuration.retry_count = 1
+=> 1
 
 Truemail.configuration
 => #<Truemail::Configuration:0x000055590cb17b40
  @connection_timeout=3,
  @email_pattern=/regex_pattern/,
  @response_timeout=4,
+ @retry_count=1,
  @validation_type_by_domain={},
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com",
@@ -122,7 +135,7 @@ Truemail.configuration
 
 #### Regex validation
 
-Validation with regex pattern is the first validation level.
+Validation with regex pattern is the first validation level. By default this validation not performs strictly following RFC 5322 standart, so you can override Truemail default regex pattern if you want.
 
 Example of usage:
 
@@ -174,7 +187,7 @@ Truemail.validate('email@example.com', with: :regex)
 
 #### MX validation
 
-Validation by MX records is second validation level. It uses Regex validation before launch. When regex validation has completed successfully then runs itself.
+Validation by MX records is the second validation level. It uses Regex validation before running itself. When regex validation has completed successfully then runs itself. Truemail MX validation performs strictly following the [RFC 5321](https://tools.ietf.org/html/rfc5321#section-5) standard.
 
 Example of usage:
 
@@ -201,7 +214,7 @@ Truemail.validate('email@example.com', with: :mx)
 
 #### SMTP validation
 
-SMTP validation is a final, third validation level. This type of validation tries to check real existence of email account on a current email server. This validation runs a chain of previous validations, and if they're complete, successfully runs itself.
+SMTP validation is a final, third validation level. This type of validation tries to check real existence of email account on a current email server. This validation runs a chain of previous validations and if they're complete successfully then runs itself.
 
 ```code
 [Regex validation] -> [MX validation] -> [SMTP validation]
@@ -354,11 +367,39 @@ Truemail.validate('email@example.com')
     @validation_type=:smtp>
 ```
 
+### Truemail helpers
+
+#### .valid?
+
+You can use the ```.valid?``` helper for quick validation of email address. It returns a boolean:
+
+```ruby
+# It is shortcut for Truemail.validate('email@example.com').result.valid?
+Truemail.valid?('email@example.com')
+=> true
+```
+
+### Test environment
+
+You can stub out that validation for your test environment. Just add RSpec before action:
+
+```ruby
+# spec_helper.rb
+
+RSpec.configure do |config|
+  config.before { allow(Truemail).to receive(:valid?).and_return(true) }
+  # or
+  config.before { allow(Truemail).to receive(:validate).and_return(true) }
+  # or
+  config.before { allow(Truemail).to receive_message_chain(:validate, :result, :valid?).and_return(true) }
+end
+```
+
+---
 ## ToDo
 
 1. Gem compatibility with Ruby 2.3
 2. Fail validations logger
-3. The ability to use a proxy
 
 ## Contributing
 
