@@ -32,5 +32,9 @@ module Truemail
       raise ConfigurationError, NOT_CONFIGURED unless configuration
       Truemail::Validator.new(email, **options).run
     end
+
+    def valid?(email, **options)
+      validate(email, **options).result.valid?
+    end
   end
 end

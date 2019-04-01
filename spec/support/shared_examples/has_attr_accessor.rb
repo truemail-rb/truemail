@@ -8,6 +8,7 @@ module Truemail
       verifier_domain
       connection_timeout
       response_timeout
+      retry_count
       smtp_safe_check
     ].each do |attribute|
       it "has attr_accessor :#{attribute}" do

@@ -35,3 +35,6 @@ RSpec/ContextWording:
 
 RSpec/AnyInstance:
   Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false

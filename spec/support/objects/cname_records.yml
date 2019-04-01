@@ -1,0 +1,15 @@
+---
+- !ruby/object:Resolv::DNS::Resource::IN::CNAME
+  name: !ruby/object:Resolv::DNS::Name
+    labels:
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: ghs
+      downcase: ghs
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: googlehosted
+      downcase: googlehosted
+    - !ruby/object:Resolv::DNS::Label::Str
+      string: com
+      downcase: com
+    absolute: true
+  ttl: 120

@@ -118,17 +118,31 @@ RSpec.describe Truemail do
           .to be_an_instance_of(Truemail::Validator)
       end
 
-      context 'when checks real email' do
-        specify do
-          expect(described_class.validate('vladyslav.trotsenko@rubygarage.org').result.valid?).to be(true)
+      describe 'integration tests' do
+        context 'when checks real email' do
+          specify do
+            expect(described_class.validate('vladyslav.trotsenko@rubygarage.org').result.valid?).to be(true)
+          end
         end
-      end
 
-      context 'when checks fake email' do
-        specify do
-          expect(described_class.validate('nonexistent_email@rubygarage.org').result.valid?).to be(false)
+        context 'when checks fake email' do
+          specify do
+            expect(described_class.validate('nonexistent_email@rubygarage.org').result.valid?).to be(false)
+          end
         end
       end
+    end
+  end
+
+  describe '.valid?' do
+    subject(:valid_helper) { described_class.valid?(email) }
+
+    before { described_class.configure { |config| config.verifier_email = email } }
+
+    it 'returns boolean from result instance' do
+      allow(Truemail::Validate::Smtp).to receive(:check).and_return(true)
+      allow_any_instance_of(Truemail::Validator::Result).to receive(:valid?).and_return(true)
+      expect(valid_helper).to be(true)
     end
   end
 end
