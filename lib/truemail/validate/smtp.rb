@@ -29,6 +29,18 @@ module Truemail
         smtp_results.last
       end
 
+      def check_port
+        ->() { request.check_port }
+      end
+
+      def run_session
+        ->() { request.run }
+      end
+
+      def request_wrapper(&request_action)
+        request_action.call
+      end
+
       def rcptto_error
         request.response.errors[:rcptto]
       end
@@ -36,9 +48,14 @@ module Truemail
       def establish_smtp_connection
         result.mail_servers.each do |mail_server|
           smtp_results << Truemail::Validate::Smtp::Request.new(host: mail_server, email: result.email)
-          next unless request.check_port
-          request.run || rcptto_error ? break : next
+          next unless request_wrapper(&check_port)
+          request_wrapper(&run_session) || rcptto_error ? break : next
         end
+        # result.mail_servers.each do |mail_server|
+        #   smtp_results << Truemail::Validate::Smtp::Request.new(host: mail_server, email: result.email)
+        #   next unless request.check_port
+        #   request.run || rcptto_error ? break : next
+        # end
       end
 
       def success_response?
