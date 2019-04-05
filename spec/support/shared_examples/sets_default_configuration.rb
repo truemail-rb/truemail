@@ -8,7 +8,7 @@ module Truemail
       expect(configuration_instance.verifier_domain).to be_nil
       expect(configuration_instance.connection_timeout).to eq(Truemail::Configuration::DEFAULT_CONNECTION_TIMEOUT)
       expect(configuration_instance.response_timeout).to eq(Truemail::Configuration::DEFAULT_RESPONSE_TIMEOUT)
-      expect(configuration_instance.retry_count).to eq(Truemail::Configuration::DEFAULT_RETRY_COUNT)
+      expect(configuration_instance.connection_attempts).to eq(Truemail::Configuration::DEFAULT_CONNECTION_ATTEMPTS)
       expect(configuration_instance.validation_type_by_domain).to eq({})
       expect(configuration_instance.smtp_safe_check).to be(false)
     end

@@ -29,13 +29,24 @@ module Truemail
         smtp_results.last
       end
 
+      def mail_servers
+        result.mail_servers
+      end
+
+      def attempts
+        @attempts ||=
+          mail_servers.one? ? { attempts: Truemail.configuration.connection_attempts } : {}
+      end
+
       def rcptto_error
         request.response.errors[:rcptto]
       end
 
       def establish_smtp_connection
-        result.mail_servers.each do |mail_server|
-          smtp_results << Truemail::Validate::Smtp::Request.new(host: mail_server, email: result.email)
+        mail_servers.each do |mail_server|
+          smtp_results << Truemail::Validate::Smtp::Request.new(
+            host: mail_server, email: result.email, **attempts
+          )
           next unless request.check_port
           request.run || rcptto_error ? break : next
         end

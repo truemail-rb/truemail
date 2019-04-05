@@ -18,7 +18,7 @@ RSpec.describe Truemail::Validate::Smtp do
       described_class.new(
         Truemail::Validator::Result.new(
           email: email,
-          mail_servers: Array.new(3) { FFaker::Internet.domain_name }
+          mail_servers: Array.new(3) { FFaker::Internet.ip_v4_address }
         )
       )
     end
@@ -31,6 +31,28 @@ RSpec.describe Truemail::Validate::Smtp do
 
       it 'returns last smtp result' do
         expect(smtp_validator_instance.send(:request)).to eq(42)
+      end
+    end
+
+    describe '#mail_servers' do
+      it 'returns mail servers from result instance' do
+        expect(smtp_validator_instance.send(:mail_servers)).to eq(result_instance.mail_servers)
+      end
+    end
+
+    describe '#attempts' do
+      context 'when more then one mail server' do
+        it 'returns empty hash' do
+          expect(smtp_validator_instance.send(:attempts)).to eq({})
+        end
+      end
+
+      context 'when one mail server' do
+        before { allow(result_instance.mail_servers).to receive(:one?).and_return(true) }
+
+        it 'returns hash with attempts from configuration' do
+          expect(smtp_validator_instance.send(:attempts)).to eq({ attempts: Truemail.configuration.connection_attempts })
+        end
       end
     end
 
