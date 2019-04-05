@@ -24,8 +24,8 @@ module Truemail
           Timeout.timeout(configuration.connection_timeout) do
             return response.port_opened = !TCPSocket.new(host, Truemail::Validate::Smtp::Request::SMTP_PORT).close
           end
-        rescue
-          retry if attempts_exist?
+        rescue => error
+          retry if attempts_exist? && error.is_a?(Timeout::Error)
           response.port_opened = false
         end
 

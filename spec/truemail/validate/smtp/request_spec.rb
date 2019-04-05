@@ -53,8 +53,12 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
       specify do
         error_stubs
-        expect { response_instance_target_method }
-          .to change(response_instance, :port_opened).from(nil).to(false)
+        expect { response_instance_target_method }.to change(response_instance, :port_opened).from(nil).to(false)
+      end
+
+      specify do
+        allow(TCPSocket).to receive(:new).and_raise(SocketError)
+        expect { response_instance_target_method }.to change(response_instance, :port_opened).from(nil).to(false)
       end
 
       include_examples 'request retry behavior'

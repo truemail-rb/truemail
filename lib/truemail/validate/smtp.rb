@@ -34,9 +34,8 @@ module Truemail
       end
 
       def attempts
-        {}.tap do |hash|
-          hash[:attempts] = Truemail.configuration.connection_attempts if mail_servers.one?
-        end
+        @attempts ||=
+          mail_servers.one? ? { attempts: Truemail.configuration.connection_attempts } : {}
       end
 
       def rcptto_error
