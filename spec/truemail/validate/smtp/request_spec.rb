@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Validate::Smtp::Request do
-  subject(:request_instance) { described_class.new(host: mail_server, email: target_email) }
+  subject(:request_instance) do
+    described_class.new(host: mail_server, email: target_email, **attempts)
+  end
 
   let(:mail_server)           { FFaker::Internet.domain_name }
   let(:target_email)          { FFaker::Internet.email }
@@ -10,6 +12,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
   let(:configuration)         { request_instance.send(:configuration) }
   let(:connection_timout)     { configuration.connection_timeout }
   let(:response_timeout)      { configuration.response_timeout }
+  let(:attempts)              { {} }
 
   before { Truemail.configure { |config| config.verifier_email = FFaker::Internet.email } }
 
@@ -20,7 +23,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
     specify { expect(described_class).to be_const_defined(:CONNECTION_DROPPED) }
   end
 
-  describe 'attribute accessors' do
+  describe 'attribute readers' do
     specify { expect(request_instance.public_methods).to include(:host, :email, :response) }
   end
 
@@ -32,20 +35,33 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
   describe '#check_port' do
     let(:connection_timeout) { configuration.connection_timeout }
+    let(:response_instance_target_method) { request_instance.check_port }
 
     context 'when port opened' do
       specify do
         allow(Timeout).to receive(:timeout).with(connection_timeout).and_call_original
         allow(TCPSocket).to receive_message_chain(:new, :close)
-        expect { request_instance.check_port }.to change(response_instance, :port_opened).from(nil).to(true)
+        expect { request_instance.check_port }
+          .to change(response_instance, :port_opened).from(nil).to(true)
       end
     end
 
     context 'when port closed' do
-      specify do
+      let(:error_stubs) do
         allow(Timeout).to receive(:timeout).with(connection_timeout).and_raise(Timeout::Error)
-        expect { request_instance.check_port }.to change(response_instance, :port_opened).from(nil).to(false)
       end
+
+      specify do
+        error_stubs
+        expect { response_instance_target_method }.to change(response_instance, :port_opened).from(nil).to(false)
+      end
+
+      specify do
+        allow(TCPSocket).to receive(:new).and_raise(SocketError)
+        expect { response_instance_target_method }.to change(response_instance, :port_opened).from(nil).to(false)
+      end
+
+      include_examples 'request retry behavior'
     end
   end
 
@@ -71,6 +87,8 @@ RSpec.describe Truemail::Validate::Smtp::Request do
   end
 
   describe '#run' do
+    let(:response_instance_target_method) { request_instance.run }
+
     before do
       allow(session).to receive(:open_timeout=).with(connection_timout)
       allow(session).to receive(:read_timeout=).with(response_timeout)
@@ -95,14 +113,14 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       specify do
         allow(session).to receive(:start).and_yield(session)
 
-        expect { request_instance.run }
+        expect { response_instance_target_method }
           .to change(response_instance, :connection).from(nil).to(true)
           .and change(response_instance, :helo).from(nil).to(true)
           .and change(response_instance, :mailfrom).from(nil).to(true)
           .and change(response_instance, :rcptto).from(nil).to(true)
           .and not_change(response_instance, :errors)
 
-        expect(request_instance.run).to be(true)
+        expect(response_instance_target_method).to be(true)
       end
     end
 
@@ -117,10 +135,14 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       end
 
       context 'when connection timeout error' do
-        specify do
+        let(:error_stubs) do
           allow(session).to receive(:start).and_raise(Net::OpenTimeout)
+        end
 
-          expect { request_instance.run }
+        specify do
+          error_stubs
+
+          expect { response_instance_target_method }
             .to change(response_instance, :connection).from(nil).to(false)
             .and change(response_instance, :errors)
             .from({}).to({ connection: Truemail::Validate::Smtp::Request::CONNECTION_TIMEOUT_ERROR })
@@ -128,16 +150,22 @@ RSpec.describe Truemail::Validate::Smtp::Request do
             .and not_change(response_instance, :mailfrom)
             .and not_change(response_instance, :rcptto)
 
-          expect(request_instance.run).to be(false)
+          expect(response_instance_target_method).to be(false)
         end
+
+        include_examples 'request retry behavior'
       end
 
       context 'when remote server has dropped connection during session' do
-        specify do
+        let(:error_stubs) do
           allow(session).to receive(:start).and_yield(session).and_raise(EOFError)
           allow(session).to receive(:helo).and_raise(StandardError)
+        end
 
-          expect { request_instance.run }
+        specify do
+          error_stubs
+
+          expect { response_instance_target_method }
             .to change(response_instance, :connection).from(nil).to(false)
             .and change(response_instance, :errors)
             .from({}).to({ connection: Truemail::Validate::Smtp::Request::CONNECTION_DROPPED, helo: 'StandardError' })
@@ -145,15 +173,21 @@ RSpec.describe Truemail::Validate::Smtp::Request do
             .and not_change(response_instance, :mailfrom)
             .and not_change(response_instance, :rcptto)
 
-          expect(request_instance.run).to be(false)
+          expect(response_instance_target_method).to be(false)
         end
+
+        include_examples 'request retry behavior'
       end
 
       context 'when connection other errors' do
-        specify do
+        let(:error_stubs) do
           allow(session).to receive(:start).and_raise(StandardError, error_message)
+        end
 
-          expect { request_instance.run }
+        specify do
+          error_stubs
+
+          expect { response_instance_target_method }
             .to change(response_instance, :connection).from(nil).to(false)
             .and change(response_instance, :errors)
             .from({}).to({ connection: 'error message' })
@@ -161,8 +195,10 @@ RSpec.describe Truemail::Validate::Smtp::Request do
             .and not_change(response_instance, :mailfrom)
             .and not_change(response_instance, :rcptto)
 
-          expect(request_instance.run).to be(false)
+          expect(response_instance_target_method).to be(false)
         end
+
+        include_examples 'request retry behavior'
       end
 
       context 'when smtp response errors' do
@@ -172,7 +208,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           allow(session).to receive(:mailfrom)
           allow(session).to receive(:rcptto)
 
-          expect { request_instance.run }
+          expect { response_instance_target_method }
             .to change(response_instance, :connection).from(nil).to(true)
             .and change(response_instance, :helo).from(nil).to(false)
             .and change(response_instance, :errors)
@@ -183,7 +219,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           expect(session).not_to have_received(:mailfrom)
           expect(session).not_to have_received(:rcptto)
 
-          expect(request_instance.run).to be(false)
+          expect(response_instance_target_method).to be(false)
         end
 
         it 'mailfrom smtp server error' do
@@ -192,7 +228,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           allow(session).to receive(:mailfrom).and_raise(StandardError, error_message)
           allow(session).to receive(:rcptto)
 
-          expect { request_instance.run }
+          expect { response_instance_target_method }
             .to change(response_instance, :connection).from(nil).to(true)
             .and change(response_instance, :helo).from(nil).to(true)
             .and change(response_instance, :mailfrom).from(nil).to(false)
@@ -201,7 +237,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
           expect(session).not_to have_received(:rcptto)
 
-          expect(request_instance.run).to be(false)
+          expect(response_instance_target_method).to be(false)
         end
 
         it 'rcptto smtp server error' do
@@ -210,14 +246,14 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           allow(session).to receive(:mailfrom).and_return(true)
           allow(session).to receive(:rcptto).and_raise(StandardError, error_message)
 
-          expect { request_instance.run }
+          expect { response_instance_target_method }
             .to change(response_instance, :connection).from(nil).to(true)
             .and change(response_instance, :helo).from(nil).to(true)
             .and change(response_instance, :mailfrom).from(nil).to(true)
             .and change(response_instance, :rcptto).from(nil).to(false)
             .and change(response_instance, :errors).from({}).to({ rcptto: error_message })
 
-          expect(request_instance.run).to be(false)
+          expect(response_instance_target_method).to be(false)
         end
       end
     end

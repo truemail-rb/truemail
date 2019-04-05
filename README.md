@@ -64,8 +64,10 @@ Truemail.configure do |config|
   # Optional parameter. A SMTP server response timeout is equal to 2 ms by default.
   config.response_timeout = 1
 
-  # Optional parameter. Total of timeout retry. It is equal to 1 by default.
-  config.retry_count = 2
+  # Optional parameter. Total of connection attempts. It is equal to 2 by default.
+  # This parameter uses in mx lookup timeout error and smtp request (for cases when
+  # there is one mx server).
+  config.connection_attempts = 3
 
   # Optional parameter. You can predefine which type of validation will be used for domains.
   # Available validation types: :regex, :mx, :smtp
@@ -91,7 +93,7 @@ Truemail.configuration
  @connection_timeout=1,
  @email_pattern=/regex_pattern/,
  @response_timeout=1,
- @retry_count=2,
+ @connection_attempts=3,
  @validation_type_by_domain={},
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com"
@@ -105,7 +107,7 @@ Truemail.configuration.connection_timeout = 3
 => 3
 Truemail.configuration.response_timeout = 4
 => 4
-Truemail.configuration.retry_count = 1
+Truemail.configuration.connection_attempts = 1
 => 1
 
 Truemail.configuration
@@ -113,7 +115,7 @@ Truemail.configuration
  @connection_timeout=3,
  @email_pattern=/regex_pattern/,
  @response_timeout=4,
- @retry_count=1,
+ @connection_attempts=1,
  @validation_type_by_domain={},
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com",
@@ -187,7 +189,13 @@ Truemail.validate('email@example.com', with: :regex)
 
 #### MX validation
 
-Validation by MX records is the second validation level. It uses Regex validation before running itself. When regex validation has completed successfully then runs itself. Truemail MX validation performs strictly following the [RFC 5321](https://tools.ietf.org/html/rfc5321#section-5) standard.
+Validation by MX records is the second validation level. It uses Regex validation before running itself. When regex validation has completed successfully then runs itself.
+
+```code
+[Regex validation] -> [MX validation]
+```
+
+Truemail MX validation performs strictly following the [RFC 5321](https://tools.ietf.org/html/rfc5321#section-5) standard.
 
 Example of usage:
 
@@ -206,7 +214,7 @@ Truemail.validate('email@example.com', with: :mx)
       success=true,
       email="email@example.com",
       domain="example.com",
-      mail_servers=["mx1.example.com", "mx2.example.com"],
+      mail_servers=["127.0.1.1", "127.0.1.2"],
       errors={},
       smtp_debug=nil>,
   @validation_type=:mx>
@@ -219,6 +227,8 @@ SMTP validation is a final, third validation level. This type of validation trie
 ```code
 [Regex validation] -> [MX validation] -> [SMTP validation]
 ```
+
+If total count of MX servers is equal to one, ```Truemail::Smtp``` validator will use value from ```Truemail.configuration.connection_attempts``` as connection attempts. By default it's equal 2.
 
 By default, you don't need pass with-parameter to use it. Example of usage is specified below:
 
@@ -240,7 +250,7 @@ Truemail.validate('email@example.com')
       success=true,
       email="email@example.com",
       domain="example.com",
-      mail_servers=["mx1.example.com", "mx2.example.com"],
+      mail_servers=["127.0.1.1", "127.0.1.2"],
       errors={},
       smtp_debug=nil>,
   @validation_type=:smtp>
@@ -252,7 +262,7 @@ Truemail.validate('email@example.com')
         success=false,
         email="email@example.com",
         domain="example.com",
-        mail_servers=["mx1.example.com", "mx2.example.com", "mx3.example.com"],
+        mail_servers=["127.0.1.1", "127.0.1.2"],
         errors={:smtp=>"smtp error"},
         smtp_debug=
           [#<Truemail::Validate::Smtp::Request:0x0000000002d49b10
@@ -261,12 +271,14 @@ Truemail.validate('email@example.com')
               @connection_timeout=2,
               @email_pattern=/regex_pattern/,
               @response_timeout=2,
+              @connection_attempts=2,
               @smtp_safe_check=false,
               @validation_type_by_domain={},
               @verifier_domain="example.com",
               @verifier_email="verifier@example.com">,
             @email="email@example.com",
-            @host="mx1.example.com",
+            @host="127.0.1.1",
+            @attempts=nil,
             @response=
               #<struct Truemail::Validate::Smtp::Response
                 port_opened=true,
@@ -274,7 +286,7 @@ Truemail.validate('email@example.com')
                 helo=
                   #<Net::SMTP::Response:0x0000000002d5aca8
                     @status="250",
-                    @string="250 mx1.example.com Hello example.com\n">,
+                    @string="250 127.0.1.1 Hello example.com\n">,
                 mailfrom=
                   #<Net::SMTP::Response:0x0000000002d5a618
                     @status="250",
@@ -303,7 +315,7 @@ Truemail.validate('email@example.com')
         success=true,
         email="email@example.com",
         domain="example.com",
-        mail_servers=["mx1.example.com"],
+        mail_servers=["127.0.1.1", "127.0.1.2"],
         errors={},
         smtp_debug=
           [#<Truemail::Validate::Smtp::Request:0x0000000002c95d40
@@ -312,12 +324,14 @@ Truemail.validate('email@example.com')
                 @connection_timeout=2,
                 @email_pattern=/regex_pattern/,
                 @response_timeout=2,
+                @connection_attempts=2,
                 @smtp_safe_check=true,
                 @validation_type_by_domain={},
                 @verifier_domain="example.com",
                 @verifier_email="verifier@example.com">,
               @email="email@example.com",
-              @host="mx1.example.com",
+              @host="127.0.1.1",
+              @attempts=nil,
               @response=
                 #<struct Truemail::Validate::Smtp::Response
                   port_opened=true,
@@ -325,7 +339,7 @@ Truemail.validate('email@example.com')
                   helo=
                     #<Net::SMTP::Response:0x0000000002c934c8
                     @status="250",
-                    @string="250 mx1.example.com\n">,
+                    @string="250 127.0.1.1\n">,
                   mailfrom=false,
                   rcptto=nil,
                   errors={:mailfrom=>"554 5.7.1 Client host blocked\n", :connection=>"server dropped connection after response"}>>,]>,
@@ -338,7 +352,7 @@ Truemail.validate('email@example.com')
       success=false,
       email="email@example.com",
       domain="example.com",
-      mail_servers=["mx1.example.com", "mx2.example.com", "mx3.example.com"],
+      mail_servers=["127.0.1.1", "127.0.1.2"],
       errors={:smtp=>"smtp error"},
       smtp_debug=
         [#<Truemail::Validate::Smtp::Request:0x0000000002d49b10
@@ -347,12 +361,14 @@ Truemail.validate('email@example.com')
               @connection_timeout=2,
               @email_pattern=/regex_pattern/,
               @response_timeout=2,
+              @connection_attempts=2,
               @smtp_safe_check=true,
               @validation_type_by_domain={},
               @verifier_domain="example.com",
               @verifier_email="verifier@example.com">,
           @email="email@example.com",
-          @host="mx1.example.com",
+          @host="127.0.1.1",
+          @attempts=nil,
           @response=
             #<struct Truemail::Validate::Smtp::Response
               port_opened=true,
@@ -360,7 +376,7 @@ Truemail.validate('email@example.com')
               helo=
               #<Net::SMTP::Response:0x0000000002d5aca8
                 @status="250",
-                @string="250 mx1.example.com Hello example.com\n">,
+                @string="250 127.0.1.1 Hello example.com\n">,
               mailfrom=#<Net::SMTP::Response:0x0000000002d5a618 @status="250", @string="250 OK\n">,
               rcptto=false,
               errors={:rcptto=>"550 User not found\n"}>>]>,
