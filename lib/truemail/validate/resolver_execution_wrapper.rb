@@ -10,7 +10,7 @@ module Truemail
       end
 
       def initialize
-        @attempts = Truemail.configuration.retry_count
+        @attempts = Truemail.configuration.connection_attempts
       end
 
       def call(&block)

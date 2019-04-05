@@ -40,7 +40,7 @@ RSpec.describe Truemail::Validate::ResolverExecutionWrapper do
           allow(mx_instance).to receive(method).and_raise(Timeout::Error)
 
           expect { resolver_execution_wrapper }
-            .to change(resolver_execution_wrapper_instance, :attempts).from(1).to(0)
+            .to change(resolver_execution_wrapper_instance, :attempts).from(2).to(0)
 
           expect(resolver_execution_wrapper).to be(false)
         end

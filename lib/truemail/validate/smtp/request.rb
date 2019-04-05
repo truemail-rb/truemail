@@ -13,17 +13,19 @@ module Truemail
 
         attr_reader :host, :email, :response
 
-        def initialize(host:, email:)
+        def initialize(host:, email:, attempts: nil)
           @host = host
           @email = email
           @response = Truemail::Validate::Smtp::Response.new
+          @attempts = attempts
         end
 
         def check_port
           Timeout.timeout(configuration.connection_timeout) do
             return response.port_opened = !TCPSocket.new(host, Truemail::Validate::Smtp::Request::SMTP_PORT).close
           end
-        rescue Timeout::Error
+        rescue
+          retry if attempts_exist?
           response.port_opened = false
         end
 
@@ -33,10 +35,18 @@ module Truemail
             smtp_handshakes(smtp_request, response)
           end
         rescue => error
+          retry if attempts_exist?
           assign_error(attribute: :connection, message: compose_from(error))
         end
 
         private
+
+        attr_reader :attempts
+
+        def attempts_exist?
+          return false unless attempts
+          (@attempts -= 1).positive?
+        end
 
         def configuration
           @configuration ||= Truemail.configuration.dup.freeze

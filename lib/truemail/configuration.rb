@@ -4,23 +4,25 @@ module Truemail
   class Configuration
     DEFAULT_CONNECTION_TIMEOUT = 2
     DEFAULT_RESPONSE_TIMEOUT = 2
-    DEFAULT_RETRY_COUNT = 1
+    DEFAULT_CONNECTION_ATTEMPTS = 2
 
     attr_reader :email_pattern,
                 :verifier_email,
                 :verifier_domain,
                 :connection_timeout,
                 :response_timeout,
-                :retry_count,
+                :connection_attempts,
                 :validation_type_by_domain
 
     attr_accessor :smtp_safe_check
+
+    alias retry_count connection_attempts
 
     def initialize
       @email_pattern = Truemail::RegexConstant::REGEX_EMAIL_PATTERN
       @connection_timeout = Truemail::Configuration::DEFAULT_CONNECTION_TIMEOUT
       @response_timeout = Truemail::Configuration::DEFAULT_RESPONSE_TIMEOUT
-      @retry_count = Truemail::Configuration::DEFAULT_RETRY_COUNT
+      @connection_attempts = Truemail::Configuration::DEFAULT_CONNECTION_ATTEMPTS
       @validation_type_by_domain = {}
       @smtp_safe_check = false
     end
@@ -41,7 +43,7 @@ module Truemail
       @verifier_domain = domain.downcase
     end
 
-    %i[connection_timeout response_timeout retry_count].each do |method|
+    %i[connection_timeout response_timeout connection_attempts].each do |method|
       define_method("#{method}=") do |argument|
         raise ArgumentError.new(argument, __method__) unless argument.is_a?(Integer) && argument.positive?
         instance_variable_set(:"@#{method}", argument)
