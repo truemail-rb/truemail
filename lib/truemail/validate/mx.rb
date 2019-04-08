@@ -6,12 +6,13 @@ module Truemail
       require 'resolv'
 
       ERROR = 'target host(s) not found'
+      NULL_MX_RECORD = 'null_mx_record'
 
       def run
         return false unless Truemail::Validate::Regex.check(result)
         result.domain = result.email[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1]
-        return true if success(mx_lookup)
-        add_error(Truemail::Validate::Mx::ERROR)
+        return true if success(mx_lookup && domain_not_include_null_mx)
+        mail_servers.clear && add_error(Truemail::Validate::Mx::ERROR)
         false
       end
 
@@ -28,17 +29,28 @@ module Truemail
       end
 
       def fetch_target_hosts(hosts)
-        result.mail_servers.push(*hosts)
+        mail_servers.push(*hosts)
+      end
+
+      def null_mx?(domain_mx_records)
+        mx_record = domain_mx_records.first
+        domain_mx_records.one? && mx_record.preference.zero? && mx_record.exchange.to_s.empty?
+      end
+
+      def domain_not_include_null_mx
+        !mail_servers.include?(Truemail::Validate::Mx::NULL_MX_RECORD)
       end
 
       def mx_records(domain)
-        Resolv::DNS.new.getresources(domain, Resolv::DNS::Resource::IN::MX).sort_by(&:preference).map do |mx_record|
-          Resolv.getaddress(mx_record.exchange.to_s)
-        end
+        domain_mx_records = Resolv::DNS.new.getresources(domain, Resolv::DNS::Resource::IN::MX)
+        return [Truemail::Validate::Mx::NULL_MX_RECORD] if null_mx?(domain_mx_records)
+        domain_mx_records.sort_by(&:preference).map do |mx_record|
+          Resolv.getaddresses(mx_record.exchange.to_s)
+        end.flatten
       end
 
       def mail_servers_found?
-        !result.mail_servers.empty?
+        !mail_servers.empty?
       end
 
       def hosts_from_mx_records?

@@ -8,6 +8,7 @@ RSpec.describe Truemail::Validate::Mx do
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:ERROR) }
+    specify { expect(described_class).to be_const_defined(:NULL_MX_RECORD) }
   end
 
   describe '.check' do
@@ -42,26 +43,58 @@ RSpec.describe Truemail::Validate::Mx do
       context 'when mx records found' do
         let(:mx_records_file) { "#{File.expand_path('../../', __dir__)}/support/objects/mx_records.yml" }
 
-        before do
-          allow(Resolv::DNS).to receive_message_chain(:new, :getresources).and_return(mx_records_object)
-          allow(Resolv).to receive(:getaddress).and_return(host_address)
+        before { allow(Resolv::DNS).to receive_message_chain(:new, :getresources).and_return(mx_records_object) }
+
+        context 'with null mx' do
+          let(:target_mx_record) { mx_records_object.first }
+
+          before do
+            allow(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
+            allow(mx_validator_instance).to receive(:mx_records).and_call_original
+            allow(mx_validator_instance).to receive(:null_mx?).and_call_original
+
+            allow(mx_records_object).to receive(:one?).and_return(true)
+            allow(target_mx_record).to receive_message_chain(:preference, :zero?).and_return(true)
+            allow(target_mx_record).to receive_message_chain(:exchange, :to_s, :empty?).and_return(true)
+          end
+
+          specify do
+            expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)
+            expect(mx_validator_instance).not_to receive(:host_from_a_record?)
+
+            expect { mx_validator }
+              .to change(result_instance, :domain)
+              .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
+              .and not_change(result_instance, :mail_servers)
+              .and change(result_instance, :success).from(true).to(false)
+          end
+
+          it 'returns false' do
+            expect(mx_validator).to be(false)
+          end
         end
 
-        specify do
-          expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
-          expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)
-          expect(mx_validator_instance).not_to receive(:host_from_a_record?)
+        context 'without null mx' do
+          before { allow(Resolv).to receive(:getaddresses).and_return([host_address]) }
 
-          expect { mx_validator }
-            .to change(result_instance, :domain)
-            .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
-            .and change(result_instance, :mail_servers)
-            .from([]).to(mail_servers_by_ip)
-            .and not_change(result_instance, :success)
-        end
+          specify do
+            expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
+            expect(mx_validator_instance).to receive(:mx_records).and_call_original
+            expect(mx_validator_instance).to receive(:null_mx?).and_call_original
+            expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)
+            expect(mx_validator_instance).not_to receive(:host_from_a_record?)
 
-        it 'returns true' do
-          expect(mx_validator).to be(true)
+            expect { mx_validator }
+              .to change(result_instance, :domain)
+              .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
+              .and change(result_instance, :mail_servers)
+              .from([]).to(mail_servers_by_ip)
+              .and not_change(result_instance, :success)
+          end
+
+          it 'returns true' do
+            expect(mx_validator).to be(true)
+          end
         end
       end
 
