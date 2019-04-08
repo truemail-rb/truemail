@@ -29,10 +29,6 @@ module Truemail
         smtp_results.last
       end
 
-      def mail_servers
-        result.mail_servers
-      end
-
       def attempts
         @attempts ||=
           mail_servers.one? ? { attempts: Truemail.configuration.connection_attempts } : {}
