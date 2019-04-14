@@ -24,7 +24,7 @@ module Truemail
 
       def mx_lookup
         host_extractor_methods.any? do |method|
-          Truemail::Validate::ResolverExecutionWrapper.call { send(method) }
+          Truemail::Wrapper.call { send(method) }
         end
       end
 
@@ -41,8 +41,8 @@ module Truemail
         !mail_servers.include?(Truemail::Validate::Mx::NULL_MX_RECORD)
       end
 
-      def mx_records(domain)
-        domain_mx_records = Resolv::DNS.new.getresources(domain, Resolv::DNS::Resource::IN::MX)
+      def mx_records(hostname)
+        domain_mx_records = Resolv::DNS.new.getresources(hostname, Resolv::DNS::Resource::IN::MX)
         return [Truemail::Validate::Mx::NULL_MX_RECORD] if null_mx?(domain_mx_records)
         domain_mx_records.sort_by(&:preference).map do |mx_record|
           Resolv.getaddresses(mx_record.exchange.to_s)
@@ -53,16 +53,24 @@ module Truemail
         !mail_servers.empty?
       end
 
+      def domain
+        result.domain
+      end
+
       def hosts_from_mx_records?
-        fetch_target_hosts(mx_records(result.domain))
+        fetch_target_hosts(mx_records(domain))
         mail_servers_found?
       end
 
+      def a_record(hostname)
+        Resolv.getaddress(hostname)
+      end
+
       def hosts_from_cname_records?
-        cname_records = Resolv::DNS.new.getresources(result.domain, Resolv::DNS::Resource::IN::CNAME)
+        cname_records = Resolv::DNS.new.getresources(domain, Resolv::DNS::Resource::IN::CNAME)
         return if cname_records.empty?
         cname_records.each do |cname_record|
-          host = Resolv.getaddress(cname_record.name.to_s)
+          host = a_record(cname_record.name.to_s)
           hostname = Resolv.getname(host)
           found_hosts = mx_records(hostname)
           fetch_target_hosts(found_hosts.empty? ? [host] : found_hosts)
@@ -71,7 +79,7 @@ module Truemail
       end
 
       def host_from_a_record?
-        fetch_target_hosts([Resolv.getaddress(result.domain)])
+        fetch_target_hosts([a_record(domain)])
         mail_servers_found?
       end
     end

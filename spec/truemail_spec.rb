@@ -4,14 +4,19 @@ RSpec.describe Truemail do
   let(:email) { FFaker::Internet.email }
 
   describe 'defined constants' do
-    specify { expect(described_class).to be_const_defined(:VERSION) }
     specify { expect(described_class).to be_const_defined(:INCOMPLETE_CONFIG) }
     specify { expect(described_class).to be_const_defined(:NOT_CONFIGURED) }
+    specify { expect(described_class).to be_const_defined(:VERSION) }
+    specify { expect(described_class).to be_const_defined(:Configuration) }
+    specify { expect(described_class).to be_const_defined(:Worker) }
+    specify { expect(described_class).to be_const_defined(:Wrapper) }
+    specify { expect(described_class).to be_const_defined(:Auditor) }
+    specify { expect(described_class).to be_const_defined(:Validator) }
     specify { expect(described_class).to be_const_defined(:ConfigurationError) }
     specify { expect(described_class).to be_const_defined(:ArgumentError) }
     specify { expect(described_class).to be_const_defined(:RegexConstant) }
-    specify { expect(described_class).to be_const_defined(:Configuration) }
-    specify { expect(described_class).to be_const_defined(:Validator) }
+    specify { expect(described_class).to be_const_defined(:Audit) }
+    specify { expect(described_class).to be_const_defined(:Validate) }
   end
 
   describe '.configure' do
@@ -143,6 +148,19 @@ RSpec.describe Truemail do
       allow(Truemail::Validate::Smtp).to receive(:check).and_return(true)
       allow_any_instance_of(Truemail::Validator::Result).to receive(:valid?).and_return(true)
       expect(valid_helper).to be(true)
+    end
+  end
+
+  describe '.host_audit' do
+    subject(:host_audit) { described_class.host_audit }
+
+    let(:auditor_instance) { instance_double(Truemail::Auditor) }
+
+    before { described_class.configure { |config| config.verifier_email = email } }
+
+    it 'returns auditor instance with result instance' do
+      expect(Truemail::Auditor).to receive(:new).and_return(auditor_instance)
+      expect(host_audit).to eq(auditor_instance)
     end
   end
 end

@@ -2,22 +2,8 @@
 
 module Truemail
   module Validate
-    class Base
-      attr_reader :result
-
-      def self.check(result)
-        new(result).run
-      end
-
-      def initialize(result)
-        @result = result
-      end
-
+    class Base < Truemail::Worker
       private
-
-      def success(condition)
-        result.success = condition || false
-      end
 
       def add_error(message)
         result.errors[self.class.name.split('::').last.downcase.to_sym] = message
