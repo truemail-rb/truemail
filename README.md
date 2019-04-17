@@ -383,13 +383,13 @@ Truemail.validate('email@example.com')
     @validation_type=:smtp>
 ```
 
-### Host audit
+### Host audit features
 
-This gem allows performing an audit of the host in which Truemail runs.
+This gem allows performing an audit of the host in which Truemail runs. Only PTR record audit performs for today.
 
-#### .host_audit
+#### PTR audit
 
-Only PTR record audit performs for today. So what is a PTR record? A PTR record, or pointer record, enables someone to perform a reverse DNS lookup. This allows them to determine your domain name based on your IP address. Because generic domain names without a PTR are often associated with spammers, incoming mail servers identify email from hosts without PTR records as spam and you can't verify yours emails qualitatively.
+So what is a PTR record? A PTR record, or pointer record, enables someone to perform a reverse DNS lookup. This allows them to determine your domain name based on your IP address. Because generic domain names without a PTR are often associated with spammers, incoming mail servers identify email from hosts without PTR records as spam and you can't verify yours emails qualitatively.
 
 ```ruby
 Truemail.host_audit
