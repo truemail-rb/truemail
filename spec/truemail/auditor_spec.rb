@@ -2,7 +2,7 @@
 
 module Truemail
   RSpec.describe Truemail::Auditor do
-    subject(:auditor_instance) { described_class.new }
+    subject(:auditor_instance) { described_class.run }
 
     let(:email) { FFaker::Internet.email }
     let(:auditor_instance_result) { auditor_instance.result }
@@ -13,9 +13,10 @@ module Truemail
       specify { expect(described_class).to be_const_defined(:Result) }
     end
 
-    describe '.new' do
+    describe '.run' do
       it 'creates and updates default auditor result' do
         allow(Truemail::Audit::Ptr).to receive(:check)
+        expect(auditor_instance).to be_an_instance_of(Truemail::Auditor)
         expect(auditor_instance_result).to be_an_instance_of(Truemail::Auditor::Result)
         expect(auditor_instance_result.warnings).to eq({})
       end

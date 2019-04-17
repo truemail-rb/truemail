@@ -144,7 +144,7 @@ RSpec.describe Truemail do
 
     before { described_class.configure { |config| config.verifier_email = email } }
 
-    it 'returns boolean from result instance' do
+    it 'returns boolean from validator result instance' do
       allow(Truemail::Validate::Smtp).to receive(:check).and_return(true)
       allow_any_instance_of(Truemail::Validator::Result).to receive(:valid?).and_return(true)
       expect(valid_helper).to be(true)
@@ -154,13 +154,18 @@ RSpec.describe Truemail do
   describe '.host_audit' do
     subject(:host_audit) { described_class.host_audit }
 
-    let(:auditor_instance) { instance_double(Truemail::Auditor) }
+    before do
+      described_class.configure { |config| config.verifier_email = email }
+      allow(Truemail::Auditor).to receive(:run).and_call_original
+    end
 
-    before { described_class.configure { |config| config.verifier_email = email } }
+    it 'returns auditor instance' do
+      expect(host_audit).to be_an_instance_of(Truemail::Auditor)
+    end
 
-    it 'returns auditor instance with result instance' do
-      expect(Truemail::Auditor).to receive(:new).and_return(auditor_instance)
-      expect(host_audit).to eq(auditor_instance)
+    it 'runs checks for auditor result instance' do
+      expect(Truemail::Audit::Ptr).to receive(:check)
+      host_audit
     end
   end
 end

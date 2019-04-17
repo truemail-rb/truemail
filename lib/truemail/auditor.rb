@@ -8,17 +8,17 @@ module Truemail
       end
     end
 
-    attr_reader :result
-
-    def initialize
-      @result = Truemail::Auditor::Result.new
-      run
+    def self.run
+      new.run
     end
 
-    private
+    def result
+      @result ||= Truemail::Auditor::Result.new
+    end
 
     def run
       Truemail::Audit::Ptr.check(result)
+      self
     end
   end
 end

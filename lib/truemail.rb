@@ -36,7 +36,7 @@ module Truemail
 
     def host_audit
       raise_unless(configuration, NOT_CONFIGURED)
-      Truemail::Auditor.new
+      Truemail::Auditor.run
     end
 
     private
