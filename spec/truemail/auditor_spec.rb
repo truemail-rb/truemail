@@ -13,7 +13,7 @@ module Truemail
       specify { expect(described_class).to be_const_defined(:Result) }
     end
 
-    describe '#new' do
+    describe '.new' do
       it 'creates and updates default auditor result' do
         allow(Truemail::Audit::Ptr).to receive(:check)
         expect(auditor_instance_result).to be_an_instance_of(Truemail::Auditor::Result)

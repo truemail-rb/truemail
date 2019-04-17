@@ -16,7 +16,7 @@ module Truemail
       specify { expect(described_class).to be_const_defined(:Result) }
     end
 
-    describe '#new' do
+    describe '.new' do
       Truemail::Validator::VALIDATION_TYPES.each do |validation_type|
         context "with: #{validation_type}" do
           let(:options) { { with: validation_type } }
