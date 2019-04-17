@@ -21,18 +21,21 @@ detectors:
   Attribute:
     exclude:
       - Truemail::Configuration#smtp_safe_check
-      - Truemail::Validate::ResolverExecutionWrapper#attempts
+      - Truemail::Wrapper#attempts
 
   UtilityFunction:
     exclude:
       - Truemail::Validate::Smtp::Request#compose_from
       - Truemail::Validator#select_validation_type
       - Truemail::Validate::Mx#null_mx?
+      - Truemail::Validate::Mx#a_record
+      - Truemail::Audit::Ptr#current_host_address
 
   ControlParameter:
     exclude:
       - Truemail::GenerateEmailHelper#calculate_email_size
-      - Truemail::Validate::Base#success
+      - Truemail::Worker#success
+      - Truemail#raise_unless
 
   FeatureEnvy:
     exclude:

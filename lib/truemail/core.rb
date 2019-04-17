@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 module Truemail
+  require 'truemail/version'
+  require 'truemail/configuration'
+  require 'truemail/worker'
+  require 'truemail/wrapper'
+  require 'truemail/auditor'
+  require 'truemail/validator'
+
   class ConfigurationError < StandardError; end
 
   class ArgumentError < StandardError
@@ -16,10 +23,14 @@ module Truemail
     REGEX_DOMAIN_FROM_EMAIL = /\A.+@(.+)\z/
   end
 
+  module Audit
+    require 'truemail/audit/base'
+    require 'truemail/audit/ptr'
+  end
+
   module Validate
     require 'truemail/validate/base'
     require 'truemail/validate/regex'
-    require 'truemail/validate/resolver_execution_wrapper'
     require 'truemail/validate/mx'
     require 'truemail/validate/smtp'
     require 'truemail/validate/smtp/response'
