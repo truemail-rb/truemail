@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Truemail::Validate::ResolverExecutionWrapper do
+RSpec.describe Truemail::Wrapper do
   let(:email) { FFaker::Internet.email }
   let(:method) { :hosts_from_mx_records? }
   let(:mx_instance) { instance_double(Truemail::Validate::Mx, method => true) }

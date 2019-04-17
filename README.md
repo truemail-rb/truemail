@@ -2,7 +2,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/maintainability)](https://codeclimate.com/github/rubygarage/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/test_coverage)](https://codeclimate.com/github/rubygarage/truemail/test_coverage) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![CircleCI](https://circleci.com/gh/rubygarage/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/rubygarage/truemail/tree/master) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
-The Truemail gem helps you validate emails by regex pattern, presence of domain mx-records, and real existence of email account on a current email server.
+The Truemail gem helps you validate emails by regex pattern, presence of domain mx-records, and real existence of email account on a current email server. Also Truemail gem allows performing an audit of the host in which runs.
 
 ## Features
 
@@ -137,7 +137,7 @@ Truemail.configuration
 
 #### Regex validation
 
-Validation with regex pattern is the first validation level. By default this validation not performs strictly following RFC 5322 standart, so you can override Truemail default regex pattern if you want.
+Validation with regex pattern is the first validation level. By default this validation not performs strictly following RFC 5322 standard, so you can override Truemail default regex pattern if you want.
 
 Example of usage:
 
@@ -381,6 +381,30 @@ Truemail.validate('email@example.com')
               rcptto=false,
               errors={:rcptto=>"550 User not found\n"}>>]>,
     @validation_type=:smtp>
+```
+
+### Host audit features
+
+Truemail gem allows performing an audit of the host in which runs. Only PTR record audit performs for today.
+
+#### PTR audit
+
+So what is a PTR record? A PTR record, or pointer record, enables someone to perform a reverse DNS lookup. This allows them to determine your domain name based on your IP address. Because generic domain names without a PTR are often associated with spammers, incoming mail servers identify email from hosts without PTR records as spam and you can't verify yours emails qualitatively.
+
+```ruby
+Truemail.host_audit
+# Everything is good
+=> #<Truemail::Auditor:0x00005580df358828
+   @result=
+     #<struct Truemail::Auditor::Result
+       warnings={}>>
+
+# Has PTR warning
+=> #<Truemail::Auditor:0x00005580df358828
+   @result=
+     #<struct Truemail::Auditor::Result
+       warnings=
+         {:ptr=>"ptr record does not reference to current verifier domain"}>>
 ```
 
 ### Truemail helpers

@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require 'truemail/version'
 require 'truemail/core'
-require 'truemail/configuration'
-require 'truemail/validator'
 
 module Truemail
   INCOMPLETE_CONFIG = 'verifier_email is required parameter'
@@ -15,7 +12,7 @@ module Truemail
         return unless block_given?
         configuration = Truemail::Configuration.new
         yield(configuration)
-        raise ConfigurationError, INCOMPLETE_CONFIG unless configuration.complete?
+        raise_unless(configuration.complete?, INCOMPLETE_CONFIG)
         configuration
       end
     end
@@ -29,12 +26,23 @@ module Truemail
     end
 
     def validate(email, **options)
-      raise ConfigurationError, NOT_CONFIGURED unless configuration
+      raise_unless(configuration, NOT_CONFIGURED)
       Truemail::Validator.new(email, **options).run
     end
 
     def valid?(email, **options)
       validate(email, **options).result.valid?
+    end
+
+    def host_audit
+      raise_unless(configuration, NOT_CONFIGURED)
+      Truemail::Auditor.run
+    end
+
+    private
+
+    def raise_unless(condition, message)
+      raise ConfigurationError, message unless condition
     end
   end
 end
