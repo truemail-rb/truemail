@@ -18,7 +18,8 @@ module Truemail
       private
 
       def current_host_address
-        Resolv.getaddress(Socket.gethostname)
+        # Resolv.getaddress(Socket.gethostname)
+        @current_host_address ||= Net::HTTP.get(URI('https://api.ipify.org'))
       end
 
       def current_host_reverse_lookup
