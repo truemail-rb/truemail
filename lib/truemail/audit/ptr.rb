@@ -6,24 +6,32 @@ module Truemail
       require 'ipaddr'
       require 'resolv'
 
-      NOT_FOUND = 'ptr record for current host address was not found'
-      NOT_REFERENCES = 'ptr record does not reference to current verifier domain'
+      GET_MY_IP_URL = 'https://api.ipify.org'
+      IPIFY_ERROR = 'impossible to detect current host address via third party service'
+      PTR_NOT_FOUND = 'ptr record for current host address was not found'
+      PTR_NOT_REFER = 'ptr record does not reference to current verifier domain'
+      VERIFIER_DOMAIN_NOT_REFER = ''
 
       def run
-        return if ptr_records.empty? && add_warning(Truemail::Audit::Ptr::NOT_FOUND)
-        return if ptr_references_to_verifier_domain?
-        add_warning(Truemail::Audit::Ptr::NOT_REFERENCES)
+        return if !current_host_address && add_warning(Truemail::Audit::Ptr::IPIFY_ERROR)
+        return if ptr_records.empty? && add_warning(Truemail::Audit::Ptr::PTR_NOT_FOUND)
+        return if ptr_not_refer_to_verifier_domain? && add_warning(Truemail::Audit::Ptr::PTR_NOT_REFER)
+        return if verifier_domain_refer_to_current_host_address?
+        add_warning(Truemail::Audit::Ptr::VERIFIER_DOMAIN_NOT_REFER)
       end
 
       private
 
+      def detect_ip_via_ipify
+        Net::HTTP.get(URI(Truemail::Audit::Ptr::GET_MY_IP_URL))
+      end
+
       def current_host_address
-        # Resolv.getaddress(Socket.gethostname)
-        @current_host_address ||= Net::HTTP.get(URI('https://api.ipify.org'))
+        @current_host_address ||= Truemail::Wrapper.call { IPAddr.new(detect_ip_via_ipify) }
       end
 
       def current_host_reverse_lookup
-        IPAddr.new(current_host_address).reverse
+        current_host_address.reverse
       end
 
       def ptr_records
@@ -34,8 +42,16 @@ module Truemail
         end || []
       end
 
-      def ptr_references_to_verifier_domain?
-        ptr_records.include?(Truemail.configuration.verifier_domain)
+      def ptr_not_refer_to_verifier_domain?
+        !ptr_records.include?(verifier_domain)
+      end
+
+      def a_record
+        Truemail::Wrapper.call { Resolv::DNS.new.getaddress(verifier_domain).to_s }
+      end
+
+      def verifier_domain_refer_to_current_host_address?
+        a_record == current_host_address.to_s
       end
     end
   end
