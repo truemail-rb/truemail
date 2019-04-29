@@ -10,7 +10,7 @@ module Truemail
       IPIFY_ERROR = 'impossible to detect current host address via third party service'
       PTR_NOT_FOUND = 'ptr record for current host address was not found'
       PTR_NOT_REFER = 'ptr record does not reference to current verifier domain'
-      VERIFIER_DOMAIN_NOT_REFER = ''
+      VERIFIER_DOMAIN_NOT_REFER = 'a record of verifier domain not refers to current host address'
 
       def run
         return if !current_host_address && add_warning(Truemail::Audit::Ptr::IPIFY_ERROR)
