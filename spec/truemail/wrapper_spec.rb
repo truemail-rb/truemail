@@ -35,6 +35,13 @@ RSpec.describe Truemail::Wrapper do
         end
       end
 
+      context 'with IPAddr::InvalidAddressError exception' do
+        specify do
+          allow(mx_instance).to receive(method).and_raise(IPAddr::InvalidAddressError)
+          expect(resolver_execution_wrapper).to be(false)
+        end
+      end
+
       context 'with Timeout::Error exception' do
         specify do
           allow(mx_instance).to receive(method).and_raise(Timeout::Error)

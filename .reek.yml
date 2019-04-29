@@ -29,7 +29,7 @@ detectors:
       - Truemail::Validator#select_validation_type
       - Truemail::Validate::Mx#null_mx?
       - Truemail::Validate::Mx#a_record
-      - Truemail::Audit::Ptr#current_host_address
+      - Truemail::Audit::Base#verifier_domain
 
   ControlParameter:
     exclude:
