@@ -7,7 +7,6 @@ RSpec.describe Truemail::Validate::Smtp do
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:ERROR) }
-    specify { expect(described_class).to be_const_defined(:ERROR_BODY) }
     specify { expect(described_class).to be_const_defined(:RESPONSE_ATTRS) }
     specify { expect(described_class).to be_const_defined(:Response) }
     specify { expect(described_class).to be_const_defined(:Request) }

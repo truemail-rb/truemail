@@ -14,6 +14,7 @@ module Truemail
       specify { expect(described_class).to be_const_defined(:REGEX_EMAIL_PATTERN) }
       specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_PATTERN) }
       specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_FROM_EMAIL) }
+      specify { expect(described_class).to be_const_defined(:REGEX_SMTP_ERROR_BODY_PATTERN) }
     end
 
     describe 'Truemail::RegexConstant::REGEX_EMAIL_PATTERN' do
