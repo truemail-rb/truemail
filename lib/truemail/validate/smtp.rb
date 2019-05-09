@@ -4,7 +4,6 @@ module Truemail
   module Validate
     class Smtp < Truemail::Validate::Base
       ERROR = 'smtp error'
-      ERROR_BODY = /(?=.*550)(?=.*(user|account|customer|mailbox)).*/i
 
       attr_reader :smtp_results
 
@@ -31,7 +30,7 @@ module Truemail
 
       def attempts
         @attempts ||=
-          mail_servers.one? ? { attempts: Truemail.configuration.connection_attempts } : {}
+          mail_servers.one? ? { attempts: configuration.connection_attempts } : {}
       end
 
       def rcptto_error
@@ -53,11 +52,11 @@ module Truemail
       end
 
       def not_includes_user_not_found_errors?
-        return unless Truemail.configuration.smtp_safe_check
+        return unless configuration.smtp_safe_check
         result.smtp_debug.map(&:response).map(&:errors).all? do |errors|
           next true unless errors.key?(:rcptto)
           errors.slice(:rcptto).values.none? do |error|
-            Truemail::Validate::Smtp::ERROR_BODY.match?(error)
+            configuration.smtp_error_body_pattern.match?(error)
           end
         end
       end

@@ -6,7 +6,7 @@ module Truemail
       ERROR = 'email does not match the regular expression'
 
       def run
-        return true if success(Truemail.configuration.email_pattern.match?(result.email))
+        return true if success(configuration.email_pattern.match?(result.email))
         add_error(Truemail::Validate::Regex::ERROR)
         false
       end
