@@ -154,11 +154,28 @@ RSpec.describe Truemail::Configuration do
           end
         end
 
-        context 'with invalid value' do
-          specify do
-            expect { configuration_instance.email_pattern = 'not_regex_object' }
-              .to raise_error(Truemail::ArgumentError)
+        context 'with invalid email pattern' do
+          let(:setter) { :email_pattern= }
+
+          include_examples 'raises argument error'
+        end
+      end
+
+      describe '#smtp_error_body_pattern=' do
+        context 'with valid value' do
+          let(:valid_smtp_error_body_pattern) { /\d+/ }
+
+          it 'sets custom email pattern' do
+            expect { configuration_instance.smtp_error_body_pattern = valid_smtp_error_body_pattern }
+              .to change(configuration_instance, :smtp_error_body_pattern)
+              .from(Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN).to(valid_smtp_error_body_pattern)
           end
+        end
+
+        context 'with invalid smtp error body pattern' do
+          let(:setter) { :smtp_error_body_pattern= }
+
+          include_examples 'raises argument error'
         end
       end
 
