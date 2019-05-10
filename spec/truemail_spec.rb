@@ -81,6 +81,7 @@ RSpec.describe Truemail do
     let(:new_email) { FFaker::Internet.email }
     let(:new_domain) { FFaker::Internet.domain_name }
     let(:new_regex_pattern) { /\A+.\z/ }
+    let(:new_smtp_error_body_pattern) { /\A\d+\z/ }
 
     specify { expect(configuration).to be_instance_of(Truemail::Configuration) }
 
@@ -89,7 +90,8 @@ RSpec.describe Truemail do
         configuration.tap(&configuration_block(
           verifier_email: new_email,
           verifier_domain: new_domain,
-          email_pattern: new_regex_pattern
+          email_pattern: new_regex_pattern,
+          smtp_error_body_pattern: new_smtp_error_body_pattern
           )
         )
       end
@@ -97,6 +99,8 @@ RSpec.describe Truemail do
       .and change(configuration, :verifier_domain).from(domain).to(new_domain)
       .and change(configuration, :email_pattern)
       .from(Truemail::RegexConstant::REGEX_EMAIL_PATTERN).to(new_regex_pattern)
+      .and change(configuration, :smtp_error_body_pattern)
+      .from(Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN).to(new_smtp_error_body_pattern)
     end
   end
 
