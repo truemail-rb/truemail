@@ -12,6 +12,10 @@ module Truemail
       def mail_servers
         result.mail_servers
       end
+
+      def configuration
+        Truemail.configuration
+      end
     end
   end
 end

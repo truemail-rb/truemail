@@ -14,6 +14,7 @@ module Truemail
       specify { expect(described_class).to be_const_defined(:REGEX_EMAIL_PATTERN) }
       specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_PATTERN) }
       specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_FROM_EMAIL) }
+      specify { expect(described_class).to be_const_defined(:REGEX_SMTP_ERROR_BODY_PATTERN) }
     end
 
     describe 'Truemail::RegexConstant::REGEX_EMAIL_PATTERN' do
@@ -120,6 +121,16 @@ module Truemail
 
       specify { expect(regex_pattern.match?(email)).to be(true) }
       specify { expect(email[regex_pattern, 1]).to eq('domain') }
+    end
+
+    describe 'Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN' do
+      subject(:regex_pattern) { described_class::REGEX_SMTP_ERROR_BODY_PATTERN }
+
+      let(:smtp_error_context) { 'some smtp 550 error with' }
+
+      %w[user account customer mailbox].map { |item| [item, item.upcase] }.flatten.each do |account_name_type|
+        specify { expect(regex_pattern.match?("#{smtp_error_context} #{account_name_type}")).to be(true) }
+      end
     end
   end
 

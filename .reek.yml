@@ -27,6 +27,7 @@ detectors:
     exclude:
       - Truemail::Validate::Smtp::Request#compose_from
       - Truemail::Validator#select_validation_type
+      - Truemail::Validate::Base#configuration
       - Truemail::Validate::Mx#null_mx?
       - Truemail::Validate::Mx#a_record
       - Truemail::Audit::Base#verifier_domain

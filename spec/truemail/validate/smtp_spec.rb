@@ -7,7 +7,6 @@ RSpec.describe Truemail::Validate::Smtp do
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:ERROR) }
-    specify { expect(described_class).to be_const_defined(:ERROR_BODY) }
     specify { expect(described_class).to be_const_defined(:RESPONSE_ATTRS) }
     specify { expect(described_class).to be_const_defined(:Response) }
     specify { expect(described_class).to be_const_defined(:Request) }
@@ -206,8 +205,10 @@ RSpec.describe Truemail::Validate::Smtp do
           end
 
           context 'when smtp user error has been detected' do
+            let(:smtp_error_context) { 'some 550 error with user or account in body' }
+
             context 'with error in rcptto response' do
-              let(:smtp_error_context_2) { 'some 550 error with user or account in body' }
+              let(:smtp_error_context_2) { smtp_error_context }
 
               specify do
                 allow(result_instance.mail_servers).to receive(:each)
@@ -225,7 +226,7 @@ RSpec.describe Truemail::Validate::Smtp do
 
             context 'with error in others smtp responses' do
               context 'with error in rcptto response' do
-                let(:smtp_error_context_1) { 'some 550 error with user or account in body' }
+                let(:smtp_error_context_1) { smtp_error_context }
 
                 specify do
                   allow(result_instance.mail_servers).to receive(:each)

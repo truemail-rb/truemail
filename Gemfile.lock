@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    truemail (0.1.9)
+    truemail (0.1.10)
 
 GEM
   remote: https://rubygems.org/
@@ -114,4 +114,4 @@ DEPENDENCIES
   truemail!
 
 BUNDLED WITH
-   1.16.6
+   1.17.3

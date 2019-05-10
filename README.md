@@ -58,6 +58,9 @@ Truemail.configure do |config|
   # Optional parameter. You can override default regex pattern
   config.email_pattern = /regex_pattern/
 
+  # Optional parameter. You can override default regex pattern
+  config.smtp_error_body_pattern = /regex_pattern/
+
   # Optional parameter. Connection timeout is equal to 2 ms by default.
   config.connection_timeout = 1
 
@@ -92,6 +95,7 @@ Truemail.configuration
 => #<Truemail::Configuration:0x000055590cb17b40
  @connection_timeout=1,
  @email_pattern=/regex_pattern/,
+ @smtp_error_body_pattern=/regex_pattern/,
  @response_timeout=1,
  @connection_attempts=3,
  @validation_type_by_domain={},
@@ -114,6 +118,7 @@ Truemail.configuration
 => #<Truemail::Configuration:0x000055590cb17b40
  @connection_timeout=3,
  @email_pattern=/regex_pattern/,
+ @smtp_error_body_pattern=/regex_pattern/,
  @response_timeout=4,
  @connection_attempts=1,
  @validation_type_by_domain={},
@@ -270,6 +275,7 @@ Truemail.validate('email@example.com')
               #<Truemail::Configuration:0x0000000002d49930
               @connection_timeout=2,
               @email_pattern=/regex_pattern/,
+              @smtp_error_body_pattern=/regex_pattern/,
               @response_timeout=2,
               @connection_attempts=2,
               @smtp_safe_check=false,
@@ -323,6 +329,7 @@ Truemail.validate('email@example.com')
               #<Truemail::Configuration:0x0000000002c95b38
                 @connection_timeout=2,
                 @email_pattern=/regex_pattern/,
+                @smtp_error_body_pattern=/regex_pattern/,
                 @response_timeout=2,
                 @connection_attempts=2,
                 @smtp_safe_check=true,
@@ -360,6 +367,7 @@ Truemail.validate('email@example.com')
             #<Truemail::Configuration:0x0000000002d49930
               @connection_timeout=2,
               @email_pattern=/regex_pattern/,
+              @smtp_error_body_pattern=/regex_pattern/,
               @response_timeout=2,
               @connection_attempts=2,
               @smtp_safe_check=true,
