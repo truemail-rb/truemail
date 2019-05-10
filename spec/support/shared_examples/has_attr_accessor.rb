@@ -4,6 +4,7 @@ module Truemail
   RSpec.shared_examples 'has attr_accessor' do
     %i[
       email_pattern
+      smtp_error_body_pattern
       verifier_email
       verifier_domain
       connection_timeout

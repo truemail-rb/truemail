@@ -21,6 +21,7 @@ module Truemail
     REGEX_EMAIL_PATTERN = /(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@(#{REGEX_DOMAIN})\z)/
     REGEX_DOMAIN_PATTERN = /(?=\A.{4,255}\z)(\A#{REGEX_DOMAIN}\z)/
     REGEX_DOMAIN_FROM_EMAIL = /\A.+@(.+)\z/
+    REGEX_SMTP_ERROR_BODY_PATTERN = /(?=.*550)(?=.*(user|account|customer|mailbox)).*/i
   end
 
   module Audit

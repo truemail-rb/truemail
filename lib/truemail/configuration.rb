@@ -7,6 +7,7 @@ module Truemail
     DEFAULT_CONNECTION_ATTEMPTS = 2
 
     attr_reader :email_pattern,
+                :smtp_error_body_pattern,
                 :verifier_email,
                 :verifier_domain,
                 :connection_timeout,
@@ -20,6 +21,7 @@ module Truemail
 
     def initialize
       @email_pattern = Truemail::RegexConstant::REGEX_EMAIL_PATTERN
+      @smtp_error_body_pattern = Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN
       @connection_timeout = Truemail::Configuration::DEFAULT_CONNECTION_TIMEOUT
       @response_timeout = Truemail::Configuration::DEFAULT_RESPONSE_TIMEOUT
       @connection_attempts = Truemail::Configuration::DEFAULT_CONNECTION_ATTEMPTS
@@ -27,9 +29,11 @@ module Truemail
       @smtp_safe_check = false
     end
 
-    def email_pattern=(regex_pattern)
-      raise Truemail::ArgumentError.new(regex_pattern, Regexp) unless regex_pattern.is_a?(Regexp)
-      @email_pattern = regex_pattern
+    %i[email_pattern smtp_error_body_pattern].each do |method|
+      define_method("#{method}=") do |argument|
+        raise Truemail::ArgumentError.new(argument, __method__) unless argument.is_a?(Regexp)
+        instance_variable_set(:"@#{method}", argument)
+      end
     end
 
     def verifier_email=(email)
