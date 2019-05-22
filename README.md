@@ -8,6 +8,7 @@ The Truemail gem helps you validate emails by regex pattern, presence of domain 
 
 - Configurable validator, validate only what you need
 - Zero runtime dependencies
+- Has simple SMTP debugger
 - 100% test coverage
 
 ## Installation
@@ -76,7 +77,7 @@ Truemail.configure do |config|
   # Also you can skip validation by domain. Available validation types: :regex, :mx, :smtp, :skip
   # This configuration will be used over current or default validation type parameter
   # All of validations for 'somedomain.com' will be processed with mx validation only
-  config.validation_type_for = { 'somedomain.com' => :mx }
+  config.validation_type_for = { 'somedomain.com' => :mx, 'otherdomain.com' => :skip }
 
   # Optional parameter. This option will be parse bodies of SMTP errors. It will be helpful
   # if SMTP server does not return an exact answer that the email does not exist
