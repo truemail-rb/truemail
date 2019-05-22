@@ -73,7 +73,7 @@ Truemail.configure do |config|
   config.connection_attempts = 3
 
   # Optional parameter. You can predefine which type of validation will be used for domains.
-  # Available validation types: :regex, :mx, :smtp
+  # Also you can skip validation by domain. Available validation types: :regex, :mx, :smtp, :skip
   # This configuration will be used over current or default validation type parameter
   # All of validations for 'somedomain.com' will be processed with mx validation only
   config.validation_type_for = { 'somedomain.com' => :mx }
