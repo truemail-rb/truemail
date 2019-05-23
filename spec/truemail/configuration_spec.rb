@@ -229,14 +229,13 @@ RSpec.describe Truemail::Configuration do
 
       describe '#validation_type_for=' do
         context 'with valid validation type attributes' do
-          let(:domains_config) do
-            (1..4).map { FFaker::Internet.unique.domain_name }.zip(%i[regex mx smtp skip]).to_h
-          end
+          let(:domain_1) { FFaker::Internet.domain_name }
+          let(:domain_2) { FFaker::Internet.domain_name }
 
           it 'sets validation type for domain' do
-            expect { configuration_instance.validation_type_for = domains_config }
+            expect { configuration_instance.validation_type_for = { domain_1 => :mx, domain_2 => :regex } }
               .to change(configuration_instance, :validation_type_by_domain)
-              .from({}).to(domains_config)
+              .from({}).to({ domain_1 => :mx, domain_2 => :regex  })
           end
         end
 

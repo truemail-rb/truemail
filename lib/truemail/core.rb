@@ -30,7 +30,6 @@ module Truemail
   end
 
   module Validate
-    require 'truemail/validate/skip'
     require 'truemail/validate/base'
     require 'truemail/validate/regex'
     require 'truemail/validate/mx'
