@@ -3,7 +3,7 @@
 module Truemail
   class Validator
     RESULT_ATTRS = %i[success email domain mail_servers errors smtp_debug].freeze
-    VALIDATION_TYPES = %i[regex mx smtp].freeze
+    VALIDATION_TYPES = %i[regex mx smtp skip].freeze
 
     Result = Struct.new(*RESULT_ATTRS, keyword_init: true) do
       def initialize(errors: {}, mail_servers: [], **args)
