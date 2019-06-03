@@ -79,6 +79,9 @@ Truemail.configure do |config|
   # All of validations for 'somedomain.com' will be processed with mx validation only
   config.validation_type_for = { 'somedomain.com' => :mx, 'otherdomain.com' => :skip }
 
+  config.whitelisted_domains = ['somedomain1.com', 'somedomain2.com']
+  config.blacklisted_domains = ['somedomain1.com', 'somedomain2.com']
+
   # Optional parameter. This option will be parse bodies of SMTP errors. It will be helpful
   # if SMTP server does not return an exact answer that the email does not exist
   # By default this option is disabled, available for SMTP validation only.
