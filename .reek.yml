@@ -42,3 +42,7 @@ detectors:
     exclude:
       - Truemail::Validate::Smtp#not_includes_user_not_found_errors
       - Truemail::GenerateEmailHelper#prepare_user_name
+
+  NilCheck:
+    exclude:
+      - Truemail::Validator#result_not_changed?
