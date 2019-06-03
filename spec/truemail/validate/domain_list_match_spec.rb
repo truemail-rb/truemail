@@ -20,7 +20,9 @@ RSpec.describe Truemail::Validate::DomainListMatch do
       specify do
         allow(Truemail).to receive_message_chain(:configuration, :whitelisted_domains).and_return([])
         allow(Truemail).to receive_message_chain(:configuration, :blacklisted_domains).and_return([domain])
-        expect { list_match_validator }.to change(result_instance, :success).from(nil).to(false)
+        expect { list_match_validator }
+          .to change(result_instance, :success).from(nil).to(false)
+          .and change(result_instance, :errors).from({}).to({ domain_list_match: Truemail::Validate::DomainListMatch::ERROR })
       end
     end
 
