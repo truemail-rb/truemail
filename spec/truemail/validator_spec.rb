@@ -47,14 +47,32 @@ module Truemail
     end
 
     describe '#run' do
-      subject(:validator_instance) { described_class.new(email, with: validation_type).run }
+      subject(:validator_instance_run) { validator_instance.run }
 
+      let(:validator_instance) { described_class.new(email, with: validation_type) }
       let(:validation_type) { :regex }
 
-      it 'calls predefined validation class' do
-        allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
-        expect(validator_instance).to be_an_instance_of(Truemail::Validator)
-        expect(Truemail::Validate::Regex).to have_received(:check)
+      before do
+        allow(Truemail::Validate::DomainListMatch).to receive(:check)
+        allow(validator_instance).to receive(:result_not_changed?).and_return(condition)
+      end
+
+      context 'when email not in whitelist/blacklist' do
+        let(:condition) { true }
+
+        it 'calls predefined validation class' do
+          expect(Truemail::Validate::Regex).to receive(:check)
+          expect(validator_instance_run).to be_an_instance_of(Truemail::Validator)
+        end
+      end
+
+      context 'when email in the whitelist/blacklist' do
+        let(:condition) { false }
+
+        it 'calls predefined validation class' do
+          expect(Truemail::Validate::Regex).not_to receive(:check)
+          expect(validator_instance_run).to be_an_instance_of(Truemail::Validator)
+        end
       end
     end
 

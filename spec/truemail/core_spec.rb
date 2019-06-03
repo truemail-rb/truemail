@@ -136,8 +136,8 @@ module Truemail
 
   RSpec.describe Truemail::Validate do
     describe 'defined constants' do
-      specify { expect(described_class).to be_const_defined(:Skip) }
       specify { expect(described_class).to be_const_defined(:Base) }
+      specify { expect(described_class).to be_const_defined(:DomainListMatch) }
       specify { expect(described_class).to be_const_defined(:Regex) }
       specify { expect(described_class).to be_const_defined(:Mx) }
       specify { expect(described_class).to be_const_defined(:Smtp) }
