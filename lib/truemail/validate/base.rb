@@ -6,7 +6,7 @@ module Truemail
       private
 
       def add_error(message)
-        result.errors[self.class.name.split('::').last.downcase.to_sym] = message
+        result.errors[self.class.name.split('::').last.gsub(/(?<=.)(?=[A-Z])/, '_').downcase.to_sym] = message
       end
 
       def mail_servers
