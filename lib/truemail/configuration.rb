@@ -85,6 +85,7 @@ module Truemail
     end
 
     def validate_validation_type(settings)
+      raise Truemail::ArgumentError.new(settings, 'hash with settings') unless settings.is_a?(Hash)
       settings.each do |domain, validation_type|
         check_domain(domain)
         check_validation_type(validation_type)

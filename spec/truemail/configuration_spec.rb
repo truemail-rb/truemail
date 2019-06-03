@@ -230,13 +230,22 @@ RSpec.describe Truemail::Configuration do
       describe '#validation_type_for=' do
         context 'with valid validation type attributes' do
           let(:domains_config) do
-            (1..4).map { FFaker::Internet.unique.domain_name }.zip(%i[regex mx smtp skip]).to_h
+            (1..3).map { FFaker::Internet.unique.domain_name }.zip(%i[regex mx smtp]).to_h
           end
 
           it 'sets validation type for domain' do
             expect { configuration_instance.validation_type_for = domains_config }
               .to change(configuration_instance, :validation_type_by_domain)
               .from({}).to(domains_config)
+          end
+        end
+
+        context 'with invalid settings type' do
+          let(:invalid_argument) { [] }
+
+          specify do
+            expect { configuration_instance.validation_type_for = invalid_argument }
+              .to raise_error(Truemail::ArgumentError, "#{invalid_argument} is not a valid hash with settings")
           end
         end
 
