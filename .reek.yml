@@ -31,6 +31,7 @@ detectors:
       - Truemail::Validate::Mx#null_mx?
       - Truemail::Validate::Mx#a_record
       - Truemail::Audit::Base#verifier_domain
+      - Truemail::Configuration#domain_matcher
 
   ControlParameter:
     exclude:
