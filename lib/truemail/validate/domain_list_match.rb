@@ -2,12 +2,13 @@
 
 module Truemail
   module Validate
-    class DomainListMatch < Truemail::Worker
+    class DomainListMatch < Truemail::Validate::Base
       ERROR = 'blacklisted email'
 
       def run
-        return if success(domain_in_white_list?)
-        return unless success(domain_in_black_list?)
+        return success(true) if whitelisted_domain?
+        return unless blacklisted_domain?
+        success(false)
         add_error(Truemail::Validate::DomainListMatch::ERROR)
       end
 
@@ -17,11 +18,11 @@ module Truemail
         @email_domain ||= result.email[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1]
       end
 
-      def domain_in_white_list?
+      def whitelisted_domain?
         configuration.whitelisted_domains.include?(email_domain)
       end
 
-      def domain_in_black_list?
+      def blacklisted_domain?
         configuration.blacklisted_domains.include?(email_domain)
       end
     end
