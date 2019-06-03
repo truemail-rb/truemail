@@ -35,6 +35,8 @@ RSpec.describe Truemail::Configuration do
         expect(configuration_instance.response_timeout).to eq(2)
         expect(configuration_instance.connection_attempts).to eq(2)
         expect(configuration_instance.validation_type_by_domain).to eq({})
+        expect(configuration_instance.whitelisted_domains).to eq([])
+        expect(configuration_instance.blacklisted_domains).to eq([])
         expect(configuration_instance.smtp_safe_check).to be(false)
       end
 
@@ -51,6 +53,8 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :connection_timeout)
           .and not_change(configuration_instance, :response_timeout)
           .and not_change(configuration_instance, :validation_type_by_domain)
+          .and not_change(configuration_instance, :whitelisted_domains)
+          .and not_change(configuration_instance, :blacklisted_domains)
           .and not_change(configuration_instance, :smtp_safe_check)
 
         configuration_instance_expectaions
@@ -69,6 +73,8 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :connection_timeout)
           .and not_change(configuration_instance, :response_timeout)
           .and not_change(configuration_instance, :validation_type_by_domain)
+          .and not_change(configuration_instance, :whitelisted_domains)
+          .and not_change(configuration_instance, :blacklisted_domains)
           .and not_change(configuration_instance, :smtp_safe_check)
 
         configuration_instance_expectaions
@@ -87,6 +93,8 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :connection_timeout)
           .and not_change(configuration_instance, :response_timeout)
           .and not_change(configuration_instance, :validation_type_by_domain)
+          .and not_change(configuration_instance, :whitelisted_domains)
+          .and not_change(configuration_instance, :blacklisted_domains)
           .and not_change(configuration_instance, :smtp_safe_check)
 
         configuration_instance_expectaions
@@ -265,6 +273,38 @@ RSpec.describe Truemail::Configuration do
           specify do
             expect { configuration_instance.validation_type_for = { domain => validation_type } }
               .to raise_error(Truemail::ArgumentError, "#{validation_type} is not a valid validation type")
+          end
+        end
+      end
+
+      %i[whitelisted_domains= blacklisted_domains=].each do |domain_list_type|
+        describe "##{domain_list_type}" do
+          let(:domains_list) { (1..3).map { FFaker::Internet.unique.domain_name } }
+
+          context "with valid #{domain_list_type} parameter type and context" do
+            it 'sets whitelisted domains list' do
+              expect { configuration_instance.public_send(domain_list_type, domains_list) }
+                .to change(configuration_instance, domain_list_type[0...-1].to_sym)
+                .from([]).to(domains_list)
+            end
+          end
+
+          context "with invalid #{domain_list_type} parameter type" do
+            let(:wrong_parameter_type) { 'not_array' }
+
+            specify do
+              expect { configuration_instance.public_send(domain_list_type, wrong_parameter_type) }
+                .to raise_error(Truemail::ArgumentError, "#{wrong_parameter_type} is not a valid #{domain_list_type}")
+            end
+          end
+
+          context 'with invalid whitelisted_domains= parameter context' do
+            let(:wrong_parameter_context) { ['not_domain', 123] }
+
+            specify do
+              expect { configuration_instance.public_send(domain_list_type, wrong_parameter_context) }
+                .to raise_error(Truemail::ArgumentError, "#{wrong_parameter_context} is not a valid #{domain_list_type}")
+            end
           end
         end
       end

@@ -13,7 +13,9 @@ module Truemail
                 :connection_timeout,
                 :response_timeout,
                 :connection_attempts,
-                :validation_type_by_domain
+                :validation_type_by_domain,
+                :whitelisted_domains,
+                :blacklisted_domains
 
     attr_accessor :smtp_safe_check
 
@@ -26,6 +28,8 @@ module Truemail
       @response_timeout = Truemail::Configuration::DEFAULT_RESPONSE_TIMEOUT
       @connection_attempts = Truemail::Configuration::DEFAULT_CONNECTION_ATTEMPTS
       @validation_type_by_domain = {}
+      @whitelisted_domains = []
+      @blacklisted_domains = []
       @smtp_safe_check = false
     end
 
@@ -59,6 +63,13 @@ module Truemail
       validation_type_by_domain.merge!(settings)
     end
 
+    %i[whitelisted_domains blacklisted_domains].each do |method|
+      define_method("#{method}=") do |argument|
+        raise ArgumentError.new(argument, __method__) unless argument.is_a?(Array) && check_domain_list(argument)
+        instance_variable_set(:"@#{method}", argument)
+      end
+    end
+
     def complete?
       !!verifier_email
     end
@@ -74,14 +85,21 @@ module Truemail
       self.verifier_domain ||= verifier_email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
     end
 
+    def domain_matcher
+      ->(domain) { Truemail::RegexConstant::REGEX_DOMAIN_PATTERN.match?(domain.to_s) }
+    end
+
     def check_domain(domain)
-      raise Truemail::ArgumentError.new(domain, 'domain') unless
-        Truemail::RegexConstant::REGEX_DOMAIN_PATTERN.match?(domain.to_s)
+      raise Truemail::ArgumentError.new(domain, 'domain') unless domain_matcher.call(domain)
+    end
+
+    def check_domain_list(domains)
+      domains.all?(&domain_matcher)
     end
 
     def check_validation_type(validation_type)
       raise Truemail::ArgumentError.new(validation_type, 'validation type') unless
-          Truemail::Validator::VALIDATION_TYPES.include?(validation_type)
+        Truemail::Validator::VALIDATION_TYPES.include?(validation_type)
     end
 
     def validate_validation_type(settings)
