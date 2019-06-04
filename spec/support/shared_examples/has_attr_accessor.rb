@@ -10,6 +10,8 @@ module Truemail
       connection_timeout
       response_timeout
       connection_attempts
+      whitelisted_domains
+      blacklisted_domains
       smtp_safe_check
     ].each do |attribute|
       it "has attr_accessor :#{attribute}" do

@@ -3,7 +3,7 @@
 module Truemail
   class Validator
     RESULT_ATTRS = %i[success email domain mail_servers errors smtp_debug].freeze
-    VALIDATION_TYPES = %i[regex mx smtp skip].freeze
+    VALIDATION_TYPES = %i[regex mx smtp].freeze
 
     Result = Struct.new(*RESULT_ATTRS, keyword_init: true) do
       def initialize(errors: {}, mail_servers: [], **args)
@@ -21,11 +21,16 @@ module Truemail
     end
 
     def run
-      Truemail::Validate.const_get(validation_type.capitalize).check(result)
+      Truemail::Validate::DomainListMatch.check(result)
+      Truemail::Validate.const_get(validation_type.capitalize).check(result) if result_not_changed?
       self
     end
 
     private
+
+    def result_not_changed?
+      result.success.nil?
+    end
 
     def select_validation_type(email, current_validation_type)
       domain = email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]

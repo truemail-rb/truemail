@@ -31,14 +31,20 @@ detectors:
       - Truemail::Validate::Mx#null_mx?
       - Truemail::Validate::Mx#a_record
       - Truemail::Audit::Base#verifier_domain
+      - Truemail::Configuration#domain_matcher
 
   ControlParameter:
     exclude:
       - Truemail::GenerateEmailHelper#calculate_email_size
       - Truemail::Worker#success
       - Truemail#raise_unless
+      - Truemail::Configuration#raise_unless
 
   FeatureEnvy:
     exclude:
       - Truemail::Validate::Smtp#not_includes_user_not_found_errors
       - Truemail::GenerateEmailHelper#prepare_user_name
+
+  NilCheck:
+    exclude:
+      - Truemail::Validator#result_not_changed?
