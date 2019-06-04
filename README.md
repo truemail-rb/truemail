@@ -8,6 +8,7 @@ The Truemail gem helps you validate emails by regex pattern, presence of domain 
 
 - Configurable validator, validate only what you need
 - Zero runtime dependencies
+- Has whitelist/blacklist
 - Has simple SMTP debugger
 - 100% test coverage
 
@@ -74,12 +75,17 @@ Truemail.configure do |config|
   config.connection_attempts = 3
 
   # Optional parameter. You can predefine which type of validation will be used for domains.
-  # Also you can skip validation by domain. Available validation types: :regex, :mx, :smtp, :skip
+  # Also you can skip validation by domain. Available validation types: :regex, :mx, :smtp
   # This configuration will be used over current or default validation type parameter
   # All of validations for 'somedomain.com' will be processed with mx validation only
-  config.validation_type_for = { 'somedomain.com' => :mx, 'otherdomain.com' => :skip }
+  config.validation_type_for = { 'somedomain.com' => :regex, 'otherdomain.com' => :mx }
 
+  # Optional parameter. Validation of email which contains whitelisted domain always will
+  # return true. Other validations will not processed even if it was defined in validation_type_for
   config.whitelisted_domains = ['somedomain1.com', 'somedomain2.com']
+
+  # Optional parameter. Validation of email which contains whitelisted domain always will
+  # return false. Other validations will not processed even if it was defined in validation_type_for
   config.blacklisted_domains = ['somedomain1.com', 'somedomain2.com']
 
   # Optional parameter. This option will be parse bodies of SMTP errors. It will be helpful
@@ -103,6 +109,8 @@ Truemail.configuration
  @response_timeout=1,
  @connection_attempts=3,
  @validation_type_by_domain={},
+ @whitelisted_domains=[],
+ @blacklisted_domains=[],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com"
  @smtp_safe_check=true>
@@ -126,6 +134,8 @@ Truemail.configuration
  @response_timeout=4,
  @connection_attempts=1,
  @validation_type_by_domain={},
+ @whitelisted_domains=[],
+ @blacklisted_domains=[],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com",
  @smtp_safe_check=true>
@@ -284,6 +294,8 @@ Truemail.validate('email@example.com')
               @connection_attempts=2,
               @smtp_safe_check=false,
               @validation_type_by_domain={},
+              @whitelisted_domains=[],
+              @blacklisted_domains=[],
               @verifier_domain="example.com",
               @verifier_email="verifier@example.com">,
             @email="email@example.com",
@@ -338,6 +350,8 @@ Truemail.validate('email@example.com')
                 @connection_attempts=2,
                 @smtp_safe_check=true,
                 @validation_type_by_domain={},
+                @whitelisted_domains=[],
+                @blacklisted_domains=[],
                 @verifier_domain="example.com",
                 @verifier_email="verifier@example.com">,
               @email="email@example.com",
@@ -376,6 +390,8 @@ Truemail.validate('email@example.com')
               @connection_attempts=2,
               @smtp_safe_check=true,
               @validation_type_by_domain={},
+              @whitelisted_domains=[],
+              @blacklisted_domains=[],
               @verifier_domain="example.com",
               @verifier_email="verifier@example.com">,
           @email="email@example.com",
@@ -450,8 +466,7 @@ end
 ---
 ## ToDo
 
-1. Gem compatibility with Ruby 2.3
-2. Fail validations logger
+Fail validations logger
 
 ## Contributing
 
