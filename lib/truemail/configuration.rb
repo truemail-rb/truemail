@@ -35,7 +35,7 @@ module Truemail
 
     %i[email_pattern smtp_error_body_pattern].each do |method|
       define_method("#{method}=") do |argument|
-        raise Truemail::ArgumentError.new(argument, __method__) unless argument.is_a?(Regexp)
+        raise_unless(argument, __method__, argument.is_a?(Regexp))
         instance_variable_set(:"@#{method}", argument)
       end
     end
@@ -53,7 +53,7 @@ module Truemail
 
     %i[connection_timeout response_timeout connection_attempts].each do |method|
       define_method("#{method}=") do |argument|
-        raise ArgumentError.new(argument, __method__) unless argument.is_a?(Integer) && argument.positive?
+        raise_unless(argument, __method__, argument.is_a?(Integer) && argument.positive?)
         instance_variable_set(:"@#{method}", argument)
       end
     end
@@ -65,7 +65,7 @@ module Truemail
 
     %i[whitelisted_domains blacklisted_domains].each do |method|
       define_method("#{method}=") do |argument|
-        raise ArgumentError.new(argument, __method__) unless argument.is_a?(Array) && check_domain_list(argument)
+        raise_unless(argument, __method__, argument.is_a?(Array) && check_domain_list(argument))
         instance_variable_set(:"@#{method}", argument)
       end
     end
@@ -76,9 +76,13 @@ module Truemail
 
     private
 
+    def raise_unless(argument_context, argument_name, condition)
+      raise Truemail::ArgumentError.new(argument_context, argument_name) unless condition
+    end
+
     def validate_arguments(argument, method)
       constant = Truemail::RegexConstant.const_get("regex_#{method[/\A.+_(.+)\=\z/, 1]}_pattern".upcase)
-      raise Truemail::ArgumentError.new(argument, method) unless constant.match?(argument.to_s)
+      raise_unless(argument, method, constant.match?(argument.to_s))
     end
 
     def default_verifier_domain
@@ -90,7 +94,7 @@ module Truemail
     end
 
     def check_domain(domain)
-      raise Truemail::ArgumentError.new(domain, 'domain') unless domain_matcher.call(domain)
+      raise_unless(domain, 'domain', domain_matcher.call(domain))
     end
 
     def check_domain_list(domains)
@@ -98,12 +102,11 @@ module Truemail
     end
 
     def check_validation_type(validation_type)
-      raise Truemail::ArgumentError.new(validation_type, 'validation type') unless
-        Truemail::Validator::VALIDATION_TYPES.include?(validation_type)
+      raise_unless(validation_type, 'validation type', Truemail::Validator::VALIDATION_TYPES.include?(validation_type))
     end
 
     def validate_validation_type(settings)
-      raise Truemail::ArgumentError.new(settings, 'hash with settings') unless settings.is_a?(Hash)
+      raise_unless(settings, 'hash with settings', settings.is_a?(Hash))
       settings.each do |domain, validation_type|
         check_domain(domain)
         check_validation_type(validation_type)

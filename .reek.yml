@@ -38,6 +38,7 @@ detectors:
       - Truemail::GenerateEmailHelper#calculate_email_size
       - Truemail::Worker#success
       - Truemail#raise_unless
+      - Truemail::Configuration#raise_unless
 
   FeatureEnvy:
     exclude:
