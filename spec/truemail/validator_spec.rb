@@ -64,14 +64,32 @@ module Truemail
           expect(Truemail::Validate::Regex).to receive(:check)
           expect(validator_instance_run).to be_an_instance_of(Truemail::Validator)
         end
+
+        specify do
+          expect { validator_instance_run }.not_to change(validator_instance, :validation_type)
+        end
       end
 
       context 'when email in the whitelist/blacklist' do
         let(:condition) { false }
 
-        it 'calls predefined validation class' do
+        it 'not calls predefined validation class' do
           expect(Truemail::Validate::Regex).not_to receive(:check)
           expect(validator_instance_run).to be_an_instance_of(Truemail::Validator)
+        end
+
+        context 'with whitelisted email' do
+          specify do
+            allow(validator_instance_result).to receive(:success).and_return(true)
+            expect { validator_instance_run }.to change(validator_instance, :validation_type).from(validation_type).to(:whitelist)
+          end
+        end
+
+        context 'with blacklisted email' do
+          specify do
+            allow(validator_instance_result).to receive(:success).and_return(false)
+            expect { validator_instance_run }.to change(validator_instance, :validation_type).from(validation_type).to(:blacklist)
+          end
         end
       end
     end
