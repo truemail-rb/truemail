@@ -77,7 +77,8 @@ Truemail.configure do |config|
   # Optional parameter. You can predefine which type of validation will be used for domains.
   # Also you can skip validation by domain. Available validation types: :regex, :mx, :smtp
   # This configuration will be used over current or default validation type parameter
-  # All of validations for 'somedomain.com' will be processed with mx validation only
+  # All of validations for 'somedomain.com' will be processed with regex validation only.
+  # And all of validations for 'otherdomain.com' will be processed with mx validation only.
   config.validation_type_for = { 'somedomain.com' => :regex, 'otherdomain.com' => :mx }
 
   # Optional parameter. Validation of email which contains whitelisted domain always will
@@ -154,9 +155,92 @@ Truemail.configuration
 
 ### Validation features
 
+#### Whitelist/Blacklist check
+
+Whitelist/Blacklist check is zero validation level. You can define white and black list domains. It means that validation of email which contains whitelisted domain always will return ```true```, and for blacklisted domain will return ```false```.
+
+Please note, other validations will not processed even if it was defined in ```validation_type_for```.
+
+**Sequence of domain list check:**
+1. Whitelist check
+2. Blacklist check
+
+Example of usage:
+
+```ruby
+require 'truemail'
+
+Truemail.configure do |config|
+  config.verifier_email = 'verifier@example.com'
+  config.whitelisted_domains = ['white-domain.com', 'somedomain.com']
+  config.blacklisted_domains = ['black-domain.com', 'somedomain.com']
+  config.validation_type_for = { 'somedomain.com' => :mx }
+end
+```
+
+##### Whitelist case
+
+When email in whitelist, validation type will be redefined. Validation result returns ```true```
+
+```ruby
+Truemail.validate('email@white-domain.com')
+
+#<Truemail::Validator:0x000055b8429f3490
+  @result=#<struct Truemail::Validator::Result
+    success=true,
+    email="email@white-domain.com",
+    domain=nil,
+    mail_servers=[],
+    errors={},
+    smtp_debug=nil>,
+  @validation_type=:whitelist>
+```
+
+##### Blacklist case
+
+When email in blacklist, validation type will be redefined too. Validation result returns ```false```
+
+```ruby
+Truemail.validate('email@black-domain.com')
+
+#<Truemail::Validator:0x000023y8429f3493
+  @result=#<struct Truemail::Validator::Result
+    success=false,
+    email="email@black-domain.com",
+    domain=nil,
+    mail_servers=[],
+    errors={},
+    smtp_debug=nil>,
+  @validation_type=:blacklist>
+```
+
+##### Duplication case
+
+Validation result for this email returns ```true```, because it was found in whitelisted domains list first. Also ```validation_type``` for this case will be redefined.
+
+```ruby
+Truemail.validate('email@somedomain.com')
+
+#<Truemail::Validator:0x000055b8429f3490
+  @result=#<struct Truemail::Validator::Result
+    success=true,
+    email="email@somedomain.com",
+    domain=nil,
+    mail_servers=[],
+    errors={},
+    smtp_debug=nil>,
+  @validation_type=:whitelist>
+```
+
 #### Regex validation
 
-Validation with regex pattern is the first validation level. By default this validation not performs strictly following RFC 5322 standard, so you can override Truemail default regex pattern if you want.
+Validation with regex pattern is the first validation level. It uses whitelist/blacklist check before running itself.
+
+```code
+[Whitelist/Blacklist] -> [Regex validation]
+```
+
+By default this validation not performs strictly following [RFC 5322](https://www.ietf.org/rfc/rfc5322.txt) standard, so you can override Truemail default regex pattern if you want.
 
 Example of usage:
 
@@ -211,7 +295,7 @@ Truemail.validate('email@example.com', with: :regex)
 Validation by MX records is the second validation level. It uses Regex validation before running itself. When regex validation has completed successfully then runs itself.
 
 ```code
-[Regex validation] -> [MX validation]
+[Whitelist/Blacklist] -> [Regex validation] -> [MX validation]
 ```
 
 Please note, Truemail MX validator not performs strict compliance of the [RFC 5321](https://tools.ietf.org/html/rfc5321#section-5) standard for best validation outcome.
@@ -244,7 +328,7 @@ Truemail.validate('email@example.com', with: :mx)
 SMTP validation is a final, third validation level. This type of validation tries to check real existence of email account on a current email server. This validation runs a chain of previous validations and if they're complete successfully then runs itself.
 
 ```code
-[Regex validation] -> [MX validation] -> [SMTP validation]
+[Whitelist/Blacklist] -> [Regex validation] -> [MX validation] -> [SMTP validation]
 ```
 
 If total count of MX servers is equal to one, ```Truemail::Smtp``` validator will use value from ```Truemail.configuration.connection_attempts``` as connection attempts. By default it's equal 2.
