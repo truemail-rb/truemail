@@ -22,7 +22,7 @@ module Truemail
 
     def run
       Truemail::Validate::DomainListMatch.check(result)
-      Truemail::Validate.const_get(validation_type.capitalize).check(result) if result_not_changed?
+      result_not_changed? ? Truemail::Validate.const_get(validation_type.capitalize).check(result) : update_validation_type
       self
     end
 
@@ -30,6 +30,10 @@ module Truemail
 
     def result_not_changed?
       result.success.nil?
+    end
+
+    def update_validation_type
+      @validation_type = result.success ? :whitelist : :blacklist
     end
 
     def select_validation_type(email, current_validation_type)
