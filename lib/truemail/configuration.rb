@@ -5,6 +5,7 @@ module Truemail
     DEFAULT_CONNECTION_TIMEOUT = 2
     DEFAULT_RESPONSE_TIMEOUT = 2
     DEFAULT_CONNECTION_ATTEMPTS = 2
+    DEFAULT_VALIDATION_TYPE = :smtp
 
     attr_reader :email_pattern,
                 :smtp_error_body_pattern,
@@ -13,6 +14,7 @@ module Truemail
                 :connection_timeout,
                 :response_timeout,
                 :connection_attempts,
+                :default_validation_type,
                 :validation_type_by_domain,
                 :whitelisted_domains,
                 :blacklisted_domains
@@ -27,6 +29,7 @@ module Truemail
       @connection_timeout = Truemail::Configuration::DEFAULT_CONNECTION_TIMEOUT
       @response_timeout = Truemail::Configuration::DEFAULT_RESPONSE_TIMEOUT
       @connection_attempts = Truemail::Configuration::DEFAULT_CONNECTION_ATTEMPTS
+      @default_validation_type = Truemail::Configuration::DEFAULT_VALIDATION_TYPE
       @validation_type_by_domain = {}
       @whitelisted_domains = []
       @blacklisted_domains = []
@@ -56,6 +59,11 @@ module Truemail
         raise_unless(argument, __method__, argument.is_a?(Integer) && argument.positive?)
         instance_variable_set(:"@#{method}", argument)
       end
+    end
+
+    def default_validation_type=(argument)
+      raise_unless(argument, __method__, argument.is_a?(Symbol) && Truemail::Validator::VALIDATION_TYPES.include?(argument))
+      @default_validation_type = argument
     end
 
     def validation_type_for=(settings)
