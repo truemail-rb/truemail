@@ -74,6 +74,11 @@ Truemail.configure do |config|
   # there is one mx server).
   config.connection_attempts = 3
 
+  # Optional parameter. You can predefine default validation type for
+  # Truemail.validate('email@email.com') call without with-parameter
+  # Available validation types: :regex, :mx, :smtp
+  config.default_validation_type = :mx
+
   # Optional parameter. You can predefine which type of validation will be used for domains.
   # Also you can skip validation by domain. Available validation types: :regex, :mx, :smtp
   # This configuration will be used over current or default validation type parameter

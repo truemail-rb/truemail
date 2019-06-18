@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    truemail (1.0.1)
+    truemail (1.1.0)
 
 GEM
   remote: https://rubygems.org/

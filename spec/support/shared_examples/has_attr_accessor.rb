@@ -10,6 +10,7 @@ module Truemail
       connection_timeout
       response_timeout
       connection_attempts
+      default_validation_type
       whitelisted_domains
       blacklisted_domains
       smtp_safe_check
