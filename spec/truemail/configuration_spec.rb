@@ -7,6 +7,7 @@ RSpec.describe Truemail::Configuration do
     specify { expect(described_class).to be_const_defined(:DEFAULT_CONNECTION_TIMEOUT) }
     specify { expect(described_class).to be_const_defined(:DEFAULT_RESPONSE_TIMEOUT) }
     specify { expect(described_class).to be_const_defined(:DEFAULT_CONNECTION_ATTEMPTS) }
+    specify { expect(described_class).to be_const_defined(:DEFAULT_VALIDATION_TYPE) }
   end
 
   describe '.new' do
@@ -34,6 +35,7 @@ RSpec.describe Truemail::Configuration do
         expect(configuration_instance.connection_timeout).to eq(2)
         expect(configuration_instance.response_timeout).to eq(2)
         expect(configuration_instance.connection_attempts).to eq(2)
+        expect(configuration_instance.default_validation_type).to eq(Truemail::Configuration::DEFAULT_VALIDATION_TYPE)
         expect(configuration_instance.validation_type_by_domain).to eq({})
         expect(configuration_instance.whitelisted_domains).to eq([])
         expect(configuration_instance.blacklisted_domains).to eq([])
@@ -52,6 +54,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :smtp_error_body_pattern)
           .and not_change(configuration_instance, :connection_timeout)
           .and not_change(configuration_instance, :response_timeout)
+          .and not_change(configuration_instance, :default_validation_type)
           .and not_change(configuration_instance, :validation_type_by_domain)
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :blacklisted_domains)
@@ -72,6 +75,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :smtp_error_body_pattern)
           .and not_change(configuration_instance, :connection_timeout)
           .and not_change(configuration_instance, :response_timeout)
+          .and not_change(configuration_instance, :default_validation_type)
           .and not_change(configuration_instance, :validation_type_by_domain)
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :blacklisted_domains)
@@ -92,6 +96,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :smtp_error_body_pattern)
           .and not_change(configuration_instance, :connection_timeout)
           .and not_change(configuration_instance, :response_timeout)
+          .and not_change(configuration_instance, :default_validation_type)
           .and not_change(configuration_instance, :validation_type_by_domain)
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :blacklisted_domains)
@@ -232,6 +237,41 @@ RSpec.describe Truemail::Configuration do
           let(:setter) { :connection_attempts= }
 
           include_examples 'raises argument error'
+        end
+      end
+
+      describe '#default_validation_type=' do
+        context 'with valid value' do
+          let(:valid_validation_type) { :mx }
+
+          it 'sets default validation type' do
+            expect { configuration_instance.default_validation_type = valid_validation_type }
+              .to change(configuration_instance, :default_validation_type)
+              .from(Truemail::Configuration::DEFAULT_VALIDATION_TYPE).to(valid_validation_type)
+          end
+        end
+
+        context 'with invalid value' do
+          shared_examples 'raises argument error' do
+            specify do
+              expect { configuration_instance.public_send(setter, invalid_validation_type) }
+                .to raise_error(Truemail::ArgumentError, "#{invalid_validation_type} is not a valid #{setter}")
+            end
+          end
+
+          let(:setter) { :default_validation_type= }
+
+          context 'when value in not symbol' do
+            let(:invalid_validation_type) { 'mx' }
+
+            include_examples 'raises argument error'
+          end
+
+          context 'when value has wrong validation type' do
+            let(:invalid_validation_type) { :not_valid_validation_type }
+
+            include_examples 'raises argument error'
+          end
         end
       end
 
