@@ -6,8 +6,8 @@ module Truemail
       ERROR = 'blacklisted email'
 
       def run
-        return success(true) if whitelisted_domain?
-        return unless blacklisted_domain?
+        return success(true) if whitelisted_domain? && !whitelist_validation?
+        return unless whitelist_validation_case? || blacklisted_domain?
         success(false)
         add_error(Truemail::Validate::DomainListMatch::ERROR)
       end
@@ -19,7 +19,15 @@ module Truemail
       end
 
       def whitelisted_domain?
-        configuration.whitelisted_domains.include?(email_domain)
+        @whitelisted_domain ||= configuration.whitelisted_domains.include?(email_domain)
+      end
+
+      def whitelist_validation?
+        configuration.whitelist_validation
+      end
+
+      def whitelist_validation_case?
+        whitelist_validation? && !whitelisted_domain?
       end
 
       def blacklisted_domain?

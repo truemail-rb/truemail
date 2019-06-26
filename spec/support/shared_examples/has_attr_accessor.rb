@@ -12,6 +12,7 @@ module Truemail
       connection_attempts
       default_validation_type
       whitelisted_domains
+      whitelist_validation
       blacklisted_domains
       smtp_safe_check
     ].each do |attribute|

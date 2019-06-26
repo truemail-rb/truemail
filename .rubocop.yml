@@ -7,6 +7,12 @@ AllCops:
 Metrics/LineLength:
   Max: 140
 
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/MethodLength:
+  Max: 15
+
 Metrics/CyclomaticComplexity:
   Enabled: false
 

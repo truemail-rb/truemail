@@ -20,6 +20,7 @@ detectors:
 
   Attribute:
     exclude:
+      - Truemail::Configuration#whitelist_validation
       - Truemail::Configuration#smtp_safe_check
       - Truemail::Wrapper#attempts
 

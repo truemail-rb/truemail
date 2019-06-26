@@ -19,21 +19,14 @@ module Truemail
                 :whitelisted_domains,
                 :blacklisted_domains
 
-    attr_accessor :smtp_safe_check
+    attr_accessor :whitelist_validation, :smtp_safe_check
 
     alias retry_count connection_attempts
 
     def initialize
-      @email_pattern = Truemail::RegexConstant::REGEX_EMAIL_PATTERN
-      @smtp_error_body_pattern = Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN
-      @connection_timeout = Truemail::Configuration::DEFAULT_CONNECTION_TIMEOUT
-      @response_timeout = Truemail::Configuration::DEFAULT_RESPONSE_TIMEOUT
-      @connection_attempts = Truemail::Configuration::DEFAULT_CONNECTION_ATTEMPTS
-      @default_validation_type = Truemail::Configuration::DEFAULT_VALIDATION_TYPE
-      @validation_type_by_domain = {}
-      @whitelisted_domains = []
-      @blacklisted_domains = []
-      @smtp_safe_check = false
+      instance_initializer.each do |instace_variable, value|
+        instance_variable_set(:"@#{instace_variable}", value)
+      end
     end
 
     %i[email_pattern smtp_error_body_pattern].each do |method|
@@ -83,6 +76,22 @@ module Truemail
     end
 
     private
+
+    def instance_initializer
+      {
+        email_pattern: Truemail::RegexConstant::REGEX_EMAIL_PATTERN,
+        smtp_error_body_pattern: Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN,
+        connection_timeout: Truemail::Configuration::DEFAULT_CONNECTION_TIMEOUT,
+        response_timeout: Truemail::Configuration::DEFAULT_RESPONSE_TIMEOUT,
+        connection_attempts: Truemail::Configuration::DEFAULT_CONNECTION_ATTEMPTS,
+        default_validation_type: Truemail::Configuration::DEFAULT_VALIDATION_TYPE,
+        validation_type_by_domain: {},
+        whitelisted_domains: [],
+        whitelist_validation: false,
+        blacklisted_domains: [],
+        smtp_safe_check: false
+      }
+    end
 
     def raise_unless(argument_context, argument_name, condition)
       raise Truemail::ArgumentError.new(argument_context, argument_name) unless condition
