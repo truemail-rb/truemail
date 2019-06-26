@@ -13,6 +13,7 @@ module Truemail
       expect(configuration_instance.default_validation_type).to eq(Truemail::Configuration::DEFAULT_VALIDATION_TYPE)
       expect(configuration_instance.validation_type_by_domain).to eq({})
       expect(configuration_instance.whitelisted_domains).to eq([])
+      expect(configuration_instance.whitelist_validation).to eq(false)
       expect(configuration_instance.blacklisted_domains).to eq([])
       expect(configuration_instance.smtp_safe_check).to be(false)
     end

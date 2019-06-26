@@ -1,6 +1,6 @@
 # Truemail
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/maintainability)](https://codeclimate.com/github/rubygarage/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/test_coverage)](https://codeclimate.com/github/rubygarage/truemail/test_coverage) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![CircleCI](https://circleci.com/gh/rubygarage/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/rubygarage/truemail/tree/master) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![Maintainability](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/maintainability)](https://codeclimate.com/github/rubygarage/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/test_coverage)](https://codeclimate.com/github/rubygarage/truemail/test_coverage) [![CircleCI](https://circleci.com/gh/rubygarage/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/rubygarage/truemail/tree/master) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![Downloads](https://img.shields.io/gem/dt/truemail.svg?colorA=004d99&colorB=0073e6)](https://rubygems.org/gems/truemail) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 The Truemail gem helps you validate emails by regex pattern, presence of domain mx-records, and real existence of email account on a current email server. Also Truemail gem allows performing an audit of the host in which runs.
 
@@ -90,7 +90,12 @@ Truemail.configure do |config|
   # return true. Other validations will not processed even if it was defined in validation_type_for
   config.whitelisted_domains = ['somedomain1.com', 'somedomain2.com']
 
-  # Optional parameter. Validation of email which contains whitelisted domain always will
+  # Optional parameter. With this option Truemail will validate email which contains whitelisted
+  # domain only, i.e. if domain whitelisted, validation will passed to Regex, MX or SMTP validators.
+  # Validation of email which not contains whitelisted domain always will return false.
+  config.whitelist_validation = true
+
+  # Optional parameter. Validation of email which contains blacklisted domain always will
   # return false. Other validations will not processed even if it was defined in validation_type_for
   config.blacklisted_domains = ['somedomain1.com', 'somedomain2.com']
 
@@ -116,6 +121,7 @@ Truemail.configuration
  @connection_attempts=3,
  @validation_type_by_domain={},
  @whitelisted_domains=[],
+ @whitelist_validation=true,
  @blacklisted_domains=[],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com"
@@ -141,6 +147,7 @@ Truemail.configuration
  @connection_attempts=1,
  @validation_type_by_domain={},
  @whitelisted_domains=[],
+ @whitelist_validation=true,
  @blacklisted_domains=[],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com",
@@ -168,7 +175,8 @@ Please note, other validations will not processed even if it was defined in ```v
 
 **Sequence of domain list check:**
 1. Whitelist check
-2. Blacklist check
+2. Whitelist validation check
+3. Blacklist check
 
 Example of usage:
 
@@ -199,6 +207,53 @@ Truemail.validate('email@white-domain.com')
     errors={},
     smtp_debug=nil>,
   @validation_type=:whitelist>
+```
+
+##### Whitelist validation case
+
+```ruby
+require 'truemail'
+
+Truemail.configure do |config|
+  config.verifier_email = 'verifier@example.com'
+  config.whitelisted_domains = ['white-domain.com']
+  config.whitelist_validation = true
+end
+```
+
+When email domain in whitelist and ```whitelist_validation``` is sets equal to ```true``` validation type will be passed to other validators.
+Validation of email which not contains whitelisted domain always will return ```false```.
+
+###### Email has whitelisted domain
+
+```ruby
+Truemail.validate('email@white-domain.com', with: :regex)
+
+#<Truemail::Validator:0x000055b8429f3490
+  @result=#<struct Truemail::Validator::Result
+    success=true,
+    email="email@white-domain.com",
+    domain=nil,
+    mail_servers=[],
+    errors={},
+    smtp_debug=nil>,
+  @validation_type=:regex>
+```
+
+###### Email hasn't whitelisted domain
+
+```ruby
+Truemail.validate('email@domain.com', with: :regex)
+
+#<Truemail::Validator:0x000055b8429f3490
+  @result=#<struct Truemail::Validator::Result
+    success=false,
+    email="email@domain.com",
+    domain=nil,
+    mail_servers=[],
+    errors={},
+    smtp_debug=nil>,
+  @validation_type=:blacklist>
 ```
 
 ##### Blacklist case
@@ -384,6 +439,7 @@ Truemail.validate('email@example.com')
               @smtp_safe_check=false,
               @validation_type_by_domain={},
               @whitelisted_domains=[],
+              @whitelist_validation=false,
               @blacklisted_domains=[],
               @verifier_domain="example.com",
               @verifier_email="verifier@example.com">,
@@ -440,6 +496,7 @@ Truemail.validate('email@example.com')
                 @smtp_safe_check=true,
                 @validation_type_by_domain={},
                 @whitelisted_domains=[],
+                @whitelist_validation=false,
                 @blacklisted_domains=[],
                 @verifier_domain="example.com",
                 @verifier_email="verifier@example.com">,
@@ -480,6 +537,7 @@ Truemail.validate('email@example.com')
               @smtp_safe_check=true,
               @validation_type_by_domain={},
               @whitelisted_domains=[],
+              @whitelist_validation=false,
               @blacklisted_domains=[],
               @verifier_domain="example.com",
               @verifier_email="verifier@example.com">,
@@ -553,10 +611,6 @@ end
 ```
 
 ---
-## ToDo
-
-Fail validations logger
-
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/rubygarage/truemail. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct. Please check the [open tikets](https://github.com/rubygarage/truemail/issues). Be shure to follow Contributor Code of Conduct below and our [Contributing Guidelines](CONTRIBUTING.md).
