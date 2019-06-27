@@ -19,7 +19,7 @@ module Truemail
       end
 
       def whitelisted_domain?
-        @whitelisted_domain ||= configuration.whitelisted_domains.include?(email_domain)
+        configuration.whitelisted_domains.include?(email_domain)
       end
 
       def whitelist_validation?
