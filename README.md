@@ -30,7 +30,7 @@ Or install it yourself as:
 
 ## Email Validation Methods
 
-Email validation is a tricky thing. There are a number of different ways to validate an email address and all mechanisms must conform with the best practices and provide proper validation.
+Email validation is a tricky thing. There are a number of different ways to validate an email address and all mechanisms must conform with the best practices and provide proper validation. You can get more information about email validation techniques in our [blog](https://rubygarage.org/blog/how-to-validate-emails).
 
 **Syntax Checking**: Checks the email addresses via regex pattern.
 
@@ -84,19 +84,23 @@ Truemail.configure do |config|
   # This configuration will be used over current or default validation type parameter
   # All of validations for 'somedomain.com' will be processed with regex validation only.
   # And all of validations for 'otherdomain.com' will be processed with mx validation only.
+  # It is equal to empty hash by default.
   config.validation_type_for = { 'somedomain.com' => :regex, 'otherdomain.com' => :mx }
 
   # Optional parameter. Validation of email which contains whitelisted domain always will
   # return true. Other validations will not processed even if it was defined in validation_type_for
+  # It is equal to empty array by default.
   config.whitelisted_domains = ['somedomain1.com', 'somedomain2.com']
 
   # Optional parameter. With this option Truemail will validate email which contains whitelisted
   # domain only, i.e. if domain whitelisted, validation will passed to Regex, MX or SMTP validators.
   # Validation of email which not contains whitelisted domain always will return false.
+  # It is equal false by default.
   config.whitelist_validation = true
 
   # Optional parameter. Validation of email which contains blacklisted domain always will
   # return false. Other validations will not processed even if it was defined in validation_type_for
+  # It is equal to empty array by default.
   config.blacklisted_domains = ['somedomain1.com', 'somedomain2.com']
 
   # Optional parameter. This option will be parse bodies of SMTP errors. It will be helpful
