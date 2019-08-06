@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
 module Truemail
-  VERSION = '1.3.0'
+  class Logger
+  end
 end

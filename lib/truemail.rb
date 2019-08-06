@@ -12,7 +12,7 @@ module Truemail
         return unless block_given?
         configuration = Truemail::Configuration.new
         yield(configuration)
-        raise_unless(configuration.complete?, INCOMPLETE_CONFIG)
+        raise_unless(configuration.complete?, Truemail::INCOMPLETE_CONFIG)
         configuration
       end
     end
@@ -26,7 +26,7 @@ module Truemail
     end
 
     def validate(email, **options)
-      raise_unless(configuration, NOT_CONFIGURED)
+      raise_unless(configuration, Truemail::NOT_CONFIGURED)
       Truemail::Validator.new(email, **options).run
     end
 

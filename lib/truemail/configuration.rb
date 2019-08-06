@@ -17,7 +17,8 @@ module Truemail
                 :default_validation_type,
                 :validation_type_by_domain,
                 :whitelisted_domains,
-                :blacklisted_domains
+                :blacklisted_domains,
+                :error_log
 
     attr_accessor :whitelist_validation, :smtp_safe_check
 
@@ -69,6 +70,10 @@ module Truemail
         raise_unless(argument, __method__, argument.is_a?(Array) && check_domain_list(argument))
         instance_variable_set(:"@#{method}", argument)
       end
+    end
+
+    def error_log=(absolute_file_path)
+      @error_log = Truemail::Logger.new(absolute_file_path)
     end
 
     def complete?
