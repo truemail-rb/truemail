@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['admin@bestweb.com.ua']
 
   spec.summary       = %(truemail)
-  spec.description   = %(Configurable plain Ruby email validator. Verify email via Regex, DNS and SMTP. Be sure that email address exists)
+  spec.description   = %(Configurable plain Ruby email validator. Verify email via Regex, DNS and SMTP. Be sure that email address exists.)
 
   spec.homepage      = 'https://github.com/rubygarage/truemail'
   spec.license       = 'MIT'
@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'bundler-audit'
   spec.add_development_dependency 'ffaker'
+  spec.add_development_dependency 'json_matchers'
   spec.add_development_dependency 'overcommit'
   spec.add_development_dependency 'pry-byebug'
   spec.add_development_dependency 'rake'

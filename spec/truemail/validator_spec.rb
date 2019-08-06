@@ -53,43 +53,70 @@ module Truemail
       let(:validator_instance) { described_class.new(email, with: validation_type, **configuration) }
       let(:validation_type) { :regex }
 
-      before do
-        allow(Truemail::Validate::DomainListMatch).to receive(:check)
-        allow(validator_instance).to receive(:result_not_changed?).and_return(condition)
-      end
+      before { allow(Truemail::Validate::DomainListMatch).to receive(:check) }
 
-      context 'when email not in whitelist/blacklist' do
-        let(:condition) { true }
+      describe 'validation detection layer' do
+        before { allow(validator_instance).to receive(:result_not_changed?).and_return(condition) }
 
-        it 'calls predefined validation class' do
-          expect(Truemail::Validate::Regex).to receive(:check)
-          expect(validator_instance_run).to be_an_instance_of(Truemail::Validator)
-        end
+        context 'when email not in whitelist/blacklist' do
+          let(:condition) { true }
 
-        specify do
-          expect { validator_instance_run }.not_to change(validator_instance, :validation_type)
-        end
-      end
+          it 'calls predefined validation class' do
+            expect(Truemail::Validate::Regex).to receive(:check)
+            expect(validator_instance_run).to be_an_instance_of(Truemail::Validator)
+          end
 
-      context 'when email in the whitelist/blacklist' do
-        let(:condition) { false }
-
-        it 'not calls predefined validation class' do
-          expect(Truemail::Validate::Regex).not_to receive(:check)
-          expect(validator_instance_run).to be_an_instance_of(Truemail::Validator)
-        end
-
-        context 'with whitelisted email' do
           specify do
-            allow(validator_instance_result).to receive(:success).and_return(true)
-            expect { validator_instance_run }.to change(validator_instance, :validation_type).from(validation_type).to(:whitelist)
+            expect { validator_instance_run }.not_to change(validator_instance, :validation_type)
           end
         end
 
-        context 'with blacklisted email' do
-          specify do
-            allow(validator_instance_result).to receive(:success).and_return(false)
-            expect { validator_instance_run }.to change(validator_instance, :validation_type).from(validation_type).to(:blacklist)
+        context 'when email in the whitelist/blacklist' do
+          let(:condition) { false }
+
+          it 'not calls predefined validation class' do
+            expect(Truemail::Validate::Regex).not_to receive(:check)
+            expect(validator_instance_run).to be_an_instance_of(Truemail::Validator)
+          end
+
+          context 'with whitelisted email' do
+            specify do
+              allow(validator_instance_result).to receive(:success).and_return(true)
+              expect { validator_instance_run }.to change(validator_instance, :validation_type).from(validation_type).to(:whitelist)
+            end
+          end
+
+          context 'with blacklisted email' do
+            specify do
+              allow(validator_instance_result).to receive(:success).and_return(false)
+              expect { validator_instance_run }.to change(validator_instance, :validation_type).from(validation_type).to(:blacklist)
+            end
+          end
+        end
+      end
+
+      describe 'logger event trigger' do
+        before { allow(validator_instance).to receive(:logger).and_return(logger_instance) }
+
+        describe 'works without logs' do
+          context 'when logger not configured' do
+            let(:logger_instance) { false }
+
+            it 'not pushes logs' do
+              expect(logger_instance).not_to receive(:push)
+              expect(validator_instance_run).to be_an_instance_of(Truemail::Validator)
+            end
+          end
+        end
+
+        describe 'works with logs' do
+          context 'when logger configured' do
+            let(:logger_instance) { true }
+
+            it 'pushes logs' do
+              expect(logger_instance).to receive(:push).with(validator_instance)
+              expect(validator_instance_run).to be_an_instance_of(Truemail::Validator)
+            end
           end
         end
       end

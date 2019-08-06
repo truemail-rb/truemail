@@ -21,11 +21,13 @@ RSpec.describe Truemail do
     specify { expect(described_class).to be_const_defined(:Wrapper) }
     specify { expect(described_class).to be_const_defined(:Auditor) }
     specify { expect(described_class).to be_const_defined(:Validator) }
+    specify { expect(described_class).to be_const_defined(:Logger) }
     specify { expect(described_class).to be_const_defined(:ConfigurationError) }
     specify { expect(described_class).to be_const_defined(:ArgumentError) }
     specify { expect(described_class).to be_const_defined(:RegexConstant) }
     specify { expect(described_class).to be_const_defined(:Audit) }
     specify { expect(described_class).to be_const_defined(:Validate) }
+    specify { expect(described_class).to be_const_defined(:Log) }
   end
 
   describe 'global configuration methods' do

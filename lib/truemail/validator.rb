@@ -24,22 +24,31 @@ module Truemail
     def run
       Truemail::Validate::DomainListMatch.check(result)
       result_not_changed? ? Truemail::Validate.const_get(validation_type.capitalize).check(result) : update_validation_type
+      logger.push(self) if logger
       self
     end
 
     private
 
-    def result_not_changed?
-      result.success.nil?
+    def select_validation_type(email, current_validation_type)
+      domain = email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
+      result.configuration.validation_type_by_domain[domain] || current_validation_type
     end
 
     def update_validation_type
       @validation_type = result.success ? :whitelist : :blacklist
     end
 
-    def select_validation_type(email, current_validation_type)
-      domain = email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
-      result.configuration.validation_type_by_domain[domain] || current_validation_type
+    def result_status
+      result.success
+    end
+
+    def result_not_changed?
+      result_status.nil?
+    end
+
+    def logger
+      result.configuration.logger
     end
   end
 end
