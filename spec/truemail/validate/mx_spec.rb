@@ -2,9 +2,7 @@
 
 RSpec.describe Truemail::Validate::Mx do
   let(:email) { FFaker::Internet.email }
-  let(:result_instance) { Truemail::Validator::Result.new(email: email) }
-
-  before { Truemail.configure { |config| config.verifier_email = email } }
+  let(:result_instance) { Truemail::Validator::Result.new(email: email, configuration: create_configuration) }
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:ERROR) }

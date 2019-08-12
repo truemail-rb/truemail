@@ -17,17 +17,17 @@ module Truemail
                 :default_validation_type,
                 :validation_type_by_domain,
                 :whitelisted_domains,
-                :blacklisted_domains,
-                :error_log
+                :blacklisted_domains
 
     attr_accessor :whitelist_validation, :smtp_safe_check
 
     alias retry_count connection_attempts
 
-    def initialize
+    def initialize(&block)
       instance_initializer.each do |instace_variable, value|
         instance_variable_set(:"@#{instace_variable}", value)
       end
+      tap(&block) if block_given?
     end
 
     %i[email_pattern smtp_error_body_pattern].each do |method|
@@ -70,10 +70,6 @@ module Truemail
         raise_unless(argument, __method__, argument.is_a?(Array) && check_domain_list(argument))
         instance_variable_set(:"@#{method}", argument)
       end
-    end
-
-    def error_log=(absolute_file_path)
-      @error_log = Truemail::Logger.new(absolute_file_path)
     end
 
     def complete?

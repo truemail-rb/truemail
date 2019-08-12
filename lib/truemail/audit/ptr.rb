@@ -27,7 +27,9 @@ module Truemail
       end
 
       def current_host_address
-        @current_host_address ||= Truemail::Wrapper.call { IPAddr.new(detect_ip_via_ipify) }
+        @current_host_address ||= Truemail::Wrapper.call(configuration: configuration) do
+          IPAddr.new(detect_ip_via_ipify)
+        end
       end
 
       def current_host_reverse_lookup
@@ -35,7 +37,7 @@ module Truemail
       end
 
       def ptr_records
-        @ptr_records ||= Truemail::Wrapper.call do
+        @ptr_records ||= Truemail::Wrapper.call(configuration: configuration) do
           Resolv::DNS.new.getresources(
             current_host_reverse_lookup, Resolv::DNS::Resource::IN::PTR
           ).map { |ptr_record| ptr_record.name.to_s }
@@ -47,11 +49,13 @@ module Truemail
       end
 
       def a_record
-        Truemail::Wrapper.call { Resolv::DNS.new.getaddress(verifier_domain).to_s }
+        Truemail::Wrapper.call(configuration: configuration) do
+          Resolv::DNS.new.getaddress(verifier_domain).to_s
+        end
       end
 
       def verifier_domain_refer_to_current_host_address?
-        a_record == current_host_address.to_s
+        a_record.eql?(current_host_address.to_s)
       end
     end
   end

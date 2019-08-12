@@ -14,7 +14,7 @@ module Truemail
       end
 
       def configuration
-        Truemail.configuration
+        result.configuration
       end
     end
   end

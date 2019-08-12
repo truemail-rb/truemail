@@ -4,7 +4,7 @@ require 'truemail/core'
 
 module Truemail
   INCOMPLETE_CONFIG = 'verifier_email is required parameter'
-  NOT_CONFIGURED = 'use Truemail.configure before'
+  NOT_CONFIGURED = 'use Truemail.configure before or pass custom configuration'
 
   class << self
     def configuration
@@ -25,24 +25,29 @@ module Truemail
       @configuration = nil
     end
 
-    def validate(email, **options)
-      raise_unless(configuration, Truemail::NOT_CONFIGURED)
-      Truemail::Validator.new(email, **options).run
+    def validate(email, custom_configuration: nil, **options)
+      Truemail::Validator.new(email, configuration: determine_configuration(custom_configuration), **options).run
     end
 
     def valid?(email, **options)
       validate(email, **options).result.valid?
     end
 
-    def host_audit
-      raise_unless(configuration, NOT_CONFIGURED)
-      Truemail::Auditor.run
+    def host_audit(custom_configuration: nil)
+      Truemail::Auditor.new(configuration: determine_configuration(custom_configuration)).run
     end
 
     private
 
     def raise_unless(condition, message)
-      raise ConfigurationError, message unless condition
+      raise Truemail::ConfigurationError, message unless condition
+    end
+
+    def determine_configuration(custom_configuration)
+      current_configuration = custom_configuration || configuration
+      raise_unless(current_configuration, Truemail::NOT_CONFIGURED)
+      raise_unless(current_configuration.complete?, Truemail::INCOMPLETE_CONFIG)
+      current_configuration.dup.freeze
     end
   end
 end

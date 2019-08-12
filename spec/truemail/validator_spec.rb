@@ -5,10 +5,10 @@ module Truemail
     subject(:validator_instance) { described_class.new(email, options) }
 
     let(:email) { FFaker::Internet.email }
-    let(:options) { {} }
+    let(:configuration_instance) { create_configuration }
+    let(:configuration) { { configuration: configuration_instance } }
+    let(:options) { { **configuration } }
     let(:validator_instance_result) { validator_instance.result }
-
-    before { Truemail.configure { |config| config.verifier_email = email } }
 
     describe 'defined constants' do
       specify { expect(described_class).to be_const_defined(:RESULT_ATTRS) }
@@ -19,7 +19,7 @@ module Truemail
     describe '.new' do
       Truemail::Validator::VALIDATION_TYPES.each do |validation_type|
         context "with: #{validation_type}" do
-          let(:options) { { with: validation_type } }
+          let(:options) { { with: validation_type, **configuration } }
 
           it "creates validator instance with #{validation_type} validation type" do
             expect(validator_instance.validation_type).to eq(validation_type)
@@ -27,6 +27,7 @@ module Truemail
 
           it 'creates default validator result' do
             expect(validator_instance_result).to be_an_instance_of(Truemail::Validator::Result)
+            expect(validator_instance_result.configuration).to eq(configuration_instance)
             expect(validator_instance_result.success).to be_nil
             expect(validator_instance_result.email).to eq(email)
             expect(validator_instance_result.domain).to be_nil
@@ -37,7 +38,7 @@ module Truemail
       end
 
       context 'with invalid validation type' do
-        let(:options) { { with: :invalid_validation_type } }
+        let(:options) { { with: :invalid_validation_type, **configuration } }
 
         specify do
           expect { validator_instance }
@@ -49,7 +50,7 @@ module Truemail
     describe '#run' do
       subject(:validator_instance_run) { validator_instance.run }
 
-      let(:validator_instance) { described_class.new(email, with: validation_type) }
+      let(:validator_instance) { described_class.new(email, with: validation_type, **configuration) }
       let(:validation_type) { :regex }
 
       before do
@@ -96,16 +97,14 @@ module Truemail
 
     describe '#select_validation_type' do
       subject(:select_validation_type) do
-        described_class.new(email, with: current_validation_type).validation_type
+        described_class.new(email, with: current_validation_type, **configuration).validation_type
       end
 
       let(:current_validation_type) { :regex }
       let(:new_validation_type)     { :mx }
       let(:domain)                  { FFaker::Internet.domain_name }
 
-      before do
-        Truemail.configuration.validation_type_for = { domain => new_validation_type }
-      end
+      before { configuration_instance.validation_type_for = { domain => new_validation_type } }
 
       context 'when domain of current email exists in configuration' do
         let(:email) { "email@#{domain}" }

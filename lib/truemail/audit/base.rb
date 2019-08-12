@@ -9,8 +9,12 @@ module Truemail
         result.warnings[self.class.name.split('::').last.downcase.to_sym] = message
       end
 
+      def configuration
+        result.configuration
+      end
+
       def verifier_domain
-        Truemail.configuration.verifier_domain
+        configuration.verifier_domain
       end
     end
   end
