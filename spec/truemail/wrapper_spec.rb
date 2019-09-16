@@ -1,17 +1,25 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Wrapper do
-  let(:email) { FFaker::Internet.email }
-  let(:method) { :hosts_from_mx_records? }
-  let(:mx_instance) { instance_double(Truemail::Validate::Mx, method => true) }
+  let(:configuration_instance) { create_configuration }
+  let(:method) { :method }
+  let(:mx_instance) { instance_double('SomeObject', method => true) }
   let(:block) { ->(_) { mx_instance.send(method) } }
 
-  before { Truemail.configure { |config| config.verifier_email = email } }
-
   describe '.call' do
+    subject(:resolver_execution_wrapper) do
+      described_class.call(configuration: configuration_instance, &block)
+    end
+
+    it 'returns wrapped block context' do
+      expect(resolver_execution_wrapper).to be(true)
+    end
+  end
+
+  describe '#call' do
     subject(:resolver_execution_wrapper) { resolver_execution_wrapper_instance.call(&block) }
 
-    let(:resolver_execution_wrapper_instance) { described_class.new }
+    let(:resolver_execution_wrapper_instance) { described_class.new(configuration_instance) }
 
     before { allow(resolver_execution_wrapper_instance).to receive(:call).and_call_original }
 

@@ -3,6 +3,8 @@
 RSpec.describe Truemail::Configuration do
   subject(:configuration_instance) { described_class.new }
 
+  let(:valid_email) { FFaker::Internet.email }
+
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:DEFAULT_CONNECTION_TIMEOUT) }
     specify { expect(described_class).to be_const_defined(:DEFAULT_RESPONSE_TIMEOUT) }
@@ -21,11 +23,16 @@ RSpec.describe Truemail::Configuration do
       expect(configuration_instance.respond_to?(:validation_type_for=)).to be(true)
     end
 
+    it 'accepts block' do
+      expect(
+        described_class.new(&configuration_block(verifier_email: valid_email)
+      ).verifier_email).to eq(valid_email)
+    end
+
     include_examples 'sets default configuration'
   end
 
   describe 'configuration cases' do
-    let(:valid_email) { FFaker::Internet.email }
     let(:default_verifier_domain) { valid_email[/\A(.+)@(.+)\z/, 2] }
 
     context 'when auto configuration' do

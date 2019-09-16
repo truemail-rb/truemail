@@ -8,11 +8,14 @@ RSpec.describe Truemail::Validate::Regex do
   describe '.check' do
     subject(:regex_validator) { described_class.check(result_instance) }
 
-    let(:result_instance) { Truemail::Validator::Result.new(email: FFaker::Internet.email) }
+    let(:configuration_instance) { create_configuration }
+    let(:result_instance) do
+      Truemail::Validator::Result.new(email: FFaker::Internet.email, configuration: configuration_instance)
+    end
 
     context 'when validation pass' do
       before do
-        allow(Truemail).to receive_message_chain(:configuration, :email_pattern, :match?).and_return(true)
+        allow(configuration_instance).to receive_message_chain(:email_pattern, :match?).and_return(true)
       end
 
       specify do
@@ -26,7 +29,7 @@ RSpec.describe Truemail::Validate::Regex do
 
     context 'when validation fails' do
       before do
-        allow(Truemail).to receive_message_chain(:configuration, :email_pattern, :match?).and_return(false)
+        allow(configuration_instance).to receive_message_chain(:email_pattern, :match?).and_return(false)
       end
 
       specify do

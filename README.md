@@ -2,7 +2,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/maintainability)](https://codeclimate.com/github/rubygarage/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/test_coverage)](https://codeclimate.com/github/rubygarage/truemail/test_coverage) [![CircleCI](https://circleci.com/gh/rubygarage/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/rubygarage/truemail/tree/master) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![Downloads](https://img.shields.io/gem/dt/truemail.svg?colorA=004d99&colorB=0073e6)](https://rubygems.org/gems/truemail) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
-The Truemail gem helps you validate emails by regex pattern, presence of domain mx-records, and real existence of email account on a current email server. Also Truemail gem allows performing an audit of the host in which runs.
+The Truemail gem helps you validate emails via regex pattern, presence of DNS records, and real existence of email account on a current email server. Also Truemail gem allows performing an audit of the host in which runs.
 
 ## Features
 
@@ -34,17 +34,19 @@ Email validation is a tricky thing. There are a number of different ways to vali
 
 **Syntax Checking**: Checks the email addresses via regex pattern.
 
-**Mail Server Existence Check**: Checks the availability of the email address domain using DNS MX records.
+**Mail Server Existence Check**: Checks the availability of the email address domain using DNS records.
 
 **Mail Existence Check**: Checks if the email address really exists and can receive email via SMTP connections and email-sending emulation techniques.
 
 ## Usage
 
-### Configuration features 
+### Configuration features
 
-#### Set configuration
+You can use global gem configuration or custom independent configuration.
 
-To have an access for ```Truemail.configuration``` and gem features, you must configure it first as in the example below:
+#### Setting global configuration
+
+To have an access for ```Truemail.configuration``` and gem configuration features, you must configure it first as in the example below:
 
 ```ruby
 require 'truemail'
@@ -110,7 +112,7 @@ Truemail.configure do |config|
 end
 ```
 
-#### Read configuration
+##### Read global configuration
 
 After successful configuration, you can read current Truemail configuration instance anywhere in your application.
 
@@ -132,7 +134,7 @@ Truemail.configuration
  @smtp_safe_check=true>
 ```
 
-#### Update configuration
+##### Update global configuration
 
 ```ruby
 Truemail.configuration.connection_timeout = 3
@@ -158,7 +160,7 @@ Truemail.configuration
  @smtp_safe_check=true>
 ```
 
-#### Reset configuration
+##### Reset global configuration
 
 Also you can reset Truemail configuration.
 
@@ -168,6 +170,23 @@ Truemail.reset_configuration!
 Truemail.configuration
 => nil
 ```
+
+#### Using custom independent configuration
+
+Allows to use independent configuration for each validation/audition instance. When using this feature you do not need to have Truemail global configuration.
+
+```ruby
+custom_configuration = Truemail::Configuration.new do |config|
+  config.verifier_email = 'verifier@example.com'
+end
+
+Truemail.validate('email@example.com', custom_configuration: custom_configuration)
+Truemail.valid?('email@example.com', custom_configuration: custom_configuration)
+Truemail.host_audit('email@example.com', custom_configuration: custom_configuration)
+```
+
+Please note, you should have global or custom configuration for use Truemail gem.
+
 
 ### Validation features
 
@@ -210,6 +229,20 @@ Truemail.validate('email@white-domain.com')
     mail_servers=[],
     errors={},
     smtp_debug=nil>,
+    configuration=#<Truemail::Configuration:0x00005629f801bd28
+     @blacklisted_domains=["black-domain.com", "somedomain.com"],
+     @connection_attempts=2,
+     @connection_timeout=2,
+     @default_validation_type=:smtp,
+     @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+     @response_timeout=2,
+     @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @smtp_safe_check=false,
+     @validation_type_by_domain={"somedomain.com"=>:mx},
+     @verifier_domain="example.com",
+     @verifier_email="verifier@example.com",
+     @whitelist_validation=false,
+     @whitelisted_domains=["white-domain.com", "somedomain.com"]>,
   @validation_type=:whitelist>
 ```
 
@@ -241,6 +274,21 @@ Truemail.validate('email@white-domain.com', with: :regex)
     mail_servers=[],
     errors={},
     smtp_debug=nil>,
+    configuration=
+    #<Truemail::Configuration:0x0000563f0d2605c8
+     @blacklisted_domains=[],
+     @connection_attempts=2,
+     @connection_timeout=2,
+     @default_validation_type=:smtp,
+     @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+     @response_timeout=2,
+     @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @smtp_safe_check=false,
+     @validation_type_by_domain={},
+     @verifier_domain="example.com",
+     @verifier_email="verifier@example.com",
+     @whitelist_validation=true,
+     @whitelisted_domains=["white-domain.com"]>,
   @validation_type=:regex>
 ```
 
@@ -257,6 +305,21 @@ Truemail.validate('email@domain.com', with: :regex)
     mail_servers=[],
     errors={},
     smtp_debug=nil>,
+    configuration=
+    #<Truemail::Configuration:0x0000563f0cd82ab0
+     @blacklisted_domains=[],
+     @connection_attempts=2,
+     @connection_timeout=2,
+     @default_validation_type=:smtp,
+     @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+     @response_timeout=2,
+     @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @smtp_safe_check=false,
+     @validation_type_by_domain={},
+     @verifier_domain="example.com",
+     @verifier_email="verifier@example.com",
+     @whitelist_validation=true,
+     @whitelisted_domains=["white-domain.com"]>,
   @validation_type=:blacklist>
 ```
 
@@ -275,6 +338,21 @@ Truemail.validate('email@black-domain.com')
     mail_servers=[],
     errors={},
     smtp_debug=nil>,
+    configuration=
+    #<Truemail::Configuration:0x0000563f0d36f4f0
+     @blacklisted_domains=[],
+     @connection_attempts=2,
+     @connection_timeout=2,
+     @default_validation_type=:smtp,
+     @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+     @response_timeout=2,
+     @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @smtp_safe_check=false,
+     @validation_type_by_domain={},
+     @verifier_domain="example.com",
+     @verifier_email="verifier@example.com",
+     @whitelist_validation=true,
+     @whitelisted_domains=["white-domain.com"]>,
   @validation_type=:blacklist>
 ```
 
@@ -293,6 +371,21 @@ Truemail.validate('email@somedomain.com')
     mail_servers=[],
     errors={},
     smtp_debug=nil>,
+    configuration=
+    #<Truemail::Configuration:0x0000563f0d3f8fc0
+     @blacklisted_domains=[],
+     @connection_attempts=2,
+     @connection_timeout=2,
+     @default_validation_type=:smtp,
+     @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+     @response_timeout=2,
+     @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @smtp_safe_check=false,
+     @validation_type_by_domain={},
+     @verifier_domain="example.com",
+     @verifier_email="verifier@example.com",
+     @whitelist_validation=true,
+     @whitelisted_domains=["white-domain.com"]>,
   @validation_type=:whitelist>
 ```
 
@@ -327,6 +420,21 @@ Truemail.validate('email@example.com', with: :regex)
       mail_servers=[],
       errors={},
       smtp_debug=nil>,
+      configuration=
+      #<Truemail::Configuration:0x000055aa56a54d48
+       @blacklisted_domains=[],
+       @connection_attempts=2,
+       @connection_timeout=2,
+       @default_validation_type=:smtp,
+       @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+       @response_timeout=2,
+       @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+       @smtp_safe_check=false,
+       @validation_type_by_domain={},
+       @verifier_domain="example.com",
+       @verifier_email="verifier@example.com",
+       @whitelist_validation=false,
+       @whitelisted_domains=[]>,
   @validation_type=:regex>
 ```
 
@@ -351,6 +459,21 @@ Truemail.validate('email@example.com', with: :regex)
       mail_servers=[],
       errors={},
       smtp_debug=nil>,
+      configuration=
+      #<Truemail::Configuration:0x0000560e58d80830
+       @blacklisted_domains=[],
+       @connection_attempts=2,
+       @connection_timeout=2,
+       @default_validation_type=:smtp,
+       @email_pattern=/regex_pattern/,
+       @response_timeout=2,
+       @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+       @smtp_safe_check=false,
+       @validation_type_by_domain={},
+       @verifier_domain="example.com",
+       @verifier_email="verifier@example.com",
+       @whitelist_validation=false,
+       @whitelisted_domains=[]>,
   @validation_type=:regex>
 ```
 
@@ -384,6 +507,21 @@ Truemail.validate('email@example.com', with: :mx)
       mail_servers=["127.0.1.1", "127.0.1.2"],
       errors={},
       smtp_debug=nil>,
+      configuration=
+      #<Truemail::Configuration:0x0000559b6e44af70
+       @blacklisted_domains=[],
+       @connection_attempts=2,
+       @connection_timeout=2,
+       @default_validation_type=:smtp,
+       @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+       @response_timeout=2,
+       @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+       @smtp_safe_check=false,
+       @validation_type_by_domain={},
+       @verifier_domain="example.com",
+       @verifier_email="verifier@example.com",
+       @whitelist_validation=false,
+       @whitelisted_domains=[]>,
   @validation_type=:mx>
 ```
 
@@ -420,6 +558,21 @@ Truemail.validate('email@example.com')
       mail_servers=["127.0.1.1", "127.0.1.2"],
       errors={},
       smtp_debug=nil>,
+      configuration=
+      #<Truemail::Configuration:0x00005615e87b9298
+       @blacklisted_domains=[],
+       @connection_attempts=2,
+       @connection_timeout=2,
+       @default_validation_type=:smtp,
+       @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+       @response_timeout=2,
+       @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+       @smtp_safe_check=false,
+       @validation_type_by_domain={},
+       @verifier_domain="example.com",
+       @verifier_email="verifier@example.com",
+       @whitelist_validation=false,
+       @whitelisted_domains=[]>,
   @validation_type=:smtp>
 
 # SMTP validation failed
@@ -434,17 +587,9 @@ Truemail.validate('email@example.com')
         smtp_debug=
           [#<Truemail::Validate::Smtp::Request:0x0000000002d49b10
             @configuration=
-              #<Truemail::Configuration:0x0000000002d49930
+              #<Truemail::Validate::Smtp::Request::Configuration:0x00005615e8d21848
               @connection_timeout=2,
-              @email_pattern=/regex_pattern/,
-              @smtp_error_body_pattern=/regex_pattern/,
               @response_timeout=2,
-              @connection_attempts=2,
-              @smtp_safe_check=false,
-              @validation_type_by_domain={},
-              @whitelisted_domains=[],
-              @whitelist_validation=false,
-              @blacklisted_domains=[],
               @verifier_domain="example.com",
               @verifier_email="verifier@example.com">,
             @email="email@example.com",
@@ -464,6 +609,21 @@ Truemail.validate('email@example.com')
                     @string="250 OK\n">,
                 rcptto=false,
                 errors={:rcptto=>"550 User not found\n"}>>]>,
+          configuration=
+            #<Truemail::Configuration:0x00005615e87b9298
+             @blacklisted_domains=[],
+             @connection_attempts=2,
+             @connection_timeout=2,
+             @default_validation_type=:smtp,
+             @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+             @response_timeout=2,
+             @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+             @smtp_safe_check=false,
+             @validation_type_by_domain={},
+             @verifier_domain="example.com",
+             @verifier_email="verifier@example.com",
+             @whitelist_validation=false,
+             @whitelisted_domains=[]>,
     @validation_type=:smtp>
 ```
 
@@ -491,33 +651,40 @@ Truemail.validate('email@example.com')
         smtp_debug=
           [#<Truemail::Validate::Smtp::Request:0x0000000002c95d40
             @configuration=
-              #<Truemail::Configuration:0x0000000002c95b38
-                @connection_timeout=2,
-                @email_pattern=/regex_pattern/,
-                @smtp_error_body_pattern=/regex_pattern/,
-                @response_timeout=2,
-                @connection_attempts=2,
-                @smtp_safe_check=true,
-                @validation_type_by_domain={},
-                @whitelisted_domains=[],
-                @whitelist_validation=false,
-                @blacklisted_domains=[],
-                @verifier_domain="example.com",
-                @verifier_email="verifier@example.com">,
-              @email="email@example.com",
-              @host="127.0.1.1",
-              @attempts=nil,
-              @response=
-                #<struct Truemail::Validate::Smtp::Response
-                  port_opened=true,
-                  connection=false,
-                  helo=
-                    #<Net::SMTP::Response:0x0000000002c934c8
-                    @status="250",
-                    @string="250 127.0.1.1\n">,
-                  mailfrom=false,
-                  rcptto=nil,
-                  errors={:mailfrom=>"554 5.7.1 Client host blocked\n", :connection=>"server dropped connection after response"}>>,]>,
+              #<Truemail::Validate::Smtp::Request::Configuration:0x00005615e8d21848
+              @connection_timeout=2,
+              @response_timeout=2,
+              @verifier_domain="example.com",
+              @verifier_email="verifier@example.com">,
+            @email="email@example.com",
+            @host="127.0.1.1",
+            @attempts=nil,
+            @response=
+              #<struct Truemail::Validate::Smtp::Response
+                port_opened=true,
+                connection=false,
+                helo=
+                  #<Net::SMTP::Response:0x0000000002c934c8
+                  @status="250",
+                  @string="250 127.0.1.1\n">,
+                mailfrom=false,
+                rcptto=nil,
+                errors={:mailfrom=>"554 5.7.1 Client host blocked\n", :connection=>"server dropped connection after response"}>>,]>,
+        configuration=
+            #<Truemail::Configuration:0x00005615e87b9298
+             @blacklisted_domains=[],
+             @connection_attempts=2,
+             @connection_timeout=2,
+             @default_validation_type=:smtp,
+             @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+             @response_timeout=2,
+             @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+             @smtp_safe_check=false,
+             @validation_type_by_domain={},
+             @verifier_domain="example.com",
+             @verifier_email="verifier@example.com",
+             @whitelist_validation=false,
+             @whitelisted_domains=[]>,
     @validation_type=:smtp>
 
 # SMTP validation failed
@@ -532,17 +699,9 @@ Truemail.validate('email@example.com')
       smtp_debug=
         [#<Truemail::Validate::Smtp::Request:0x0000000002d49b10
           @configuration=
-            #<Truemail::Configuration:0x0000000002d49930
+              #<Truemail::Validate::Smtp::Request::Configuration:0x00005615e8d21848
               @connection_timeout=2,
-              @email_pattern=/regex_pattern/,
-              @smtp_error_body_pattern=/regex_pattern/,
               @response_timeout=2,
-              @connection_attempts=2,
-              @smtp_safe_check=true,
-              @validation_type_by_domain={},
-              @whitelisted_domains=[],
-              @whitelist_validation=false,
-              @blacklisted_domains=[],
               @verifier_domain="example.com",
               @verifier_email="verifier@example.com">,
           @email="email@example.com",
@@ -559,6 +718,21 @@ Truemail.validate('email@example.com')
               mailfrom=#<Net::SMTP::Response:0x0000000002d5a618 @status="250", @string="250 OK\n">,
               rcptto=false,
               errors={:rcptto=>"550 User not found\n"}>>]>,
+      configuration=
+            #<Truemail::Configuration:0x00005615e87b9298
+             @blacklisted_domains=[],
+             @connection_attempts=2,
+             @connection_timeout=2,
+             @default_validation_type=:smtp,
+             @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+             @response_timeout=2,
+             @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+             @smtp_safe_check=false,
+             @validation_type_by_domain={},
+             @verifier_domain="example.com",
+             @verifier_email="verifier@example.com",
+             @whitelist_validation=false,
+             @whitelisted_domains=[]>,
     @validation_type=:smtp>
 ```
 
@@ -576,14 +750,44 @@ Truemail.host_audit
 => #<Truemail::Auditor:0x00005580df358828
    @result=
      #<struct Truemail::Auditor::Result
-       warnings={}>>
+       warnings={}>,
+       configuration=
+        #<Truemail::Configuration:0x00005615e86327a8
+         @blacklisted_domains=[],
+         @connection_attempts=2,
+         @connection_timeout=2,
+         @default_validation_type=:smtp,
+         @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+         @response_timeout=2,
+         @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+         @smtp_safe_check=false,
+         @validation_type_by_domain={},
+         @verifier_domain="example.com",
+         @verifier_email="verifier@example.com",
+         @whitelist_validation=false,
+         @whitelisted_domains=[]>
 
 # Has PTR warning
 => #<Truemail::Auditor:0x00005580df358828
    @result=
      #<struct Truemail::Auditor::Result
        warnings=
-         {:ptr=>"ptr record does not reference to current verifier domain"}>>
+         {:ptr=>"ptr record does not reference to current verifier domain"}>,
+       configuration=
+        #<Truemail::Configuration:0x00005615e86327a8
+         @blacklisted_domains=[],
+         @connection_attempts=2,
+         @connection_timeout=2,
+         @default_validation_type=:smtp,
+         @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+         @response_timeout=2,
+         @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+         @smtp_safe_check=false,
+         @validation_type_by_domain={},
+         @verifier_domain="example.com",
+         @verifier_email="verifier@example.com",
+         @whitelist_validation=false,
+         @whitelisted_domains=[]>
 ```
 
 ### Truemail helpers

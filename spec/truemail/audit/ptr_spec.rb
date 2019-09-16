@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Audit::Ptr do
-  let(:email) { FFaker::Internet.email }
-  let(:result_instance) { Truemail::Auditor::Result.new }
-
-  before { Truemail.configure { |config| config.verifier_email = email } }
+  let(:configuration_instance) { create_configuration }
+  let(:result_instance) { Truemail::Auditor::Result.new(configuration: configuration_instance) }
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:GET_MY_IP_URL) }
@@ -30,7 +28,7 @@ RSpec.describe Truemail::Audit::Ptr do
     subject(:ptr_auditor) { ptr_auditor_instance.run }
 
     let(:ptr_auditor_instance) { described_class.new(result_instance) }
-    let(:host_name) { Truemail.configuration.verifier_domain }
+    let(:host_name) { configuration_instance.verifier_domain }
     let(:host_address) { FFaker::Internet.ip_v4_address }
     let(:other_host_address) { '127.0.0.1' }
 

@@ -24,7 +24,7 @@ module Truemail
 
       def mx_lookup
         host_extractor_methods.any? do |method|
-          Truemail::Wrapper.call { send(method) }
+          Truemail::Wrapper.call(configuration: configuration) { send(method) }
         end
       end
 
