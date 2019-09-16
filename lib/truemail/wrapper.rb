@@ -2,18 +2,20 @@
 
 module Truemail
   class Wrapper
+    attr_reader :timeout
     attr_accessor :attempts
 
-    def self.call(&block)
-      new.call(&block)
+    def self.call(configuration:, &block)
+      new(configuration).call(&block)
     end
 
-    def initialize
-      @attempts = Truemail.configuration.connection_attempts
+    def initialize(configuration)
+      @attempts = configuration.connection_attempts
+      @timeout = configuration.connection_timeout
     end
 
     def call(&block)
-      Timeout.timeout(Truemail.configuration.connection_timeout, &block)
+      Timeout.timeout(timeout, &block)
     rescue Resolv::ResolvError, IPAddr::InvalidAddressError
       false
     rescue Timeout::Error

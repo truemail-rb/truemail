@@ -2,7 +2,7 @@
 
 module Truemail
   class Validator
-    RESULT_ATTRS = %i[success email domain mail_servers errors smtp_debug].freeze
+    RESULT_ATTRS = %i[success email domain mail_servers errors smtp_debug configuration].freeze
     VALIDATION_TYPES = %i[regex mx smtp].freeze
 
     Result = Struct.new(*RESULT_ATTRS, keyword_init: true) do
@@ -14,10 +14,11 @@ module Truemail
 
     attr_reader :validation_type, :result
 
-    def initialize(email, with: Truemail.configuration.default_validation_type)
+    def initialize(email, with: nil, configuration:)
+      with ||= configuration.default_validation_type
       raise Truemail::ArgumentError.new(with, :argument) unless Truemail::Validator::VALIDATION_TYPES.include?(with)
+      @result = Truemail::Validator::Result.new(email: email, configuration: configuration)
       @validation_type = select_validation_type(email, with)
-      @result = Truemail::Validator::Result.new(email: email)
     end
 
     def run
@@ -38,7 +39,7 @@ module Truemail
 
     def select_validation_type(email, current_validation_type)
       domain = email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
-      Truemail.configuration.validation_type_by_domain[domain] || current_validation_type
+      result.configuration.validation_type_by_domain[domain] || current_validation_type
     end
   end
 end

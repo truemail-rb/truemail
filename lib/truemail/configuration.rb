@@ -23,10 +23,11 @@ module Truemail
 
     alias retry_count connection_attempts
 
-    def initialize
+    def initialize(&block)
       instance_initializer.each do |instace_variable, value|
         instance_variable_set(:"@#{instace_variable}", value)
       end
+      tap(&block) if block_given?
     end
 
     %i[email_pattern smtp_error_body_pattern].each do |method|

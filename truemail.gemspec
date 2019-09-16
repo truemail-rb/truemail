@@ -11,7 +11,8 @@ Gem::Specification.new do |spec|
   spec.email         = ['admin@bestweb.com.ua']
 
   spec.summary       = %(truemail)
-  spec.description   = %(Configurable plain ruby email validator. Validate email by regexp, mx records and real email existence)
+  spec.description   = %(Configurable plain Ruby email validator. Verify email via Regex, DNS and SMTP. Be sure that email address exists)
+
   spec.homepage      = 'https://github.com/rubygarage/truemail'
   spec.license       = 'MIT'
 

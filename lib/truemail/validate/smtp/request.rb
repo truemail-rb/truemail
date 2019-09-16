@@ -11,12 +11,13 @@ module Truemail
         RESPONSE_TIMEOUT_ERROR = 'server response timeout'
         CONNECTION_DROPPED = 'server dropped connection after response'
 
-        attr_reader :host, :email, :response
+        attr_reader :configuration, :host, :email, :response
 
-        def initialize(host:, email:, attempts: nil)
+        def initialize(configuration:, host:, email:, attempts: nil)
+          @configuration = Truemail::Validate::Smtp::Request::Configuration.new(configuration)
+          @response = Truemail::Validate::Smtp::Response.new
           @host = host
           @email = email
-          @response = Truemail::Validate::Smtp::Response.new
           @attempts = attempts
         end
 
@@ -41,15 +42,22 @@ module Truemail
 
         private
 
+        class Configuration
+          REQUEST_PARAMS = %i[connection_timeout response_timeout verifier_domain verifier_email].freeze
+
+          def initialize(configuration)
+            REQUEST_PARAMS.each do |attribute|
+              self.class.class_eval { attr_reader attribute }
+              instance_variable_set(:"@#{attribute}", configuration.public_send(attribute))
+            end
+          end
+        end
+
         attr_reader :attempts
 
         def attempts_exist?
           return false unless attempts
           (@attempts -= 1).positive?
-        end
-
-        def configuration
-          @configuration ||= Truemail.configuration.dup.freeze
         end
 
         def session

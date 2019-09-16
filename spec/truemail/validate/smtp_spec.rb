@@ -2,8 +2,7 @@
 
 RSpec.describe Truemail::Validate::Smtp do
   let(:email) { FFaker::Internet.email }
-
-  before { Truemail.configure { |config| config.verifier_email = email } }
+  let(:configuration_instance) { create_configuration }
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:ERROR) }
@@ -17,7 +16,8 @@ RSpec.describe Truemail::Validate::Smtp do
       described_class.new(
         Truemail::Validator::Result.new(
           email: email,
-          mail_servers: Array.new(3) { FFaker::Internet.ip_v4_address }
+          mail_servers: Array.new(3) { FFaker::Internet.ip_v4_address },
+          configuration: configuration_instance
         )
       )
     end
@@ -50,7 +50,7 @@ RSpec.describe Truemail::Validate::Smtp do
         before { allow(result_instance.mail_servers).to receive(:one?).and_return(true) }
 
         it 'returns hash with attempts from configuration' do
-          expect(smtp_validator_instance.send(:attempts)).to eq({ attempts: Truemail.configuration.connection_attempts })
+          expect(smtp_validator_instance.send(:attempts)).to eq({ attempts: configuration_instance.connection_attempts })
         end
       end
     end
@@ -100,7 +100,7 @@ RSpec.describe Truemail::Validate::Smtp do
           expect { smtp_validator_instance.send(:establish_smtp_connection) }
             .to change(smtp_results, :size).from(0).to(1)
 
-          expect(smtp_results.last.host).to eq(result_instance.mail_servers.first)
+          expect(smtp_results.last.send(:host)).to eq(result_instance.mail_servers.first)
         end
       end
     end
@@ -115,7 +115,9 @@ RSpec.describe Truemail::Validate::Smtp do
       context 'when smtp validation has success response' do
         before do
           request = Truemail::Validate::Smtp::Request.new(
-            host: result_instance.mail_servers.first, email: result_instance.email
+            host: result_instance.mail_servers.first,
+            email: result_instance.email,
+            configuration: configuration_instance
           )
 
           request.response.rcptto = true
@@ -141,12 +143,16 @@ RSpec.describe Truemail::Validate::Smtp do
 
         before do
           request_1 = Truemail::Validate::Smtp::Request.new(
-            host: result_instance.mail_servers[0], email: result_instance.email
+            host: result_instance.mail_servers[0],
+            email: result_instance.email,
+            configuration: configuration_instance
           )
           request_1.response.port_opened = false
 
           request_2 = Truemail::Validate::Smtp::Request.new(
-            host: result_instance.mail_servers[1], email: result_instance.email
+            host: result_instance.mail_servers[1],
+            email: result_instance.email,
+            configuration: configuration_instance
           )
           request_2.response.tap do |response|
             response.port_opened = true
@@ -155,7 +161,9 @@ RSpec.describe Truemail::Validate::Smtp do
           end
 
           request_3 = Truemail::Validate::Smtp::Request.new(
-            host: result_instance.mail_servers[2], email: result_instance.email
+            host: result_instance.mail_servers[2],
+            email: result_instance.email,
+            configuration: configuration_instance
           )
 
           request_3.response.tap do |response|
@@ -187,7 +195,7 @@ RSpec.describe Truemail::Validate::Smtp do
         end
 
         context 'with smtp safe check' do
-          before { Truemail.configuration.smtp_safe_check = true }
+          before { configuration_instance.smtp_safe_check = true }
 
           context 'when smtp user error has been not detected' do
             specify do

@@ -17,6 +17,7 @@ detectors:
   TooManyInstanceVariables:
     exclude:
      - Truemail::Configuration
+     - Truemail::Validate::Smtp::Request
 
   Attribute:
     exclude:
@@ -40,11 +41,13 @@ detectors:
       - Truemail::Worker#success
       - Truemail#raise_unless
       - Truemail::Configuration#raise_unless
+      - Truemail#determine_configuration
 
   FeatureEnvy:
     exclude:
       - Truemail::Validate::Smtp#not_includes_user_not_found_errors
       - Truemail::GenerateEmailHelper#prepare_user_name
+      - Truemail::ConfigurationHelper#create_configuration
 
   NilCheck:
     exclude:
