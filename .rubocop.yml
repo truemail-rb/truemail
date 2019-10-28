@@ -25,6 +25,9 @@ Documentation:
 Style/DoubleNegation:
   Enabled: false
 
+Style/EmptyCaseCondition:
+  Enabled: false
+
 Style/RescueStandardError:
   Enabled: false
 

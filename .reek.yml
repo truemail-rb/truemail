@@ -12,12 +12,16 @@ detectors:
       - Truemail::Validate::Smtp::Request#run
       - Truemail::Validate::Smtp#run
       - Truemail::Validate::Mx#hosts_from_cname_records
-      - Truemail::Configuration#initialize
+      - Truemail::Configuration#logger=
 
   TooManyInstanceVariables:
     exclude:
      - Truemail::Configuration
      - Truemail::Validate::Smtp::Request
+
+  TooManyMethods:
+    exclude:
+     - Truemail::Configuration
 
   Attribute:
     exclude:
@@ -48,7 +52,18 @@ detectors:
       - Truemail::Validate::Smtp#not_includes_user_not_found_errors
       - Truemail::GenerateEmailHelper#prepare_user_name
       - Truemail::ConfigurationHelper#create_configuration
+      - Truemail::Log::Serializer::Base#smtp_debug
+      - Truemail::Log::Serializer::Text#data_composer
 
   NilCheck:
     exclude:
       - Truemail::Validator#result_not_changed?
+      - Truemail::Configuration#logger=
+      - Truemail::Validator#run
+
+  BooleanParameter:
+    exclude:
+      - Truemail::Configuration#logger=
+
+exclude_paths:
+  - spec/support/helpers
