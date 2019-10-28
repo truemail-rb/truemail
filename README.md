@@ -1,16 +1,66 @@
-# Truemail
+# <img src='https://repository-images.githubusercontent.com/173723932/6dffee00-e88e-11e9-94b6-c97aacc0df00' height='250' alt='Truemail - configurable plain Ruby email validator' />
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/maintainability)](https://codeclimate.com/github/rubygarage/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/test_coverage)](https://codeclimate.com/github/rubygarage/truemail/test_coverage) [![CircleCI](https://circleci.com/gh/rubygarage/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/rubygarage/truemail/tree/master) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![Downloads](https://img.shields.io/gem/dt/truemail.svg?colorA=004d99&colorB=0073e6)](https://rubygems.org/gems/truemail) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 The Truemail gem helps you validate emails via regex pattern, presence of DNS records, and real existence of email account on a current email server. Also Truemail gem allows performing an audit of the host in which runs.
 
+## Table of Contents
+
+- [Synopsis](#synopsis)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Configuration features](#configuration-features)
+    - [Setting global configuration](#setting-global-configuration)
+      - [Read global configuration](#read-global-configuration)
+      - [Update global configuration](#update-global-configuration)
+      - [Reset global configuration](#reset-global-configuration)
+    - [Using custom independent configuration](#using-custom-independent-configuration)
+  - [Validation features](#validation-features)
+    - [Whitelist/Blacklist check](#whitelist-blacklist-check)
+      - [Whitelist case](#whitelist-case)
+      - [Whitelist validation case](#whitelist-validation-case)
+      - [Blacklist case](#blacklist-case)
+      - [Duplication case](#duplication-case)
+    - [Regex validation](#regex-validation)
+      - [With default regex pattern](#with-default-regex-pattern)
+      - [With custom regex pattern](#with-custom-regex-pattern)
+    - [MX validation](#mx-validation)
+    - [SMTP validation](#smtp-validation)
+      - [SMTP safe check disabled](#smtp-safe-check-disabled)
+      - [SMTP safe check enabled](#smtp-safe-check-enabled)
+  - [Event logger](#event-logger)
+    - [Available tracking events](#available-tracking-events)
+  - [JSON serializer](#json-serializer)
+  - [Host audit features](#host-audit-features)
+    - [PTR audit](#ptr-audit)
+  - [Truemail helpers](#truemail-helpers)
+    - [.valid?](#valid)
+  - [Test environment](#test-environment)
+- [Contributing](#contributing)
+- [License](#license)
+- [Code of Conduct](#code-of-conduct)
+- [Versioning](#versioning)
+- [Changelog](CHANGELOG.md)
+
+## Synopsis
+
+Email validation is a tricky thing. There are a number of different ways to validate an email address and all mechanisms must conform with the best practices and provide proper validation. You can get more information about email validation techniques in our [blog](https://rubygarage.org/blog/how-to-validate-emails).
+
+**Syntax Checking**: Checks the email addresses via regex pattern.
+
+**Mail Server Existence Check**: Checks the availability of the email address domain using DNS records.
+
+**Mail Existence Check**: Checks if the email address really exists and can receive email via SMTP connections and email-sending emulation techniques.
+
 ## Features
 
 - Configurable validator, validate only what you need
 - Zero runtime dependencies
-- Has whitelist/blacklist
-- Has simple SMTP debugger
-- 100% test coverage
+- Whitelist/blacklist validation layers
+- Simple SMTP debugger
+- Event logger
+- JSON serializer
 
 ## Installation
 
@@ -28,21 +78,28 @@ Or install it yourself as:
 
     $ gem install truemail
 
-## Email Validation Methods
-
-Email validation is a tricky thing. There are a number of different ways to validate an email address and all mechanisms must conform with the best practices and provide proper validation. You can get more information about email validation techniques in our [blog](https://rubygarage.org/blog/how-to-validate-emails).
-
-**Syntax Checking**: Checks the email addresses via regex pattern.
-
-**Mail Server Existence Check**: Checks the availability of the email address domain using DNS records.
-
-**Mail Existence Check**: Checks if the email address really exists and can receive email via SMTP connections and email-sending emulation techniques.
-
 ## Usage
 
 ### Configuration features
 
-You can use global gem configuration or custom independent configuration.
+You can use global gem configuration or custom independent configuration. Available configuration options:
+
+- verifier email
+- verifier domain
+- email pattern
+- SMTP error body pattern
+- connection timeout
+- response timeout
+- connection attempts
+- default validation type
+- validation type for domains
+- whitelisted domains
+- whitelist validation
+- blacklisted domains
+- SMTP safe check
+- event logger
+- JSON serializer
+
 
 #### Setting global configuration
 
@@ -109,6 +166,11 @@ Truemail.configure do |config|
   # if SMTP server does not return an exact answer that the email does not exist
   # By default this option is disabled, available for SMTP validation only.
   config.smtp_safe_check = true
+
+  # Optional parameter. This option will enable tracking events. You can print tracking events to
+  # stdout, write to file or both of these. Tracking event by default is :error
+  # Available tracking event: :all, :unrecognized_error, :recognized_error, :error
+  config.logger = { tracking_event: :all, stdout: true, log_absolute_path: '/home/app/log/truemail.log' }
 end
 ```
 
@@ -131,7 +193,9 @@ Truemail.configuration
  @blacklisted_domains=[],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com"
- @smtp_safe_check=true>
+ @smtp_safe_check=true,
+ @logger=#<Truemail::Logger:0x0000557f837450b0
+   @event=:all, @file="/home/app/log/truemail.log", @stdout=true>>
 ```
 
 ##### Update global configuration
@@ -157,7 +221,9 @@ Truemail.configuration
  @blacklisted_domains=[],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com",
- @smtp_safe_check=true>
+ @smtp_safe_check=true,
+ @logger=#<Truemail::Logger:0x0000557f837450b0
+   @event=:all, @file="/home/app/log/truemail.log", @stdout=true>>
 ```
 
 ##### Reset global configuration
@@ -401,7 +467,7 @@ By default this validation not performs strictly following [RFC 5322](https://ww
 
 Example of usage:
 
-1. With default regex pattern
+##### With default regex pattern
 
 ```ruby
 require 'truemail'
@@ -438,7 +504,9 @@ Truemail.validate('email@example.com', with: :regex)
   @validation_type=:regex>
 ```
 
-2. With custom regex pattern. You should define your custom regex pattern in a gem configuration before.
+##### With custom regex pattern
+
+You should define your custom regex pattern in a gem configuration before.
 
 ```ruby
 require 'truemail'
@@ -537,6 +605,8 @@ If total count of MX servers is equal to one, ```Truemail::Smtp``` validator wil
 
 By default, you don't need pass with-parameter to use it. Example of usage is specified below:
 
+###### SMTP safe check disabled
+
 With ```smtp_safe_check = false```
 
 ```ruby
@@ -626,6 +696,9 @@ Truemail.validate('email@example.com')
              @whitelisted_domains=[]>,
     @validation_type=:smtp>
 ```
+
+
+###### SMTP safe check enabled
 
 With ```smtp_safe_check = true```
 
@@ -734,6 +807,62 @@ Truemail.validate('email@example.com')
              @whitelist_validation=false,
              @whitelisted_domains=[]>,
     @validation_type=:smtp>
+```
+
+### Event logger
+
+Truemail gem allows to output tracking events to stdout/file or both of these. Please note, at least one of the outputs must exist. Tracking event by default is `:error`
+
+```ruby
+Truemail.configure do |config|
+  config.logger = { tracking_event: :all, stdout: true, log_absolute_path: '/home/app/log/truemail.log' }
+end
+```
+
+#### Available tracking events
+
+- `:all`, all detected events including success validation cases
+- `:unrecognized_error`, unrecognized errors only (when `smtp_safe_check = true` and SMTP server does not return an exact answer that the email does not exist)
+- `:recognized_error`, recognized errors only
+- `:error`, recognized and unrecognized errors only
+
+### JSON serializer
+
+Truemail has built in JSON serializer for `Truemail::Validator` instance, so you can represent your email validation result as json.
+
+```ruby
+Truemail::Log::Serializer::Json.call(Truemail.validate('nonexistent_email@bestweb.com.ua'))
+
+=>
+# Serialized Truemail::Validator instance
+{
+  "date": "2019-10-28 10:15:51 +0200",
+  "email": "nonexistent_email@bestweb.com.ua",
+  "validation_type": "smtp",
+  "success": false,
+  "errors": {
+    "smtp": "smtp error"
+  },
+  "smtp_debug": [
+    {
+      "mail_host": "213.180.193.89",
+      "port_opened": true,
+      "connection": true,
+      "errors": {
+        "rcptto": "550 5.7.1 No such user!\n"
+      }
+    }
+  ],
+  "configuration": {
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null,
+    "blacklisted_domains": null,
+    "smtp_safe_check": false,
+    "email_pattern": "default gem value",
+    "smtp_error_body_pattern": "default gem value"
+  }
+}
 ```
 
 ### Host audit features

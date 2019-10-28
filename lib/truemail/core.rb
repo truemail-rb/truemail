@@ -7,6 +7,7 @@ module Truemail
   require 'truemail/wrapper'
   require 'truemail/auditor'
   require 'truemail/validator'
+  require 'truemail/logger'
 
   class ConfigurationError < StandardError; end
 
@@ -37,5 +38,12 @@ module Truemail
     require 'truemail/validate/smtp'
     require 'truemail/validate/smtp/response'
     require 'truemail/validate/smtp/request'
+  end
+
+  module Log
+    require 'truemail/log/event'
+    require 'truemail/log/serializer/base'
+    require 'truemail/log/serializer/text'
+    require 'truemail/log/serializer/json'
   end
 end

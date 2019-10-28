@@ -16,6 +16,7 @@ module Truemail
       expect(configuration_instance.whitelist_validation).to eq(false)
       expect(configuration_instance.blacklisted_domains).to eq([])
       expect(configuration_instance.smtp_safe_check).to be(false)
+      expect(configuration_instance.logger).to be_nil
     end
   end
 end
