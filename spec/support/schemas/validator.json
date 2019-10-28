@@ -1,0 +1,235 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "date",
+    "email",
+    "validation_type",
+    "success",
+    "errors",
+    "smtp_debug",
+    "configuration"
+  ],
+  "properties": {
+    "date": {
+      "$id": "#/properties/date",
+      "type": "string",
+      "title": "The Date Schema",
+      "default": "",
+      "examples": [
+        "2019-10-27 19:03:33 +0200"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "email": {
+      "$id": "#/properties/email",
+      "type": "string",
+      "title": "The Email Schema",
+      "default": "",
+      "examples": [
+        "jc@brakusvonrueden.us"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "validation_type": {
+      "$id": "#/properties/validation_type",
+      "type": "string",
+      "title": "The Validation_type Schema",
+      "default": "",
+      "examples": [
+        "smtp"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "success": {
+      "$id": "#/properties/success",
+      "type": "boolean",
+      "title": "The Success Schema",
+      "default": false,
+      "examples": [
+        false
+      ]
+    },
+    "errors": {
+      "$id": "#/properties/errors",
+      "type": [
+        "object",
+        "null"
+      ],
+      "title": "The Errors Schema",
+      "default": null,
+      "properties": {
+        "smtp": {
+          "$id": "#/properties/errors/properties/smtp",
+          "type": "string",
+          "title": "The Smtp Schema",
+          "default": "",
+          "examples": [
+            "smtp error"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "smtp_debug": {
+      "$id": "#/properties/smtp_debug",
+      "type": [
+        "array",
+        "null"
+      ],
+      "title": "The Smtp_debug Schema",
+      "default": null,
+      "items": {
+        "$id": "#/properties/smtp_debug/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "required": [
+          "mail_host",
+          "port_opened",
+          "connection",
+          "errors"
+        ],
+        "properties": {
+          "mail_host": {
+            "$id": "#/properties/smtp_debug/items/properties/mail_host",
+            "type": "string",
+            "title": "The Mail_host Schema",
+            "default": "",
+            "examples": [
+              "198.60.125.186"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "port_opened": {
+            "$id": "#/properties/smtp_debug/items/properties/port_opened",
+            "type": "boolean",
+            "title": "The Port_opened Schema",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "connection": {
+            "$id": "#/properties/smtp_debug/items/properties/connection",
+            "type": "boolean",
+            "title": "The Connection Schema",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "errors": {
+            "$id": "#/properties/smtp_debug/items/properties/errors",
+            "type": "object",
+            "title": "The Errors Schema",
+            "properties": {
+              "rcptto": {
+                "$id": "#/properties/smtp_debug/items/properties/errors/properties/rcptto",
+                "type": "string",
+                "title": "The Rcptto Schema",
+                "default": "",
+                "examples": [
+                  "user not found"
+                ],
+                "pattern": "^(.*)$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "configuration": {
+      "$id": "#/properties/configuration",
+      "type": "object",
+      "title": "The Configuration Schema",
+      "required": [
+        "validation_type_by_domain",
+        "whitelist_validation",
+        "whitelisted_domains",
+        "blacklisted_domains",
+        "smtp_safe_check",
+        "email_pattern",
+        "smtp_error_body_pattern"
+      ],
+      "properties": {
+        "validation_type_by_domain": {
+          "$id": "#/properties/configuration/properties/validation_type_by_domain",
+          "type": [
+            "object",
+            "null"
+          ],
+          "title": "The Validation_type_by_domain Schema",
+          "default": null,
+          "examples": [
+            null
+          ]
+        },
+        "whitelist_validation": {
+          "$id": "#/properties/configuration/properties/whitelist_validation",
+          "type": "boolean",
+          "title": "The Whitelist_validation Schema",
+          "default": false,
+          "examples": [
+            false
+          ]
+        },
+        "whitelisted_domains": {
+          "$id": "#/properties/configuration/properties/whitelisted_domains",
+          "type": [
+            "array",
+            "null"
+          ],
+          "title": "The Whitelisted_domains Schema",
+          "default": null,
+          "examples": [
+            null
+          ]
+        },
+        "blacklisted_domains": {
+          "$id": "#/properties/configuration/properties/blacklisted_domains",
+          "type": [
+            "array",
+            "null"
+          ],
+          "title": "The Blacklisted_domains Schema",
+          "default": null,
+          "examples": [
+            null
+          ]
+        },
+        "smtp_safe_check": {
+          "$id": "#/properties/configuration/properties/smtp_safe_check",
+          "type": "boolean",
+          "title": "The Smtp_safe_check Schema",
+          "default": false,
+          "examples": [
+            false
+          ]
+        },
+        "email_pattern": {
+          "$id": "#/properties/configuration/properties/email_pattern",
+          "type": "string",
+          "title": "The Email_pattern Schema",
+          "default": "",
+          "examples": [
+            "default gem value"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "smtp_error_body_pattern": {
+          "$id": "#/properties/configuration/properties/smtp_error_body_pattern",
+          "type": "string",
+          "title": "The Smtp_error_body_pattern Schema",
+          "default": "",
+          "examples": [
+            "default gem value"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    }
+  }
+}

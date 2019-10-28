@@ -48,6 +48,7 @@ RSpec.describe Truemail::Configuration do
         expect(configuration_instance.whitelist_validation).to eq(false)
         expect(configuration_instance.blacklisted_domains).to eq([])
         expect(configuration_instance.smtp_safe_check).to be(false)
+        expect(configuration_instance.logger).to be_nil
       end
 
       it 'sets configuration instance with default configuration template' do
@@ -68,6 +69,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
           .and not_change(configuration_instance, :smtp_safe_check)
+          .and not_change(configuration_instance, :logger)
 
         configuration_instance_expectaions
       end
@@ -90,6 +92,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
           .and not_change(configuration_instance, :smtp_safe_check)
+          .and not_change(configuration_instance, :logger)
 
         configuration_instance_expectaions
       end
@@ -112,6 +115,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
           .and not_change(configuration_instance, :smtp_safe_check)
+          .and not_change(configuration_instance, :logger)
 
         configuration_instance_expectaions
       end
@@ -365,6 +369,113 @@ RSpec.describe Truemail::Configuration do
           expect { configuration_instance.smtp_safe_check = true }
             .to change(configuration_instance, :smtp_safe_check)
             .from(false).to(true)
+        end
+      end
+
+      describe '#logger=' do
+        let(:set_logger) { configuration_instance.logger = logger_params }
+
+        context 'with valid logger settings' do
+          shared_examples 'sets logger instance' do
+            it 'sets logger instance' do
+              expect { set_logger }.to change(configuration_instance, :logger)
+                .from(nil).to(Truemail::Logger)
+            end
+          end
+
+          let(:default_tracking_events_expectation) { expect(configuration_instance.logger.event).to eq(:error) }
+
+          context 'when stdout only' do
+            let(:logger_params) { { stdout: true } }
+
+            include_examples 'sets logger instance'
+
+            it 'sets logger configuration' do
+              set_logger
+              default_tracking_events_expectation
+              expect(configuration_instance.logger.stdout).to be(true)
+            end
+          end
+
+          context 'when file only' do
+            let(:logger_params) { { log_absolute_path: 'some_absolute_path' } }
+
+            include_examples 'sets logger instance'
+
+            it 'sets logger configuration' do
+              set_logger
+              default_tracking_events_expectation
+              expect(configuration_instance.logger.file).to be(logger_params[:log_absolute_path])
+            end
+          end
+
+          context 'when stdout and file outputs' do
+            let(:logger_params) { { stdout: true, log_absolute_path: 'some_absolute_path' } }
+
+            include_examples 'sets logger instance'
+
+            it 'sets logger configuration' do
+              set_logger
+              default_tracking_events_expectation
+              expect(configuration_instance.logger.stdout).to be(true)
+              expect(configuration_instance.logger.file).to be(logger_params[:log_absolute_path])
+            end
+          end
+
+          context 'with valid tracking event' do
+            shared_examples 'sets logger instance with custom tracking event' do
+              it 'sets tracking event' do
+                set_logger
+                expect(configuration_instance.logger.event).to eq(event)
+              end
+            end
+
+            Truemail::Log::Event::TRACKING_EVENTS.each_key do |tracking_event|
+              context "when #{tracking_event} tracking event" do
+                let(:event) { tracking_event }
+                let(:logger_params) { { tracking_event: event, stdout: true } }
+
+                it_behaves_like 'sets logger instance with custom tracking event'
+              end
+            end
+          end
+        end
+
+        context 'with invalid logger setting' do
+          shared_examples 'raises logger argument error' do
+            specify { expect { set_logger }.to raise_error(Truemail::ArgumentError, error_message) }
+          end
+
+          context 'with empty params' do
+            let(:logger_params) { {} }
+            let(:error_message) { ' is not a valid logger=' }
+
+            include_examples 'raises logger argument error'
+          end
+
+          context 'with log_absolute_path wrong type' do
+            let(:log_absolute_path) { true }
+            let(:logger_params) { { log_absolute_path: log_absolute_path } }
+            let(:error_message) { "#{log_absolute_path} is not a valid logger=" }
+
+            include_examples 'raises logger argument error'
+          end
+
+          context 'when attempt configure logger without output' do
+            let(:stdout) { false }
+            let(:logger_params) { { stdout: stdout } }
+            let(:error_message) { ' is not a valid logger=' }
+
+            include_examples 'raises logger argument error'
+          end
+
+          context 'with not existing tracking event' do
+            let(:tracking_event) { :not_existing_tracking_event }
+            let(:logger_params) { { tracking_event: tracking_event } }
+            let(:error_message) { "#{tracking_event} is not a valid logger=" }
+
+            include_examples 'raises logger argument error'
+          end
         end
       end
     end

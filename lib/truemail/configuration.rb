@@ -17,7 +17,8 @@ module Truemail
                 :default_validation_type,
                 :validation_type_by_domain,
                 :whitelisted_domains,
-                :blacklisted_domains
+                :blacklisted_domains,
+                :logger
 
     attr_accessor :whitelist_validation, :smtp_safe_check
 
@@ -70,6 +71,16 @@ module Truemail
         raise_unless(argument, __method__, argument.is_a?(Array) && check_domain_list(argument))
         instance_variable_set(:"@#{method}", argument)
       end
+    end
+
+    def logger=(tracking_event: :error, stdout: false, log_absolute_path: nil)
+      valid_event = Truemail::Log::Event::TRACKING_EVENTS.keys.include?(tracking_event)
+      stdout_only = stdout && log_absolute_path.nil?
+      file_only = log_absolute_path.is_a?(String)
+      both_types = stdout && file_only
+      argument_info = valid_event ? log_absolute_path : tracking_event
+      raise_unless(argument_info, __method__, valid_event && (stdout_only || file_only || both_types))
+      @logger = Truemail::Logger.new(tracking_event, stdout, log_absolute_path)
     end
 
     def complete?
