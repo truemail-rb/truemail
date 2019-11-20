@@ -9,9 +9,12 @@ PreCommit:
   BundleAudit:
     enabled: true
 
-  Brakeman:
+  Fasterer:
     enabled: true
-    flags: ['--exit-on-warn', '--quiet', '--summary']
+    include: '**/*.rb'
+
+  TrailingWhitespace:
+    enabled: true
 
   RuboCop:
     enabled: true
