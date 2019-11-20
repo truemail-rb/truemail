@@ -1,3 +1,7 @@
+require:
+  - rubocop-rspec
+  - rubocop-performance
+
 AllCops:
   DisplayCopNames:    true
   DisplayStyleGuide:  true
@@ -19,7 +23,7 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Enabled: false
 
-Documentation:
+Style/Documentation:
   Enabled: false
 
 Style/DoubleNegation:
@@ -31,7 +35,27 @@ Style/EmptyCaseCondition:
 Style/RescueStandardError:
   Enabled: false
 
-require: rubocop-rspec
+Layout/ClassStructure:
+  Enabled: true
+  Categories:
+    module_inclusion:
+      - include
+      - prepend
+      - extend
+    associations:
+      - has_one
+      - has_many
+      - belongs_to
+      - has_and_belongs_to_many
+  ExpectedOrder:
+      - module_inclusion
+      - constants
+      - associations
+      - public_class_methods
+      - initializer
+      - public_methods
+      - protected_methods
+      - private_methods
 
 RSpec/ExampleLength:
   Enabled: false
@@ -52,4 +76,7 @@ RSpec/AnyInstance:
   Enabled: false
 
 RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/MultipleDescribes:
   Enabled: false
