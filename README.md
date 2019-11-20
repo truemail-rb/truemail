@@ -37,6 +37,7 @@ The Truemail gem helps you validate emails via regex pattern, presence of DNS re
   - [Truemail helpers](#truemail-helpers)
     - [.valid?](#valid)
   - [Test environment](#test-environment)
+- [Truemail family](#truemail-family)
 - [Contributing](#contributing)
 - [License](#license)
 - [Code of Conduct](#code-of-conduct)
@@ -948,6 +949,14 @@ end
 ```
 
 ---
+## Truemail family
+
+All Truemail extensions: https://github.com/truemail-rb
+
+### truemail-rspec
+
+gem `truemail-rspec` - Truemail configuration and validator RSpec helpers, https://github.com/truemail-rb/truemail-rspec
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/rubygarage/truemail. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct. Please check the [open tikets](https://github.com/rubygarage/truemail/issues). Be shure to follow Contributor Code of Conduct below and our [Contributing Guidelines](CONTRIBUTING.md).
