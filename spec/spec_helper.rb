@@ -6,6 +6,7 @@ require 'ffaker'
 require 'json_matchers/rspec'
 require 'pry'
 require 'truemail'
+require 'truemail/rspec'
 
 SimpleCov.start
 JsonMatchers.schema_root = 'spec/support/schemas'
@@ -16,8 +17,7 @@ Dir[File.expand_path(rspec_custom)].each do |file|
 end
 
 RSpec.configure do |config|
-  config.include Truemail::ConfigurationHelper
-  config.include Truemail::ValidatorHelper
+  config.include Truemail::RSpec
   config.example_status_persistence_file_path = '.rspec_status'
   config.disable_monkey_patching!
   config.expect_with(:rspec) { |c| c.syntax = :expect }
