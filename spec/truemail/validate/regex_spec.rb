@@ -34,8 +34,10 @@ RSpec.describe Truemail::Validate::Regex do
 
       specify do
         expect { regex_validator }
-          .to change(result_instance, :success).from(nil).to(false)
-          .and change(result_instance, :errors).from({}).to({ regex: Truemail::Validate::Regex::ERROR })
+          .to change(result_instance, :success)
+          .from(nil).to(false)
+          .and change(result_instance, :errors)
+          .from({}).to(regex: Truemail::Validate::Regex::ERROR)
       end
 
       it 'returns false' do

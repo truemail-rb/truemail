@@ -96,9 +96,9 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       allow(session).to receive(:open_timeout=).with(connection_timeout)
       allow(session).to receive(:read_timeout=).with(response_timeout)
       allow(Net::SMTP)
-          .to receive(:new)
-          .with(request_instance_host, Truemail::Validate::Smtp::Request::SMTP_PORT)
-          .and_return(session)
+        .to receive(:new)
+        .with(request_instance_host, Truemail::Validate::Smtp::Request::SMTP_PORT)
+        .and_return(session)
     end
 
     context 'when smtp communication complete successfully' do
@@ -117,10 +117,14 @@ RSpec.describe Truemail::Validate::Smtp::Request do
         allow(session).to receive(:start).and_yield(session)
 
         expect { response_instance_target_method }
-          .to change(response_instance, :connection).from(nil).to(true)
-          .and change(response_instance, :helo).from(nil).to(true)
-          .and change(response_instance, :mailfrom).from(nil).to(true)
-          .and change(response_instance, :rcptto).from(nil).to(true)
+          .to change(response_instance, :connection)
+          .from(nil).to(true)
+          .and change(response_instance, :helo)
+          .from(nil).to(true)
+          .and change(response_instance, :mailfrom)
+          .from(nil).to(true)
+          .and change(response_instance, :rcptto)
+          .from(nil).to(true)
           .and not_change(response_instance, :errors)
 
         expect(response_instance_target_method).to be(true)
@@ -146,9 +150,10 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           error_stubs
 
           expect { response_instance_target_method }
-            .to change(response_instance, :connection).from(nil).to(false)
+            .to change(response_instance, :connection)
+            .from(nil).to(false)
             .and change(response_instance, :errors)
-            .from({}).to({ connection: Truemail::Validate::Smtp::Request::CONNECTION_TIMEOUT_ERROR })
+            .from({}).to(connection: Truemail::Validate::Smtp::Request::CONNECTION_TIMEOUT_ERROR)
             .and not_change(response_instance, :helo)
             .and not_change(response_instance, :mailfrom)
             .and not_change(response_instance, :rcptto)
@@ -169,10 +174,12 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           error_stubs
 
           expect { response_instance_target_method }
-            .to change(response_instance, :connection).from(nil).to(false)
+            .to change(response_instance, :connection)
+            .from(nil).to(false)
             .and change(response_instance, :errors)
-            .from({}).to({ connection: Truemail::Validate::Smtp::Request::CONNECTION_DROPPED, helo: 'StandardError' })
-            .and change(response_instance, :helo).from(nil).to(false)
+            .from({}).to(connection: Truemail::Validate::Smtp::Request::CONNECTION_DROPPED, helo: 'StandardError')
+            .and change(response_instance, :helo)
+            .from(nil).to(false)
             .and not_change(response_instance, :mailfrom)
             .and not_change(response_instance, :rcptto)
 
@@ -191,9 +198,10 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           error_stubs
 
           expect { response_instance_target_method }
-            .to change(response_instance, :connection).from(nil).to(false)
+            .to change(response_instance, :connection)
+            .from(nil).to(false)
             .and change(response_instance, :errors)
-            .from({}).to({ connection: 'error message' })
+            .from({}).to(connection: 'error message')
             .and not_change(response_instance, :helo)
             .and not_change(response_instance, :mailfrom)
             .and not_change(response_instance, :rcptto)
@@ -212,10 +220,12 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           allow(session).to receive(:rcptto)
 
           expect { response_instance_target_method }
-            .to change(response_instance, :connection).from(nil).to(true)
-            .and change(response_instance, :helo).from(nil).to(false)
+            .to change(response_instance, :connection)
+            .from(nil).to(true)
+            .and change(response_instance, :helo)
+            .from(nil).to(false)
             .and change(response_instance, :errors)
-            .from({}).to({ helo: Truemail::Validate::Smtp::Request::RESPONSE_TIMEOUT_ERROR })
+            .from({}).to(helo: Truemail::Validate::Smtp::Request::RESPONSE_TIMEOUT_ERROR)
             .and not_change(response_instance, :mailfrom)
             .and not_change(response_instance, :rcptto)
 
@@ -232,10 +242,14 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           allow(session).to receive(:rcptto)
 
           expect { response_instance_target_method }
-            .to change(response_instance, :connection).from(nil).to(true)
-            .and change(response_instance, :helo).from(nil).to(true)
-            .and change(response_instance, :mailfrom).from(nil).to(false)
-            .and change(response_instance, :errors).from({}).to({ mailfrom: error_message })
+            .to change(response_instance, :connection)
+            .from(nil).to(true)
+            .and change(response_instance, :helo)
+            .from(nil).to(true)
+            .and change(response_instance, :mailfrom)
+            .from(nil).to(false)
+            .and change(response_instance, :errors)
+            .from({}).to(mailfrom: error_message)
             .and not_change(response_instance, :rcptto)
 
           expect(session).not_to have_received(:rcptto)
@@ -250,11 +264,16 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           allow(session).to receive(:rcptto).and_raise(StandardError, error_message)
 
           expect { response_instance_target_method }
-            .to change(response_instance, :connection).from(nil).to(true)
-            .and change(response_instance, :helo).from(nil).to(true)
-            .and change(response_instance, :mailfrom).from(nil).to(true)
-            .and change(response_instance, :rcptto).from(nil).to(false)
-            .and change(response_instance, :errors).from({}).to({ rcptto: error_message })
+            .to change(response_instance, :connection)
+            .from(nil).to(true)
+            .and change(response_instance, :helo)
+            .from(nil).to(true)
+            .and change(response_instance, :mailfrom)
+            .from(nil).to(true)
+            .and change(response_instance, :rcptto)
+            .from(nil).to(false)
+            .and change(response_instance, :errors)
+            .from({}).to(rcptto: error_message)
 
           expect(response_instance_target_method).to be(false)
         end

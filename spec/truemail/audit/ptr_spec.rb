@@ -49,7 +49,7 @@ RSpec.describe Truemail::Audit::Ptr do
     describe 'Fails' do
       context 'when determining current host address' do
         let(:expectation) do
-          expect { ptr_auditor }.to change(result_instance, :warnings).from({}).to({ ptr: Truemail::Audit::Ptr::IPIFY_ERROR })
+          expect { ptr_auditor }.to change(result_instance, :warnings).from({}).to(ptr: Truemail::Audit::Ptr::IPIFY_ERROR)
         end
 
         context 'if error with third party service' do
@@ -69,7 +69,7 @@ RSpec.describe Truemail::Audit::Ptr do
 
       context 'when determining ptr records' do
         let(:expectation) do
-          expect { ptr_auditor }.to change(result_instance, :warnings).from({}).to({ ptr: Truemail::Audit::Ptr::PTR_NOT_FOUND })
+          expect { ptr_auditor }.to change(result_instance, :warnings).from({}).to(ptr: Truemail::Audit::Ptr::PTR_NOT_FOUND)
         end
 
         context 'if ptr record for current host address was not found' do
@@ -95,7 +95,7 @@ RSpec.describe Truemail::Audit::Ptr do
             expect(ptr_auditor_instance).to receive(:current_host_address).and_return(true)
             expect(ptr_auditor_instance).to receive(:ptr_records).and_return([host_name])
             expect(ptr_auditor_instance).to receive(:ptr_not_refer_to_verifier_domain?).and_return(true)
-            expect { ptr_auditor }.to change(result_instance, :warnings).from({}).to({ ptr: Truemail::Audit::Ptr::PTR_NOT_REFER })
+            expect { ptr_auditor }.to change(result_instance, :warnings).from({}).to(ptr: Truemail::Audit::Ptr::PTR_NOT_REFER)
           end
         end
       end
@@ -104,7 +104,7 @@ RSpec.describe Truemail::Audit::Ptr do
         let(:expectation) do
           expect { ptr_auditor }
             .to change(result_instance, :warnings)
-            .from({}).to({ ptr: Truemail::Audit::Ptr::VERIFIER_DOMAIN_NOT_REFER })
+            .from({}).to(ptr: Truemail::Audit::Ptr::VERIFIER_DOMAIN_NOT_REFER)
         end
 
         before do
