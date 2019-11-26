@@ -84,6 +84,10 @@ RSpec.describe Truemail::RegexConstant do
       expect(regex_pattern.match?('1-domain.us')).to be(true)
     end
 
+    it 'allows punycode' do
+      expect(regex_pattern.match?('xn--eu8h.us')).to be(true)
+    end
+
     it 'allows nested subdomains' do
       expect(regex_pattern.match?('42.com')).to be(true)
       expect(regex_pattern.match?('42.subdomain.domain')).to be(true)
