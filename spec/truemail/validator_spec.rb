@@ -160,7 +160,7 @@ RSpec.describe Truemail::Validator::Result do
   end
 
   it 'has .valid? alias' do
-    expect((result_instance).respond_to?(:valid?)).to be(true)
+    expect(result_instance.respond_to?(:valid?)).to be(true)
     expect(result_instance.success).to eq(result_instance.valid?)
   end
 

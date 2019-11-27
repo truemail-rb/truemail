@@ -1,10 +1,10 @@
 require:
   - rubocop-rspec
+  - rubocop-performance
 
 AllCops:
   DisplayCopNames:    true
   DisplayStyleGuide:  true
-  StyleGuideCopsOnly: true
   TargetRubyVersion:  2.5
 
 Metrics/LineLength:
@@ -23,6 +23,12 @@ Metrics/CyclomaticComplexity:
   Enabled: false
 
 Metrics/PerceivedComplexity:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+Naming/RescuedExceptionsVariableName:
   Enabled: false
 
 Style/Documentation:
@@ -58,6 +64,9 @@ Layout/ClassStructure:
       - public_methods
       - protected_methods
       - private_methods
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
 
 RSpec/ExampleLength:
   Enabled: false

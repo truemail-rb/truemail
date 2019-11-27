@@ -85,8 +85,7 @@ RSpec.describe Truemail do
         described_class.configure(&configuration_block(
           verifier_email: email,
           verifier_domain: domain
-          )
-        )
+        ))
       end
 
       let(:domain) { FFaker::Internet.domain_name }
@@ -104,15 +103,16 @@ RSpec.describe Truemail do
             verifier_domain: new_domain,
             email_pattern: new_regex_pattern,
             smtp_error_body_pattern: new_smtp_error_body_pattern
-            )
-          )
+          ))
         end
-        .to change(configuration, :verifier_email).from(email).to(new_email)
-        .and change(configuration, :verifier_domain).from(domain).to(new_domain)
-        .and change(configuration, :email_pattern)
-        .from(Truemail::RegexConstant::REGEX_EMAIL_PATTERN).to(new_regex_pattern)
-        .and change(configuration, :smtp_error_body_pattern)
-        .from(Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN).to(new_smtp_error_body_pattern)
+          .to change(configuration, :verifier_email)
+          .from(email).to(new_email)
+          .and change(configuration, :verifier_domain)
+          .from(domain).to(new_domain)
+          .and change(configuration, :email_pattern)
+          .from(Truemail::RegexConstant::REGEX_EMAIL_PATTERN).to(new_regex_pattern)
+          .and change(configuration, :smtp_error_body_pattern)
+          .from(Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN).to(new_smtp_error_body_pattern)
       end
     end
   end

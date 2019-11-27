@@ -74,7 +74,7 @@ module Truemail
     end
 
     def logger=(tracking_event: :error, stdout: false, log_absolute_path: nil)
-      valid_event = Truemail::Log::Event::TRACKING_EVENTS.keys.include?(tracking_event)
+      valid_event = Truemail::Log::Event::TRACKING_EVENTS.key?(tracking_event)
       stdout_only = stdout && log_absolute_path.nil?
       file_only = log_absolute_path.is_a?(String)
       both_types = stdout && file_only
