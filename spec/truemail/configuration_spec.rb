@@ -24,9 +24,7 @@ RSpec.describe Truemail::Configuration do
     end
 
     it 'accepts block' do
-      expect(
-        described_class.new(&configuration_block(verifier_email: valid_email)
-      ).verifier_email).to eq(valid_email)
+      expect(described_class.new(&configuration_block(verifier_email: valid_email)).verifier_email).to eq(valid_email)
     end
 
     include_examples 'sets default configuration'

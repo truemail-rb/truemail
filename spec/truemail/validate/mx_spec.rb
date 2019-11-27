@@ -31,7 +31,7 @@ RSpec.describe Truemail::Validate::Mx do
       let(:host_address) { FFaker::Internet.ip_v4_address }
       let(:host_name) { FFaker::Internet.domain_name }
       let(:mail_servers_by_ip) { Array.new(5) { host_address } }
-      let(:mx_records_object) { YAML.load(File.open(mx_records_file, 'r')) }
+      let(:mx_records_object) { YAML.load(File.open(mx_records_file, 'r')) } # rubocop:disable Security/YAMLLoad
 
       before do
         allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
@@ -50,7 +50,6 @@ RSpec.describe Truemail::Validate::Mx do
             allow(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
             allow(mx_validator_instance).to receive(:mx_records).and_call_original
             allow(mx_validator_instance).to receive(:null_mx?).and_call_original
-
             allow(mx_records_object).to receive(:one?).and_return(true)
             allow(target_mx_record).to receive_message_chain(:preference, :zero?).and_return(true)
             allow(target_mx_record).to receive_message_chain(:exchange, :to_s, :empty?).and_return(true)
@@ -98,7 +97,7 @@ RSpec.describe Truemail::Validate::Mx do
 
       context 'when cname records found' do
         let(:cname_records_file) { "#{File.expand_path('../../', __dir__)}/support/objects/cname_records.yml" }
-        let(:cname_records_object) { YAML.load(File.open(cname_records_file, 'r')) }
+        let(:cname_records_object) { YAML.load(File.open(cname_records_file, 'r')) } # rubocop:disable Security/YAMLLoad
 
         before do
           allow(mx_validator_instance).to receive(:hosts_from_mx_records?)
@@ -190,8 +189,10 @@ RSpec.describe Truemail::Validate::Mx do
             .to change(result_instance, :domain)
             .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
             .and not_change(result_instance, :mail_servers)
-            .and change(result_instance, :success).from(true).to(false)
-            .and change(result_instance, :errors).from({}).to({ mx: Truemail::Validate::Mx::ERROR })
+            .and change(result_instance, :success)
+            .from(true).to(false)
+            .and change(result_instance, :errors)
+            .from({}).to(mx: Truemail::Validate::Mx::ERROR)
         end
 
         it 'returns false' do

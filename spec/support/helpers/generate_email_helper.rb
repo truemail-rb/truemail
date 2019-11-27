@@ -55,7 +55,7 @@ module Truemail
         end
     end
 
-    def randomizer
+    def randomizer # rubocop:disable Metrics/AbcSize
       (
         ('Aa'..'Zz').to_a.shuffle.join.chars.sample(sample_size).push(*symbols.shuffle) << rand(0..9)
       ).shuffle.push(*invalid_symbols.sample(size)).shuffle[0...size]

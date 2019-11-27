@@ -50,7 +50,7 @@ RSpec.describe Truemail::Validate::Smtp do
         before { allow(result_instance.mail_servers).to receive(:one?).and_return(true) }
 
         it 'returns hash with attempts from configuration' do
-          expect(smtp_validator_instance.send(:attempts)).to eq({ attempts: configuration_instance.connection_attempts })
+          expect(smtp_validator_instance.send(:attempts)).to eq(attempts: configuration_instance.connection_attempts)
         end
       end
     end
@@ -84,7 +84,7 @@ RSpec.describe Truemail::Validate::Smtp do
         it 'creates smtp request instances' do
           allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
           allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
-          allow_any_instance_of(Truemail::Validate::Smtp::Response).to receive(:errors).and_return({ rcptto: 'error' })
+          allow_any_instance_of(Truemail::Validate::Smtp::Response).to receive(:errors).and_return(rcptto: 'error')
 
           expect { smtp_validator_instance.send(:establish_smtp_connection) }
             .to change(smtp_results, :size)
@@ -184,9 +184,12 @@ RSpec.describe Truemail::Validate::Smtp do
             allow(result_instance.mail_servers).to receive(:each)
 
             expect { smtp_validator_instance.run }
-              .to change(result_instance, :success).from(true).to(false)
-              .and change(result_instance, :errors).from({}).to({ smtp: Truemail::Validate::Smtp::ERROR })
-              .and change(result_instance, :smtp_debug).from(nil).to(smtp_results)
+              .to change(result_instance, :success)
+              .from(true).to(false)
+              .and change(result_instance, :errors)
+              .from({}).to(smtp: Truemail::Validate::Smtp::ERROR)
+              .and change(result_instance, :smtp_debug)
+              .from(nil).to(smtp_results)
           end
 
           it 'returns false' do
@@ -222,9 +225,12 @@ RSpec.describe Truemail::Validate::Smtp do
                 allow(result_instance.mail_servers).to receive(:each)
 
                 expect { smtp_validator_instance.run }
-                  .to change(result_instance, :success).from(true).to(false)
-                  .and change(result_instance, :errors).from({}).to({ smtp: Truemail::Validate::Smtp::ERROR })
-                  .and change(result_instance, :smtp_debug).from(nil).to(smtp_results)
+                  .to change(result_instance, :success)
+                  .from(true).to(false)
+                  .and change(result_instance, :errors)
+                  .from({}).to(smtp: Truemail::Validate::Smtp::ERROR)
+                  .and change(result_instance, :smtp_debug)
+                  .from(nil).to(smtp_results)
               end
 
               it 'returns false' do

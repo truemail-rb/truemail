@@ -19,13 +19,13 @@ RSpec.describe Truemail::Log::Serializer::Json do
     end
 
     context 'with successful validation result' do
-      let(:success_status)  { true }
+      let(:success_status) { true }
 
       include_context 'serialized json'
     end
 
     context 'with fail validation result' do
-      let(:success_status)  { false }
+      let(:success_status) { false }
 
       include_context 'serialized json'
     end
