@@ -1,18 +1,32 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2019-12-29
+### Added
+- Supporting of internationalized emails ([EAI](https://en.wikipedia.org/wiki/International_email)). Now you can validate emails, like: `dörte@sörensen.de`, `квіточка@пошта.укр`, `alegría@mañana.es`
+
+### Changed
+- `Truemail::RegexConstant::REGEX_DOMAIN`
+- `Truemail::RegexConstant::REGEX_EMAIL_PATTERN`
+- `Truemail::Validator::Result`
+- `Truemail::Validate::Mx#run`
+- `Truemail::Validate::Smtp#establish_smtp_connection`
+- gem runtime dependencies
+- gem development dependencies
+- gem documentation
+- linters configs
+
 ## [1.4.2] - 2019-11-27
 ### Changed
 - `Truemail::Configuration`
 - gem development dependencies
 - linters configs
 
-
 ## [1.4.1] - 2019-11-20
 ### Changed
 - gem development dependencies
-- linters configs
 - gem documentation
+- linters configs
 
 ### Removed
 - truemail rspec helpers (moved to independent gem [`truemail-rspec`](https://github.com/truemail-rb/truemail-rspec))

@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Validate::DomainListMatch do
+  describe 'defined constants' do
+    specify { expect(described_class).to be_const_defined(:ERROR) }
+  end
+
+  describe 'inheritance' do
+    specify { expect(described_class).to be < Truemail::Validate::Base }
+  end
+
   describe '.check' do
     subject(:list_match_validator) { described_class.check(result_instance) }
 

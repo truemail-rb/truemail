@@ -9,6 +9,10 @@ RSpec.describe Truemail::Validate::Mx do
     specify { expect(described_class).to be_const_defined(:NULL_MX_RECORD) }
   end
 
+  describe 'inheritance' do
+    specify { expect(described_class).to be < Truemail::Validate::Base }
+  end
+
   describe '.check' do
     subject(:mx_validator) { described_class.check(result_instance) }
 
@@ -16,7 +20,7 @@ RSpec.describe Truemail::Validate::Mx do
 
     it 'receive #run' do
       allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
-      allow(described_class).to receive(:new).and_return(mx_validator_instance)
+      expect(described_class).to receive(:new).and_return(mx_validator_instance)
       expect(mx_validator_instance).to receive(:run)
       expect(mx_validator).to be(true)
     end
@@ -26,6 +30,13 @@ RSpec.describe Truemail::Validate::Mx do
     subject(:mx_validator) { mx_validator_instance.run }
 
     let(:mx_validator_instance) { described_class.new(result_instance) }
+
+    shared_examples 'calls email punycode representer' do
+      specify do
+        expect(result_instance).to receive(:punycode_email).and_call_original
+        mx_validator
+      end
+    end
 
     context 'when validation pass' do
       let(:host_address) { FFaker::Internet.ip_v4_address }
@@ -66,6 +77,8 @@ RSpec.describe Truemail::Validate::Mx do
               .and change(result_instance, :success).from(true).to(false)
           end
 
+          include_examples 'calls email punycode representer'
+
           it 'returns false' do
             expect(mx_validator).to be(false)
           end
@@ -88,6 +101,8 @@ RSpec.describe Truemail::Validate::Mx do
               .from([]).to(mail_servers_by_ip)
               .and not_change(result_instance, :success)
           end
+
+          include_examples 'calls email punycode representer'
 
           it 'returns true' do
             expect(mx_validator).to be(true)
@@ -123,6 +138,8 @@ RSpec.describe Truemail::Validate::Mx do
               .and not_change(result_instance, :success)
           end
 
+          include_examples 'calls email punycode representer'
+
           it 'returns true' do
             expect(mx_validator).to be(true)
           end
@@ -146,6 +163,8 @@ RSpec.describe Truemail::Validate::Mx do
               .and not_change(result_instance, :success)
           end
 
+          include_examples 'calls email punycode representer'
+
           it 'returns true' do
             expect(mx_validator).to be(true)
           end
@@ -167,6 +186,8 @@ RSpec.describe Truemail::Validate::Mx do
             .from([]).to([host_address])
             .and not_change(result_instance, :success)
         end
+
+        include_examples 'calls email punycode representer'
 
         it 'returns true' do
           expect(mx_validator).to be(true)
@@ -195,6 +216,8 @@ RSpec.describe Truemail::Validate::Mx do
             .from({}).to(mx: Truemail::Validate::Mx::ERROR)
         end
 
+        include_examples 'calls email punycode representer'
+
         it 'returns false' do
           expect(mx_validator).to be(false)
         end
@@ -207,6 +230,7 @@ RSpec.describe Truemail::Validate::Mx do
         end
 
         specify do
+          expect(result_instance).not_to receive(:punycode_email)
           expect { mx_validator }.to not_change(result_instance, :success)
         end
 

@@ -12,9 +12,7 @@ SimpleCov.start
 JsonMatchers.schema_root = 'spec/support/schemas'
 
 rspec_custom = File.join(File.dirname(__FILE__), 'support/**/*.rb')
-Dir[File.expand_path(rspec_custom)].each do |file|
-  require file unless file[/\A.+_spec\.rb\z/]
-end
+Dir[File.expand_path(rspec_custom)].each { |file| require file unless file[/\A.+_spec\.rb\z/] }
 
 RSpec.configure do |config|
   config.include Truemail::RSpec

@@ -12,6 +12,10 @@ RSpec.describe Truemail::Audit::Ptr do
     specify { expect(described_class).to be_const_defined(:VERIFIER_DOMAIN_NOT_REFER) }
   end
 
+  describe 'inheritance' do
+    specify { expect(described_class).to be < Truemail::Audit::Base }
+  end
+
   describe '.check' do
     subject(:ptr_auditor) { described_class.check(result_instance) }
 

@@ -172,4 +172,13 @@ RSpec.describe Truemail::Validator::Result do
   it 'accepts parametrized arguments' do
     expect(described_class.new(email: email).email).to eq(email)
   end
+
+  describe '#punycode_email' do
+    subject(:result_instance) { described_class.new(email: email) }
+
+    it 'calls with memoization punycode representer' do
+      expect(Truemail::PunycodeRepresenter).to receive(:call).once.with(email).and_call_original
+      2.times { result_instance.punycode_email }
+    end
+  end
 end

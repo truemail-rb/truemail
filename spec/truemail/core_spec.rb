@@ -1,10 +1,48 @@
 # frozen_string_literal: true
 
+RSpec.describe Truemail::ConfigurationError do
+  specify { expect(described_class).to be < StandardError }
+end
+
 RSpec.describe Truemail::ArgumentError do
   subject(:argument_error_instance) { described_class.new('parameter', Array) }
 
+  specify { expect(described_class).to be < StandardError }
   specify { expect(argument_error_instance).to be_an_instance_of(described_class) }
   specify { expect(argument_error_instance.to_s).to eq('parameter is not a valid Array') }
+end
+
+RSpec.describe Truemail::PunycodeRepresenter do
+  describe '.call' do
+    subject(:service) { described_class.call(email) }
+
+    context 'when email is not a string' do
+      let(:email) { true }
+
+      specify { expect(service).to be_nil }
+    end
+
+    context 'when email not includes ascii chars' do
+      let(:email) { FFaker::Internet.email }
+
+      it 'returns not changed email' do
+        expect(SimpleIDN).not_to receive(:to_ascii)
+        expect(service).to eq(email)
+      end
+    end
+
+    context 'when email includes ascii chars' do
+      let(:user) { 'niña' }
+      let(:domain) { 'Mañana.cøm' }
+      let(:punycode) { 'xn--maana-pta.xn--cm-lka' }
+      let(:email) { "#{user}@#{domain}" }
+
+      it 'returns email with domain represented as punycode' do
+        expect(SimpleIDN).to receive(:to_ascii).with(domain.downcase).and_call_original
+        expect(service).to eq("#{user}@#{punycode}")
+      end
+    end
+  end
 end
 
 RSpec.describe Truemail::RegexConstant do
@@ -67,6 +105,12 @@ RSpec.describe Truemail::RegexConstant do
         regex_pattern.match?(Truemail::GenerateEmailHelper.call(size: :min, invalid_email_with: %w[- _ . +]))
       ).to be(false)
     end
+
+    it 'allows not ascii chars in user and domain' do
+      %w[niña@mañana.cØm квіточка@пошта.укр user@納豆.jp].each do |email_example|
+        expect(regex_pattern.match?(email_example)).to be(true)
+      end
+    end
   end
 
   describe 'Truemail::RegexConstant::REGEX_DOMAIN_PATTERN' do
@@ -95,6 +139,10 @@ RSpec.describe Truemail::RegexConstant do
       expect(regex_pattern.match?('domain.iq' + 'z' * 61)).to be(true)
       expect(regex_pattern.match?('domain.iq' + 'z' * 62)).to be(false)
       expect(regex_pattern.match?('domain')).to be(false)
+    end
+
+    it 'allows non ascii chars (internationalized domain names)' do
+      expect(regex_pattern.match?('中国互联网络信息中心.中国')).to be(true)
     end
 
     it 'not allows dash as last char' do
