@@ -9,17 +9,28 @@ module Truemail
   require 'truemail/validator'
   require 'truemail/logger'
 
-  class ConfigurationError < StandardError; end
+  ConfigurationError = Class.new(StandardError)
 
-  class ArgumentError < StandardError
+  ArgumentError = Class.new(StandardError) do
     def initialize(current_param, class_name)
       super("#{current_param} is not a valid #{class_name}")
     end
   end
 
+  PunycodeRepresenter = Class.new do
+    require 'simpleidn'
+
+    def self.call(email)
+      return unless email.is_a?(String)
+      return email if email.ascii_only?
+      user, domain = email.split('@')
+      "#{user}@#{SimpleIDN.to_ascii(domain.downcase)}"
+    end
+  end
+
   module RegexConstant
-    REGEX_DOMAIN = /[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}/i.freeze
-    REGEX_EMAIL_PATTERN = /(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@(#{REGEX_DOMAIN})\z)/.freeze
+    REGEX_DOMAIN = /[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}/i.freeze
+    REGEX_EMAIL_PATTERN = /(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@(#{REGEX_DOMAIN})\z)/.freeze
     REGEX_DOMAIN_PATTERN = /(?=\A.{4,255}\z)(\A#{REGEX_DOMAIN}\z)/.freeze
     REGEX_DOMAIN_FROM_EMAIL = /\A.+@(.+)\z/.freeze
     REGEX_SMTP_ERROR_BODY_PATTERN = /(?=.*550)(?=.*(user|account|customer|mailbox)).*/i.freeze

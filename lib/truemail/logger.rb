@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'logger'
-
 module Truemail
   class Logger
+    require 'logger'
+
     attr_reader :event, :stdout, :file
 
     def initialize(event, error_stdout, log_absolute_path)

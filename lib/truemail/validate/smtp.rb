@@ -40,7 +40,7 @@ module Truemail
       def establish_smtp_connection
         mail_servers.each do |mail_server|
           smtp_results << Truemail::Validate::Smtp::Request.new(
-            configuration: configuration, host: mail_server, email: result.email, **attempts
+            configuration: configuration, host: mail_server, email: result.punycode_email, **attempts
           )
           next unless request.check_port
           request.run || rcptto_error ? break : next

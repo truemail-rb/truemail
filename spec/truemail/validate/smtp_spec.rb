@@ -11,6 +11,10 @@ RSpec.describe Truemail::Validate::Smtp do
     specify { expect(described_class).to be_const_defined(:Request) }
   end
 
+  describe 'inheritance' do
+    specify { expect(described_class).to be < Truemail::Validate::Base }
+  end
+
   describe 'instance methods' do
     subject(:smtp_validator_instance) do
       described_class.new(
@@ -62,6 +66,8 @@ RSpec.describe Truemail::Validate::Smtp do
         it 'creates smtp request instances' do
           allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(false)
           allow(Truemail::Validate::Smtp::Request).to receive(:new).and_call_original
+          expect(result_instance)
+            .to receive(:punycode_email).exactly(result_instance.mail_servers.size).and_call_original
 
           expect { smtp_validator_instance.send(:establish_smtp_connection) }
             .to change(smtp_results, :size)

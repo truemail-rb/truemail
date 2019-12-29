@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Log::Serializer::Json do
+  describe 'inheritance' do
+    specify { expect(described_class).to be < Truemail::Log::Serializer::Base }
+  end
+
   describe '.call' do
     subject(:json_serializer) { described_class.call(validator_instance) }
 
