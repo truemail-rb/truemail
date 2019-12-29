@@ -1,8 +1,8 @@
-# <img src='https://repository-images.githubusercontent.com/173723932/6dffee00-e88e-11e9-94b6-c97aacc0df00' height='250' alt='Truemail - configurable plain Ruby email validator' />
+# <img src='https://repository-images.githubusercontent.com/173723932/6dffee00-e88e-11e9-94b6-c97aacc0df00' height='250' alt='Truemail - configurable framework agnostic plain Ruby email validator' />
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/maintainability)](https://codeclimate.com/github/rubygarage/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/test_coverage)](https://codeclimate.com/github/rubygarage/truemail/test_coverage) [![CircleCI](https://circleci.com/gh/rubygarage/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/rubygarage/truemail/tree/master) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![Downloads](https://img.shields.io/gem/dt/truemail.svg?colorA=004d99&colorB=0073e6)](https://rubygems.org/gems/truemail) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
-The Truemail gem helps you validate emails via regex pattern, presence of DNS records, and real existence of email account on a current email server. Also Truemail gem allows performing an audit of the host in which runs.
+Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS and SMTP. Be sure that email address valid and exists.
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@ The Truemail gem helps you validate emails via regex pattern, presence of DNS re
       - [Reset global configuration](#reset-global-configuration)
     - [Using custom independent configuration](#using-custom-independent-configuration)
   - [Validation features](#validation-features)
-    - [Whitelist/Blacklist check](#whitelist-blacklist-check)
+    - [Whitelist/Blacklist check](#whitelistblacklist-check)
       - [Whitelist case](#whitelist-case)
       - [Whitelist validation case](#whitelist-validation-case)
       - [Blacklist case](#blacklist-case)
@@ -41,12 +41,13 @@ The Truemail gem helps you validate emails via regex pattern, presence of DNS re
 - [Contributing](#contributing)
 - [License](#license)
 - [Code of Conduct](#code-of-conduct)
+- [Credits](#credits)
 - [Versioning](#versioning)
 - [Changelog](CHANGELOG.md)
 
 ## Synopsis
 
-Email validation is a tricky thing. There are a number of different ways to validate an email address and all mechanisms must conform with the best practices and provide proper validation. You can get more information about email validation techniques in our [blog](https://rubygarage.org/blog/how-to-validate-emails).
+Email validation is a tricky thing. There are a number of different ways to validate an email address and all mechanisms must conform with the best practices and provide proper validation. You can get more information about email validation techniques in our [blog](https://rubygarage.org/blog/how-to-validate-emails). The Truemail gem helps you validate emails via regex pattern, presence of DNS records, and real existence of email account on a current email server.
 
 **Syntax Checking**: Checks the email addresses via regex pattern.
 
@@ -54,10 +55,13 @@ Email validation is a tricky thing. There are a number of different ways to vali
 
 **Mail Existence Check**: Checks if the email address really exists and can receive email via SMTP connections and email-sending emulation techniques.
 
+Also Truemail gem allows performing an audit of the host in which runs.
+
 ## Features
 
 - Configurable validator, validate only what you need
-- Zero runtime dependencies
+- Minimal runtime dependencies
+- Supporting of internationalized emails (EAI)
 - Whitelist/blacklist validation layers
 - Simple SMTP debugger
 - Event logger
@@ -100,7 +104,6 @@ You can use global gem configuration or custom independent configuration. Availa
 - SMTP safe check
 - event logger
 - JSON serializer
-
 
 #### Setting global configuration
 
@@ -301,7 +304,7 @@ Truemail.validate('email@white-domain.com')
      @connection_attempts=2,
      @connection_timeout=2,
      @default_validation_type=:smtp,
-     @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+     @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
      @response_timeout=2,
      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
      @smtp_safe_check=false,
@@ -347,7 +350,7 @@ Truemail.validate('email@white-domain.com', with: :regex)
      @connection_attempts=2,
      @connection_timeout=2,
      @default_validation_type=:smtp,
-     @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+     @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
      @response_timeout=2,
      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
      @smtp_safe_check=false,
@@ -378,7 +381,7 @@ Truemail.validate('email@domain.com', with: :regex)
      @connection_attempts=2,
      @connection_timeout=2,
      @default_validation_type=:smtp,
-     @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+     @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
      @response_timeout=2,
      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
      @smtp_safe_check=false,
@@ -411,7 +414,7 @@ Truemail.validate('email@black-domain.com')
      @connection_attempts=2,
      @connection_timeout=2,
      @default_validation_type=:smtp,
-     @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+     @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
      @response_timeout=2,
      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
      @smtp_safe_check=false,
@@ -444,7 +447,7 @@ Truemail.validate('email@somedomain.com')
      @connection_attempts=2,
      @connection_timeout=2,
      @default_validation_type=:smtp,
-     @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+     @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
      @response_timeout=2,
      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
      @smtp_safe_check=false,
@@ -493,7 +496,7 @@ Truemail.validate('email@example.com', with: :regex)
        @connection_attempts=2,
        @connection_timeout=2,
        @default_validation_type=:smtp,
-       @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+       @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
        @response_timeout=2,
        @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
        @smtp_safe_check=false,
@@ -582,7 +585,7 @@ Truemail.validate('email@example.com', with: :mx)
        @connection_attempts=2,
        @connection_timeout=2,
        @default_validation_type=:smtp,
-       @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+       @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
        @response_timeout=2,
        @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
        @smtp_safe_check=false,
@@ -635,7 +638,7 @@ Truemail.validate('email@example.com')
        @connection_attempts=2,
        @connection_timeout=2,
        @default_validation_type=:smtp,
-       @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+       @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
        @response_timeout=2,
        @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
        @smtp_safe_check=false,
@@ -686,7 +689,7 @@ Truemail.validate('email@example.com')
              @connection_attempts=2,
              @connection_timeout=2,
              @default_validation_type=:smtp,
-             @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+             @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
              @response_timeout=2,
              @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
              @smtp_safe_check=false,
@@ -750,7 +753,7 @@ Truemail.validate('email@example.com')
              @connection_attempts=2,
              @connection_timeout=2,
              @default_validation_type=:smtp,
-             @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+             @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
              @response_timeout=2,
              @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
              @smtp_safe_check=false,
@@ -798,7 +801,7 @@ Truemail.validate('email@example.com')
              @connection_attempts=2,
              @connection_timeout=2,
              @default_validation_type=:smtp,
-             @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+             @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
              @response_timeout=2,
              @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
              @smtp_safe_check=false,
@@ -887,7 +890,7 @@ Truemail.host_audit
          @connection_attempts=2,
          @connection_timeout=2,
          @default_validation_type=:smtp,
-         @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+         @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
          @response_timeout=2,
          @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
          @smtp_safe_check=false,
@@ -909,7 +912,7 @@ Truemail.host_audit
          @connection_attempts=2,
          @connection_timeout=2,
          @default_validation_type=:smtp,
-         @email_pattern=/(?=\A.{6,255}\z)(\A([a-zA-Z0-9]+[\w|\-|\.|\+]*)@((?i-mx:[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,63}))\z)/,
+         @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
          @response_timeout=2,
          @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
          @smtp_safe_check=false,
@@ -968,6 +971,11 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Code of Conduct
 
 Everyone interacting in the Truemail project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](CODE_OF_CONDUCT.md).
+
+## Credits
+
+- [The Contributors](https://github.com/rubygarage/truemail/graphs/contributors) for code and awesome suggestions
+- [The Stargazers](https://github.com/rubygarage/truemail/stargazers) for showing their support
 
 ## Versioning
 

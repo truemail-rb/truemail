@@ -7,9 +7,6 @@ AllCops:
   DisplayStyleGuide:  true
   TargetRubyVersion:  2.5
 
-Metrics/LineLength:
-  Max: 140
-
 Metrics/ClassLength:
   Max: 150
 
@@ -43,6 +40,9 @@ Style/EmptyCaseCondition:
 Style/RescueStandardError:
   Enabled: false
 
+Layout/LineLength:
+  Max: 140
+
 Layout/ClassStructure:
   Enabled: true
   Categories:
@@ -66,6 +66,9 @@ Layout/ClassStructure:
       - private_methods
 
 Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+Lint/NonDeterministicRequireOrder:
   Enabled: false
 
 RSpec/ExampleLength:

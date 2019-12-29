@@ -5,6 +5,10 @@ RSpec.describe Truemail::Validate::Regex do
     specify { expect(described_class).to be_const_defined(:ERROR) }
   end
 
+  describe 'inheritance' do
+    specify { expect(described_class).to be < Truemail::Validate::Base }
+  end
+
   describe '.check' do
     subject(:regex_validator) { described_class.check(result_instance) }
 

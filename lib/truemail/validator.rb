@@ -9,6 +9,10 @@ module Truemail
       def initialize(errors: {}, mail_servers: [], **args)
         super
       end
+
+      def punycode_email
+        @punycode_email ||= Truemail::PunycodeRepresenter.call(email)
+      end
       alias_method :valid?, :success
     end
 

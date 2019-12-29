@@ -7,7 +7,7 @@ checks:
 plugins:
   rubocop:
     enabled: true
-    channel: rubocop-0-76
+    channel: rubocop-0-78
 
   reek:
     enabled: true
