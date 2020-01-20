@@ -25,7 +25,7 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
     - [Regex validation](#regex-validation)
       - [With default regex pattern](#with-default-regex-pattern)
       - [With custom regex pattern](#with-custom-regex-pattern)
-    - [DNS (MX) validation](#mx-validation)
+    - [MX validation](#mx-validation)
     - [SMTP validation](#smtp-validation)
       - [SMTP safe check disabled](#smtp-safe-check-disabled)
       - [SMTP safe check enabled](#smtp-safe-check-enabled)
@@ -44,7 +44,6 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
 - [Credits](#credits)
 - [Versioning](#versioning)
 - [Changelog](CHANGELOG.md)
-- [Wiki](https://github.com/rubygarage/truemail/wiki)
 
 ## Synopsis
 
@@ -62,7 +61,7 @@ Also Truemail gem allows performing an audit of the host in which runs.
 
 - Configurable validator, validate only what you need
 - Minimal runtime dependencies
-- Supporting of internationalized emails ([EAI](https://en.wikipedia.org/wiki/Email_address#Internationalization))
+- Supporting of internationalized emails (EAI)
 - Whitelist/blacklist validation layers
 - Simple SMTP debugger
 - Event logger
@@ -552,7 +551,7 @@ Truemail.validate('email@example.com', with: :regex)
 
 #### MX validation
 
-In fact it's DNS validation because it checks not MX records only. DNS validation is the second validation level, historically named as MX validation. It uses Regex validation before running itself. When regex validation has completed successfully then runs itself.
+Validation by MX records is the second validation level. It uses Regex validation before running itself. When regex validation has completed successfully then runs itself.
 
 ```code
 [Whitelist/Blacklist] -> [Regex validation] -> [MX validation]
@@ -949,21 +948,6 @@ RSpec.configure do |config|
   config.before { allow(Truemail).to receive(:validate).and_return(true) }
   # or
   config.before { allow(Truemail).to receive_message_chain(:validate, :result, :valid?).and_return(true) }
-end
-```
-
-Or with [whitelist/blacklist Truemail feature](#whitelistblacklist-check) you can define validation behavior for test and staging environment:
-
-```ruby
-# config/initializers/truemail.rb
-
-Truemail.configure do |config|
-  config.verifier_email = Rails.configuration.default_sender_email
-
-  unless Rails.env.production?
-    config.whitelisted_domains = Constants::Email::WHITE_DOMAINS
-    config.blacklisted_domains = Constants::Email::BLACK_DOMAINS
-  end
 end
 ```
 
