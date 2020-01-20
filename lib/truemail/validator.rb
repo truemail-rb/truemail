@@ -6,7 +6,7 @@ module Truemail
     VALIDATION_TYPES = %i[regex mx smtp].freeze
 
     Result = Struct.new(*RESULT_ATTRS, keyword_init: true) do
-      def initialize(errors: {}, mail_servers: [], **args)
+      def initialize(mail_servers: [], errors: {}, **args)
         super
       end
 
