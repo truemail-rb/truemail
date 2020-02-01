@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'ffaker', '~> 2.13'
   spec.add_development_dependency 'json_matchers', '~> 0.11.1'
   spec.add_development_dependency 'overcommit', '~> 0.52.1'
-  spec.add_development_dependency 'pry-byebug', '~> 3.7'
+  spec.add_development_dependency 'pry-byebug', '~> 3.8'
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.1'
   spec.add_development_dependency 'reek', '~> 5.6'
   spec.add_development_dependency 'rspec', '~> 3.9'
