@@ -36,6 +36,7 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
     - [PTR audit](#ptr-audit)
   - [Truemail helpers](#truemail-helpers)
     - [.valid?](#valid)
+    - [#as_json](#as_json)
   - [Test environment](#test-environment)
 - [Truemail family](#truemail-family)
 - [Contributing](#contributing)
@@ -928,12 +929,51 @@ Truemail.host_audit
 
 #### .valid?
 
-You can use the ```.valid?``` helper for quick validation of email address. It returns a boolean:
+You can use the `.valid?` helper for quick validation of email address. It returns a boolean:
 
 ```ruby
 # It is shortcut for Truemail.validate('email@example.com').result.valid?
 Truemail.valid?('email@example.com')
 => true
+```
+
+#### #as_json
+
+You can use `#as_json` helper for represent `Truemail::Validator` instance as json. Under the hood it uses internal json serializer [`Truemail::Log::Serializer::Json`](#json-serializer):
+
+```ruby
+Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
+
+=>
+# Serialized Truemail::Validator instance
+{
+  "date": "2020-02-01 10:00:00 +0200",
+  "email": "nonexistent_email@bestweb.com.ua",
+  "validation_type": "smtp",
+  "success": false,
+  "errors": {
+    "smtp": "smtp error"
+  },
+  "smtp_debug": [
+    {
+      "mail_host": "213.180.193.89",
+      "port_opened": true,
+      "connection": true,
+      "errors": {
+        "rcptto": "550 5.7.1 No such user!\n"
+      }
+    }
+  ],
+  "configuration": {
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null,
+    "blacklisted_domains": null,
+    "smtp_safe_check": false,
+    "email_pattern": "default gem value",
+    "smtp_error_body_pattern": "default gem value"
+  }
+}
 ```
 
 ### Test environment
