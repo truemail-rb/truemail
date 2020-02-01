@@ -32,6 +32,10 @@ module Truemail
       self
     end
 
+    def as_json
+      Truemail::Log::Serializer::Json.call(self)
+    end
+
     private
 
     def select_validation_type(email, current_validation_type)

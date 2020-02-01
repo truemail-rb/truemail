@@ -121,6 +121,15 @@ RSpec.describe Truemail::Validator do
     end
   end
 
+  describe '#as_json' do
+    subject(:validator_instance_as_json) { validator_instance.as_json }
+
+    specify do
+      expect(Truemail::Log::Serializer::Json).to receive(:call).with(validator_instance).and_call_original
+      expect(validator_instance_as_json).to match_json_schema('validator')
+    end
+  end
+
   describe '#select_validation_type' do
     subject(:select_validation_type) do
       described_class.new(email, with: current_validation_type, **configuration).validation_type

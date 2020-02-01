@@ -46,7 +46,10 @@
     },
     "success": {
       "$id": "#/properties/success",
-      "type": "boolean",
+      "type": [
+        "boolean",
+        "null"
+      ],
       "title": "The Success Schema",
       "default": false,
       "examples": [
