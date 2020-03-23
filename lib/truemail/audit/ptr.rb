@@ -3,6 +3,7 @@
 module Truemail
   module Audit
     class Ptr < Truemail::Audit::Base
+      require 'net/http'
       require 'ipaddr'
       require 'resolv'
 
