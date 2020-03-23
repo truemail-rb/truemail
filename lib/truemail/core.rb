@@ -12,8 +12,8 @@ module Truemail
   ConfigurationError = Class.new(StandardError)
 
   ArgumentError = Class.new(StandardError) do
-    def initialize(current_param, class_name)
-      super("#{current_param} is not a valid #{class_name}")
+    def initialize(arg_value, arg_name)
+      super("#{arg_value} is not a valid #{arg_name}")
     end
   end
 

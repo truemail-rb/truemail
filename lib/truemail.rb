@@ -7,11 +7,10 @@ module Truemail
   NOT_CONFIGURED = 'use Truemail.configure before or pass custom configuration'
 
   class << self
-    def configuration
+    def configuration(&block)
       @configuration ||= begin
         return unless block_given?
-        configuration = Truemail::Configuration.new
-        yield(configuration)
+        configuration = Truemail::Configuration.new(&block)
         raise_unless(configuration.complete?, Truemail::INCOMPLETE_CONFIG)
         configuration
       end
