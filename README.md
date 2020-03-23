@@ -1012,6 +1012,14 @@ end
 
 All Truemail extensions: https://github.com/truemail-rb
 
+### truemail server
+
+Lightweight rack based web API wrapper for Truemail, https://github.com/truemail-rb/truemail-rack
+
+### truemail-rack-docker-image
+
+Lightweight rack based web API dockerized image :whale: of [Truemail server](https://github.com/truemail-rb/truemail-rack) hosted on [dockerhub](https://hub.docker.com/r/truemail/truemail-rack), https://github.com/truemail-rb/truemail-rack-docker-image
+
 ### truemail-rspec
 
 gem `truemail-rspec` - Truemail configuration and validator RSpec helpers, https://github.com/truemail-rb/truemail-rspec

@@ -22,8 +22,6 @@ module Truemail
 
     attr_accessor :whitelist_validation, :smtp_safe_check
 
-    alias retry_count connection_attempts
-
     def initialize(&block)
       instance_initializer.each do |instace_variable, value|
         instance_variable_set(:"@#{instace_variable}", value)
