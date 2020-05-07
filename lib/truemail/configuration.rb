@@ -20,7 +20,7 @@ module Truemail
                 :blacklisted_domains,
                 :logger
 
-    attr_accessor :whitelist_validation, :smtp_safe_check
+    attr_accessor :whitelist_validation, :not_rfc_mx_lookup_flow, :smtp_safe_check
 
     def initialize(&block)
       instance_initializer.each do |instace_variable, value|
@@ -99,6 +99,7 @@ module Truemail
         whitelisted_domains: [],
         whitelist_validation: false,
         blacklisted_domains: [],
+        not_rfc_mx_lookup_flow: false,
         smtp_safe_check: false
       }
     end
