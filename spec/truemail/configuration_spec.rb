@@ -13,7 +13,27 @@ RSpec.describe Truemail::Configuration do
   end
 
   describe '.new' do
-    include_examples 'has attr_accessor'
+    %i[
+      email_pattern
+      smtp_error_body_pattern
+      verifier_email
+      verifier_domain
+      connection_timeout
+      response_timeout
+      connection_attempts
+      default_validation_type
+      whitelisted_domains
+      whitelist_validation
+      blacklisted_domains
+      not_rfc_mx_lookup_flow
+      smtp_safe_check
+      logger
+    ].each do |attribute|
+      it "has attr_accessor :#{attribute}" do
+        expect(configuration_instance.respond_to?(attribute)).to be(true)
+        expect(configuration_instance.respond_to?(:"#{attribute}=")).to be(true)
+      end
+    end
 
     it 'has attribute reader :validation_type_by_domain' do
       expect(configuration_instance.respond_to?(:validation_type_by_domain)).to be(true)
@@ -27,7 +47,23 @@ RSpec.describe Truemail::Configuration do
       expect(described_class.new(&configuration_block(verifier_email: valid_email)).verifier_email).to eq(valid_email)
     end
 
-    include_examples 'sets default configuration'
+    it 'sets default configuration settings' do
+      expect(configuration_instance.email_pattern).to eq(Truemail::RegexConstant::REGEX_EMAIL_PATTERN)
+      expect(configuration_instance.smtp_error_body_pattern).to eq(Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN)
+      expect(configuration_instance.verifier_email).to be_nil
+      expect(configuration_instance.verifier_domain).to be_nil
+      expect(configuration_instance.connection_timeout).to eq(Truemail::Configuration::DEFAULT_CONNECTION_TIMEOUT)
+      expect(configuration_instance.response_timeout).to eq(Truemail::Configuration::DEFAULT_RESPONSE_TIMEOUT)
+      expect(configuration_instance.connection_attempts).to eq(Truemail::Configuration::DEFAULT_CONNECTION_ATTEMPTS)
+      expect(configuration_instance.default_validation_type).to eq(Truemail::Configuration::DEFAULT_VALIDATION_TYPE)
+      expect(configuration_instance.validation_type_by_domain).to eq({})
+      expect(configuration_instance.whitelisted_domains).to eq([])
+      expect(configuration_instance.whitelist_validation).to eq(false)
+      expect(configuration_instance.blacklisted_domains).to eq([])
+      expect(configuration_instance.not_rfc_mx_lookup_flow).to be(false)
+      expect(configuration_instance.smtp_safe_check).to be(false)
+      expect(configuration_instance.logger).to be_nil
+    end
   end
 
   describe 'configuration cases' do
@@ -45,6 +81,7 @@ RSpec.describe Truemail::Configuration do
         expect(configuration_instance.whitelisted_domains).to eq([])
         expect(configuration_instance.whitelist_validation).to eq(false)
         expect(configuration_instance.blacklisted_domains).to eq([])
+        expect(configuration_instance.not_rfc_mx_lookup_flow).to be(false)
         expect(configuration_instance.smtp_safe_check).to be(false)
         expect(configuration_instance.logger).to be_nil
       end
@@ -66,6 +103,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
+          .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
           .and not_change(configuration_instance, :smtp_safe_check)
           .and not_change(configuration_instance, :logger)
 
@@ -89,6 +127,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
+          .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
           .and not_change(configuration_instance, :smtp_safe_check)
           .and not_change(configuration_instance, :logger)
 
@@ -112,6 +151,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
+          .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
           .and not_change(configuration_instance, :smtp_safe_check)
           .and not_change(configuration_instance, :logger)
 
@@ -359,6 +399,14 @@ RSpec.describe Truemail::Configuration do
                 .to raise_error(Truemail::ArgumentError, "#{wrong_parameter_context} is not a valid #{domain_list_type}")
             end
           end
+        end
+      end
+
+      describe '#not_rfc_mx_lookup_flow=' do
+        it 'sets not RFC MX lookup flow' do
+          expect { configuration_instance.not_rfc_mx_lookup_flow = true }
+            .to change(configuration_instance, :not_rfc_mx_lookup_flow)
+            .from(false).to(true)
         end
       end
 

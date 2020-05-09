@@ -19,6 +19,7 @@ module Truemail
       private
 
       def host_extractor_methods
+        return %i[hosts_from_mx_records?] if configuration.not_rfc_mx_lookup_flow
         %i[hosts_from_mx_records? hosts_from_cname_records? host_from_a_record?]
       end
 
