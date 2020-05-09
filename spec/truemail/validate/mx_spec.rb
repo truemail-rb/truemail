@@ -2,7 +2,8 @@
 
 RSpec.describe Truemail::Validate::Mx do
   let(:email) { FFaker::Internet.email }
-  let(:result_instance) { Truemail::Validator::Result.new(email: email, configuration: create_configuration) }
+  let(:configuration) { create_configuration }
+  let(:result_instance) { Truemail::Validator::Result.new(email: email, configuration: configuration) }
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:ERROR) }
@@ -53,36 +54,6 @@ RSpec.describe Truemail::Validate::Mx do
         let(:mx_records_file) { "#{File.expand_path('../../', __dir__)}/support/objects/mx_records.yml" }
 
         before { allow(Resolv::DNS).to receive_message_chain(:new, :getresources).and_return(mx_records_object) }
-
-        context 'with null mx' do
-          let(:target_mx_record) { mx_records_object.first }
-
-          before do
-            allow(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
-            allow(mx_validator_instance).to receive(:mx_records).and_call_original
-            allow(mx_validator_instance).to receive(:null_mx?).and_call_original
-            allow(mx_records_object).to receive(:one?).and_return(true)
-            allow(target_mx_record).to receive_message_chain(:preference, :zero?).and_return(true)
-            allow(target_mx_record).to receive_message_chain(:exchange, :to_s, :empty?).and_return(true)
-          end
-
-          specify do
-            expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)
-            expect(mx_validator_instance).not_to receive(:host_from_a_record?)
-
-            expect { mx_validator }
-              .to change(result_instance, :domain)
-              .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
-              .and not_change(result_instance, :mail_servers)
-              .and change(result_instance, :success).from(true).to(false)
-          end
-
-          include_examples 'calls email punycode representer'
-
-          it 'returns false' do
-            expect(mx_validator).to be(false)
-          end
-        end
 
         context 'without null mx' do
           before { allow(Resolv).to receive(:getaddresses).and_return([host_address]) }
@@ -196,7 +167,64 @@ RSpec.describe Truemail::Validate::Mx do
     end
 
     context 'when validation fails' do
-      context 'when regex pass' do
+      let(:methods_calls_expectations) do
+        expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)
+        expect(mx_validator_instance).not_to receive(:host_from_a_record?)
+      end
+
+      shared_examples 'validation fails' do
+        specify do
+          methods_calls_expectations
+
+          expect { mx_validator }
+            .to change(result_instance, :domain)
+            .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
+            .and not_change(result_instance, :mail_servers)
+            .and change(result_instance, :success).from(true).to(false)
+        end
+
+        include_examples 'calls email punycode representer'
+
+        it 'returns false' do
+          expect(mx_validator).to be(false)
+        end
+      end
+
+      context 'when mx records found with null mx' do
+        let(:mx_records_object) { YAML.load(File.open(mx_records_file, 'r')) } # rubocop:disable Security/YAMLLoad
+        let(:mx_records_file) { "#{File.expand_path('../../', __dir__)}/support/objects/mx_records.yml" }
+        let(:target_mx_record) { mx_records_object.first }
+
+        before do
+          allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
+          result_instance.success = true
+          allow(Resolv::DNS).to receive_message_chain(:new, :getresources).and_return(mx_records_object)
+          allow(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
+          allow(mx_validator_instance).to receive(:mx_records).and_call_original
+          allow(mx_validator_instance).to receive(:null_mx?).and_call_original
+          allow(mx_records_object).to receive(:one?).and_return(true)
+          allow(target_mx_record).to receive_message_chain(:preference, :zero?).and_return(true)
+          allow(target_mx_record).to receive_message_chain(:exchange, :to_s, :empty?).and_return(true)
+        end
+
+        include_examples 'validation fails'
+      end
+
+      context 'when not RFC MX lookup flow enabled' do
+        let(:configuration) { create_configuration(not_rfc_mx_lookup_flow: true) }
+
+        before do
+          allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
+          result_instance.success = true
+          allow(mx_validator_instance).to receive(:hosts_from_mx_records?)
+        end
+
+        include_examples 'validation fails'
+      end
+
+      context 'when any of mx lookup methods fail' do
+        let(:methods_calls_expectations) { nil }
+
         before do
           allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
           result_instance.success = true
@@ -205,22 +233,7 @@ RSpec.describe Truemail::Validate::Mx do
           allow(mx_validator_instance).to receive(:host_from_a_record?)
         end
 
-        specify do
-          expect { mx_validator }
-            .to change(result_instance, :domain)
-            .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
-            .and not_change(result_instance, :mail_servers)
-            .and change(result_instance, :success)
-            .from(true).to(false)
-            .and change(result_instance, :errors)
-            .from({}).to(mx: Truemail::Validate::Mx::ERROR)
-        end
-
-        include_examples 'calls email punycode representer'
-
-        it 'returns false' do
-          expect(mx_validator).to be(false)
-        end
+        include_examples 'validation fails'
       end
 
       context 'when regex fails' do

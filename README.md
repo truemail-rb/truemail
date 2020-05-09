@@ -8,6 +8,7 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
 
 - [Synopsis](#synopsis)
 - [Features](#features)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Configuration features](#configuration-features)
@@ -26,6 +27,8 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
       - [With default regex pattern](#with-default-regex-pattern)
       - [With custom regex pattern](#with-custom-regex-pattern)
     - [DNS (MX) validation](#mx-validation)
+      - [RFC MX lookup flow](#rfc-mx-lookup-flow)
+      - [Not RFC MX lookup flow](#not-rfc-mx-lookup-flow)
     - [SMTP validation](#smtp-validation)
       - [SMTP safe check disabled](#smtp-safe-check-disabled)
       - [SMTP safe check enabled](#smtp-safe-check-enabled)
@@ -69,6 +72,10 @@ Also Truemail gem allows performing an audit of the host in which runs.
 - Event logger
 - JSON serializer
 
+## Requirements
+
+Ruby MRI 2.5.0+
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -79,11 +86,15 @@ gem 'truemail'
 
 And then execute:
 
-    $ bundle
+```bash
+bundle
+```
 
 Or install it yourself as:
 
-    $ gem install truemail
+```bash
+gem install truemail
+```
 
 ## Usage
 
@@ -168,6 +179,11 @@ Truemail.configure do |config|
   # It is equal to empty array by default.
   config.blacklisted_domains = ['somedomain1.com', 'somedomain2.com']
 
+  # Optional parameter. This option will provide to use not RFC MX lookup flow.
+  # It means that MX and Null MX records will be cheked on the DNS validation layer only.
+  # By default this option is disabled.
+  config.not_rfc_mx_lookup_flow = true
+
   # Optional parameter. This option will be parse bodies of SMTP errors. It will be helpful
   # if SMTP server does not return an exact answer that the email does not exist
   # By default this option is disabled, available for SMTP validation only.
@@ -198,7 +214,8 @@ Truemail.configuration
  @whitelist_validation=true,
  @blacklisted_domains=[],
  @verifier_domain="somedomain.com",
- @verifier_email="verifier@example.com"
+ @verifier_email="verifier@example.com",
+ @not_rfc_mx_lookup_flow=true,
  @smtp_safe_check=true,
  @logger=#<Truemail::Logger:0x0000557f837450b0
    @event=:all, @file="/home/app/log/truemail.log", @stdout=true>>
@@ -227,6 +244,7 @@ Truemail.configuration
  @blacklisted_domains=[],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com",
+ @not_rfc_mx_lookup_flow=true,
  @smtp_safe_check=true,
  @logger=#<Truemail::Logger:0x0000557f837450b0
    @event=:all, @file="/home/app/log/truemail.log", @stdout=true>>
@@ -309,6 +327,7 @@ Truemail.validate('email@white-domain.com')
      @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
      @response_timeout=2,
      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @not_rfc_mx_lookup_flow=false,
      @smtp_safe_check=false,
      @validation_type_by_domain={"somedomain.com"=>:mx},
      @verifier_domain="example.com",
@@ -355,6 +374,7 @@ Truemail.validate('email@white-domain.com', with: :regex)
      @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
      @response_timeout=2,
      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @not_rfc_mx_lookup_flow=false,
      @smtp_safe_check=false,
      @validation_type_by_domain={},
      @verifier_domain="example.com",
@@ -386,6 +406,7 @@ Truemail.validate('email@domain.com', with: :regex)
      @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
      @response_timeout=2,
      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @not_rfc_mx_lookup_flow=false,
      @smtp_safe_check=false,
      @validation_type_by_domain={},
      @verifier_domain="example.com",
@@ -419,6 +440,7 @@ Truemail.validate('email@black-domain.com')
      @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
      @response_timeout=2,
      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @not_rfc_mx_lookup_flow=false,
      @smtp_safe_check=false,
      @validation_type_by_domain={},
      @verifier_domain="example.com",
@@ -452,6 +474,7 @@ Truemail.validate('email@somedomain.com')
      @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
      @response_timeout=2,
      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @not_rfc_mx_lookup_flow=false,
      @smtp_safe_check=false,
      @validation_type_by_domain={},
      @verifier_domain="example.com",
@@ -501,6 +524,7 @@ Truemail.validate('email@example.com', with: :regex)
        @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
        @response_timeout=2,
        @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+       @not_rfc_mx_lookup_flow=false,
        @smtp_safe_check=false,
        @validation_type_by_domain={},
        @verifier_domain="example.com",
@@ -542,6 +566,7 @@ Truemail.validate('email@example.com', with: :regex)
        @email_pattern=/regex_pattern/,
        @response_timeout=2,
        @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+       @not_rfc_mx_lookup_flow=false,
        @smtp_safe_check=false,
        @validation_type_by_domain={},
        @verifier_domain="example.com",
@@ -559,7 +584,11 @@ In fact it's DNS validation because it checks not MX records only. DNS validatio
 [Whitelist/Blacklist] -> [Regex validation] -> [MX validation]
 ```
 
-Please note, Truemail MX validator not performs strict compliance of the [RFC 5321](https://tools.ietf.org/html/rfc5321#section-5) standard for best validation outcome.
+Please note, Truemail MX validator [not performs](https://github.com/rubygarage/truemail/issues/26) strict compliance of the [RFC 5321](https://tools.ietf.org/html/rfc5321#section-5) standard for best validation outcome.
+
+##### RFC MX lookup flow
+
+[Truemail MX lookup](https://slides.com/vladislavtrotsenko/truemail#/0/9) based on RFC 5321. It consists of 3 substeps: MX, CNAME and A record resolvers. The point of each resolver is attempt to extract the mail servers from email domain. If at least one server exists that validation is successful. Iteration is processing until resolver returns true.
 
 Example of usage:
 
@@ -590,6 +619,51 @@ Truemail.validate('email@example.com', with: :mx)
        @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
        @response_timeout=2,
        @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+       @not_rfc_mx_lookup_flow=false,
+       @smtp_safe_check=false,
+       @validation_type_by_domain={},
+       @verifier_domain="example.com",
+       @verifier_email="verifier@example.com",
+       @whitelist_validation=false,
+       @whitelisted_domains=[]>,
+  @validation_type=:mx>
+```
+
+##### Not RFC MX lookup flow
+
+Also Truemail has possibility to use not RFC MX lookup flow. It means that will be used only one MX resolver on the DNS validation layer. By default this option is disabled.
+
+Example of usage:
+
+```ruby
+require 'truemail'
+
+Truemail.configure do |config|
+  config.verifier_email = 'verifier@example.com'
+  config.not_rfc_mx_lookup_flow = true
+end
+
+Truemail.validate('email@example.com', with: :mx)
+
+=> #<Truemail::Validator:0x000055590c9c1c50
+  @result=
+    #<struct Truemail::Validator::Result
+      success=true,
+      email="email@example.com",
+      domain="example.com",
+      mail_servers=["127.0.1.1", "127.0.1.2"],
+      errors={},
+      smtp_debug=nil>,
+      configuration=
+      #<Truemail::Configuration:0x0000559b6e44af70
+       @blacklisted_domains=[],
+       @connection_attempts=2,
+       @connection_timeout=2,
+       @default_validation_type=:smtp,
+       @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
+       @response_timeout=2,
+       @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+       @not_rfc_mx_lookup_flow=true,
        @smtp_safe_check=false,
        @validation_type_by_domain={},
        @verifier_domain="example.com",
@@ -611,7 +685,7 @@ If total count of MX servers is equal to one, ```Truemail::Smtp``` validator wil
 
 By default, you don't need pass with-parameter to use it. Example of usage is specified below:
 
-###### SMTP safe check disabled
+##### SMTP safe check disabled
 
 With ```smtp_safe_check = false```
 
@@ -643,6 +717,7 @@ Truemail.validate('email@example.com')
        @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
        @response_timeout=2,
        @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+       @not_rfc_mx_lookup_flow=false,
        @smtp_safe_check=false,
        @validation_type_by_domain={},
        @verifier_domain="example.com",
@@ -694,6 +769,7 @@ Truemail.validate('email@example.com')
              @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
              @response_timeout=2,
              @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+             @not_rfc_mx_lookup_flow=false,
              @smtp_safe_check=false,
              @validation_type_by_domain={},
              @verifier_domain="example.com",
@@ -703,8 +779,7 @@ Truemail.validate('email@example.com')
     @validation_type=:smtp>
 ```
 
-
-###### SMTP safe check enabled
+##### SMTP safe check enabled
 
 With ```smtp_safe_check = true```
 
@@ -758,6 +833,7 @@ Truemail.validate('email@example.com')
              @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
              @response_timeout=2,
              @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+             @not_rfc_mx_lookup_flow=false,
              @smtp_safe_check=false,
              @validation_type_by_domain={},
              @verifier_domain="example.com",
@@ -806,6 +882,7 @@ Truemail.validate('email@example.com')
              @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
              @response_timeout=2,
              @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+             @not_rfc_mx_lookup_flow=false,
              @smtp_safe_check=false,
              @validation_type_by_domain={},
              @verifier_domain="example.com",
@@ -895,6 +972,7 @@ Truemail.host_audit
          @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
          @response_timeout=2,
          @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+         @not_rfc_mx_lookup_flow=false,
          @smtp_safe_check=false,
          @validation_type_by_domain={},
          @verifier_domain="example.com",
@@ -917,6 +995,7 @@ Truemail.host_audit
          @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
          @response_timeout=2,
          @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+         @not_rfc_mx_lookup_flow=false,
          @smtp_safe_check=false,
          @validation_type_by_domain={},
          @verifier_domain="example.com",
@@ -1008,21 +1087,18 @@ end
 ```
 
 ---
+
 ## Truemail family
 
 All Truemail extensions: https://github.com/truemail-rb
 
-### truemail server
-
-Lightweight rack based web API wrapper for Truemail, https://github.com/truemail-rb/truemail-rack
-
-### truemail-rack-docker-image
-
-Lightweight rack based web API dockerized image :whale: of [Truemail server](https://github.com/truemail-rb/truemail-rack) hosted on [dockerhub](https://hub.docker.com/r/truemail/truemail-rack), https://github.com/truemail-rb/truemail-rack-docker-image
-
-### truemail-rspec
-
-gem `truemail-rspec` - Truemail configuration and validator RSpec helpers, https://github.com/truemail-rb/truemail-rspec
+| Name | Type | Description |
+| --- | --- | --- |
+| [truemail server](https://github.com/truemail-rb/truemail-rack) | ruby app | Lightweight rack based web API wrapper for Truemail |
+| [truemail-rack-docker](https://github.com/truemail-rb/truemail-rack-docker-image) | docker image | Lightweight rack based web API [dockerized image](https://hub.docker.com/r/truemail/truemail-rack) :whale: of Truemail server |
+| [truemail-ruby-client](https://github.com/truemail-rb/truemail-ruby-client) | ruby gem | Truemail web API client library for Ruby |
+| [truemail-crystal-client](https://github.com/truemail-rb/truemail-crystal-client) | crystal shard | Truemail web API client library for Crystal |
+| [truemail-rspec](https://github.com/truemail-rb/truemail-rspec) | ruby gem | Truemail configuration and validator RSpec helpers |
 
 ## Contributing
 
