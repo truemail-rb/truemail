@@ -30,6 +30,7 @@ RSpec.describe Truemail::Log::Serializer::Text do
 
           CONFIGURATION SETTINGS:
           whitelist validation: false
+          not rfc mx lookup flow: false
           smtp safe check: false
           email pattern: default gem value
           smtp error body pattern: default gem value
@@ -45,6 +46,7 @@ RSpec.describe Truemail::Log::Serializer::Text do
             CONFIGURATION SETTINGS:
             whitelist validation: false
             whitelisted domains: #{email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]}
+            not rfc mx lookup flow: false
             smtp safe check: false
             email pattern: default gem value
             smtp error body pattern: default gem value
@@ -81,6 +83,7 @@ RSpec.describe Truemail::Log::Serializer::Text do
 
           CONFIGURATION SETTINGS:
           whitelist validation: false
+          not rfc mx lookup flow: false
           smtp safe check: false
           email pattern: default gem value
           smtp error body pattern: default gem value
@@ -96,6 +99,7 @@ RSpec.describe Truemail::Log::Serializer::Text do
             CONFIGURATION SETTINGS:
             whitelist validation: false
             blacklisted domains: #{email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]}
+            not rfc mx lookup flow: false
             smtp safe check: false
             email pattern: default gem value
             smtp error body pattern: default gem value
@@ -135,6 +139,7 @@ RSpec.describe Truemail::Log::Serializer::Text do
 
             CONFIGURATION SETTINGS:
             whitelist validation: false
+            not rfc mx lookup flow: false
             smtp safe check: false
             email pattern: default gem value
             smtp error body pattern: default gem value

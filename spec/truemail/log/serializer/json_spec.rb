@@ -8,7 +8,13 @@ RSpec.describe Truemail::Log::Serializer::Json do
   describe '.call' do
     subject(:json_serializer) { described_class.call(validator_instance) }
 
-    let(:validator_instance) { create_validator(validation_type, success: success_status) }
+    let(:validator_instance) do
+      create_validator(
+        validation_type,
+        success: success_status,
+        configuration: create_configuration(validation_type_for: { 'somedomain.com' => :regex })
+      )
+    end
 
     shared_context 'serialized json' do
       %i[whitelist regex mx smtp].each do |validation_layer_name|

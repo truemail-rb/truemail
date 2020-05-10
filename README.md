@@ -941,6 +941,7 @@ Truemail::Log::Serializer::Json.call(Truemail.validate('nonexistent_email@bestwe
     "whitelist_validation": false,
     "whitelisted_domains": null,
     "blacklisted_domains": null,
+    "not_rfc_mx_lookup_flow": false,
     "smtp_safe_check": false,
     "email_pattern": "default gem value",
     "smtp_error_body_pattern": "default gem value"
@@ -1026,7 +1027,7 @@ Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
 =>
 # Serialized Truemail::Validator instance
 {
-  "date": "2020-02-01 10:00:00 +0200",
+  "date": "2020-05-10 10:00:00 +0200",
   "email": "nonexistent_email@bestweb.com.ua",
   "validation_type": "smtp",
   "success": false,
@@ -1048,6 +1049,7 @@ Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
     "whitelist_validation": false,
     "whitelisted_domains": null,
     "blacklisted_domains": null,
+    "not_rfc_mx_lookup_flow": false,
     "smtp_safe_check": false,
     "email_pattern": "default gem value",
     "smtp_error_body_pattern": "default gem value"
