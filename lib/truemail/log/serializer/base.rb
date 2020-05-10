@@ -67,6 +67,7 @@ module Truemail
             whitelist_validation: validation_configuration.whitelist_validation,
             whitelisted_domains: whitelisted_domains,
             blacklisted_domains: blacklisted_domains,
+            not_rfc_mx_lookup_flow: validation_configuration.not_rfc_mx_lookup_flow,
             smtp_safe_check: validation_configuration.smtp_safe_check,
             email_pattern: email_pattern,
             smtp_error_body_pattern: smtp_error_body_pattern

@@ -1,238 +1,351 @@
 {
-  "definitions": {},
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://example.com/root.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
   "type": "object",
-  "title": "The Root Schema",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
   "required": [
-    "date",
-    "email",
-    "validation_type",
-    "success",
-    "errors",
-    "smtp_debug",
-    "configuration"
+      "date",
+      "email",
+      "validation_type",
+      "success",
+      "errors",
+      "smtp_debug",
+      "configuration"
   ],
+  "additionalProperties": false,
   "properties": {
-    "date": {
-      "$id": "#/properties/date",
-      "type": "string",
-      "title": "The Date Schema",
-      "default": "",
-      "examples": [
-        "2019-10-27 19:03:33 +0200"
-      ],
-      "pattern": "^(.*)$"
-    },
-    "email": {
-      "$id": "#/properties/email",
-      "type": "string",
-      "title": "The Email Schema",
-      "default": "",
-      "examples": [
-        "jc@brakusvonrueden.us"
-      ],
-      "pattern": "^(.*)$"
-    },
-    "validation_type": {
-      "$id": "#/properties/validation_type",
-      "type": "string",
-      "title": "The Validation_type Schema",
-      "default": "",
-      "examples": [
-        "smtp"
-      ],
-      "pattern": "^(.*)$"
-    },
-    "success": {
-      "$id": "#/properties/success",
-      "type": [
-        "boolean",
-        "null"
-      ],
-      "title": "The Success Schema",
-      "default": false,
-      "examples": [
-        false
-      ]
-    },
-    "errors": {
-      "$id": "#/properties/errors",
-      "type": [
-        "object",
-        "null"
-      ],
-      "title": "The Errors Schema",
-      "default": null,
-      "properties": {
-        "smtp": {
-          "$id": "#/properties/errors/properties/smtp",
+      "date": {
+          "$id": "#/properties/date",
           "type": "string",
-          "title": "The Smtp Schema",
+          "title": "The date schema",
+          "description": "An explanation about the purpose of this instance.",
           "default": "",
           "examples": [
-            "smtp error"
+              "2020-05-10 14:14:37 +0300"
+          ]
+      },
+      "email": {
+          "$id": "#/properties/email",
+          "type": "string",
+          "title": "The email schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "keesha.schiller@trantowkihn.biz"
+          ]
+      },
+      "validation_type": {
+          "$id": "#/properties/validation_type",
+          "type": "string",
+          "title": "The validation_type schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "smtp"
+          ]
+      },
+      "success": {
+          "$id": "#/properties/success",
+          "type": [
+              "boolean",
+              "null"
           ],
-          "pattern": "^(.*)$"
-        }
-      }
-    },
-    "smtp_debug": {
-      "$id": "#/properties/smtp_debug",
-      "type": [
-        "array",
-        "null"
-      ],
-      "title": "The Smtp_debug Schema",
-      "default": null,
-      "items": {
-        "$id": "#/properties/smtp_debug/items",
-        "type": "object",
-        "title": "The Items Schema",
-        "required": [
-          "mail_host",
-          "port_opened",
-          "connection",
-          "errors"
-        ],
-        "properties": {
-          "mail_host": {
-            "$id": "#/properties/smtp_debug/items/properties/mail_host",
-            "type": "string",
-            "title": "The Mail_host Schema",
-            "default": "",
-            "examples": [
-              "198.60.125.186"
-            ],
-            "pattern": "^(.*)$"
-          },
-          "port_opened": {
-            "$id": "#/properties/smtp_debug/items/properties/port_opened",
-            "type": "boolean",
-            "title": "The Port_opened Schema",
-            "default": false,
-            "examples": [
-              true
-            ]
-          },
-          "connection": {
-            "$id": "#/properties/smtp_debug/items/properties/connection",
-            "type": "boolean",
-            "title": "The Connection Schema",
-            "default": false,
-            "examples": [
-              true
-            ]
-          },
-          "errors": {
-            "$id": "#/properties/smtp_debug/items/properties/errors",
-            "type": "object",
-            "title": "The Errors Schema",
-            "properties": {
-              "rcptto": {
-                "$id": "#/properties/smtp_debug/items/properties/errors/properties/rcptto",
-                "type": "string",
-                "title": "The Rcptto Schema",
-                "default": "",
-                "examples": [
-                  "user not found"
-                ],
-                "pattern": "^(.*)$"
+          "title": "The success schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": false,
+          "examples": [
+              false
+          ]
+      },
+      "errors": {
+          "$id": "#/properties/errors",
+          "type": [
+              "object",
+              "null"
+          ],
+          "title": "The errors schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+              {
+                  "smtp": "smtp error",
+                  "mx": "target host(s) not found",
+                  "regex": "email does not match the regular expression",
+                  "domain_list_match": "blacklisted email"
               }
-            }
+          ],
+          "required": [],
+          "additionalProperties": false,
+          "properties": {
+              "domain_list_match": {
+                  "$id": "#/properties/errors/properties/domain_list_match",
+                  "type": "string",
+                  "title": "The domain_list_match schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "blacklisted email"
+                  ]
+              },
+              "regex": {
+                  "$id": "#/properties/errors/properties/regex",
+                  "type": "string",
+                  "title": "The regex schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "email does not match the regular expression"
+                  ]
+              },
+              "mx": {
+                  "$id": "#/properties/errors/properties/mx",
+                  "type": "string",
+                  "title": "The mx schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "target host(s) not found"
+                  ]
+              },
+              "smtp": {
+                  "$id": "#/properties/errors/properties/smtp",
+                  "type": "string",
+                  "title": "The smtp schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "smtp error"
+                  ]
+              }
           }
-        }
+      },
+      "smtp_debug": {
+          "$id": "#/properties/smtp_debug",
+          "type": [
+              "array",
+              "null"
+          ],
+          "title": "The smtp_debug schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": [],
+          "examples": [
+              [
+                  {
+                      "port_opened": true,
+                      "mail_host": "9.52.83.39",
+                      "errors": {
+                          "rcptto": "user not found"
+                      },
+                      "connection": true
+                  }
+              ]
+          ],
+          "additionalItems": true,
+          "items": {
+              "$id": "#/properties/smtp_debug/items/0",
+              "type": "object",
+              "title": "The first items schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": {},
+              "examples": [
+                  {
+                      "mail_host": "9.52.83.39",
+                      "errors": {
+                          "rcptto": "user not found"
+                      },
+                      "connection": true,
+                      "port_opened": true
+                  }
+              ],
+              "required": [
+                  "mail_host",
+                  "port_opened",
+                  "connection",
+                  "errors"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                  "mail_host": {
+                      "$id": "#/properties/smtp_debug/items/0/properties/mail_host",
+                      "type": "string",
+                      "title": "The mail_host schema",
+                      "description": "An explanation about the purpose of this instance.",
+                      "default": "",
+                      "examples": [
+                          "9.52.83.39"
+                      ]
+                  },
+                  "port_opened": {
+                      "$id": "#/properties/smtp_debug/items/0/properties/port_opened",
+                      "type": "boolean",
+                      "title": "The port_opened schema",
+                      "description": "An explanation about the purpose of this instance.",
+                      "default": false,
+                      "examples": [
+                          true
+                      ]
+                  },
+                  "connection": {
+                      "$id": "#/properties/smtp_debug/items/0/properties/connection",
+                      "type": "boolean",
+                      "title": "The connection schema",
+                      "description": "An explanation about the purpose of this instance.",
+                      "default": false,
+                      "examples": [
+                          true
+                      ]
+                  },
+                  "errors": {
+                      "$id": "#/properties/smtp_debug/items/0/properties/errors",
+                      "type": "object",
+                      "title": "The errors schema",
+                      "description": "An explanation about the purpose of this instance.",
+                      "default": {},
+                      "examples": [
+                          {
+                              "rcptto": "user not found"
+                          }
+                      ],
+                      "required": [],
+                      "additionalProperties": false,
+                      "properties": {
+                          "rcptto": {
+                              "$id": "#/properties/smtp_debug/items/0/properties/errors/properties/rcptto",
+                              "type": "string",
+                              "title": "The rcptto schema",
+                              "description": "An explanation about the purpose of this instance.",
+                              "default": "",
+                              "examples": [
+                                  "user not found"
+                              ]
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "configuration": {
+          "$id": "#/properties/configuration",
+          "type": "object",
+          "title": "The configuration schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+              {
+                  "whitelist_validation": false,
+                  "blacklisted_domains": null,
+                  "validation_type_by_domain": null,
+                  "smtp_error_body_pattern": "default gem value",
+                  "smtp_safe_check": false,
+                  "whitelisted_domains": null,
+                  "email_pattern": "default gem value",
+                  "not_rfc_mx_lookup_flow": false
+              }
+          ],
+          "required": [
+              "validation_type_by_domain",
+              "whitelist_validation",
+              "whitelisted_domains",
+              "blacklisted_domains",
+              "not_rfc_mx_lookup_flow",
+              "smtp_safe_check",
+              "email_pattern",
+              "smtp_error_body_pattern"
+          ],
+          "additionalProperties": false,
+          "properties": {
+              "validation_type_by_domain": {
+                  "$id": "#/properties/configuration/properties/validation_type_by_domain",
+                  "type": [
+                      "object",
+                      "null"
+                  ],
+                  "title": "The validation_type_by_domain schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": null,
+                  "examples": [
+                      null
+                  ]
+              },
+              "whitelist_validation": {
+                  "$id": "#/properties/configuration/properties/whitelist_validation",
+                  "type": "boolean",
+                  "title": "The whitelist_validation schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": false,
+                  "examples": [
+                      false
+                  ]
+              },
+              "whitelisted_domains": {
+                  "$id": "#/properties/configuration/properties/whitelisted_domains",
+                  "type": [
+                      "array",
+                      "null"
+                  ],
+                  "title": "The whitelisted_domains schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": null,
+                  "examples": [
+                      null
+                  ]
+              },
+              "blacklisted_domains": {
+                  "$id": "#/properties/configuration/properties/blacklisted_domains",
+                  "type": [
+                      "array",
+                      "null"
+                  ],
+                  "title": "The blacklisted_domains schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": null,
+                  "examples": [
+                      null
+                  ]
+              },
+              "not_rfc_mx_lookup_flow": {
+                  "$id": "#/properties/configuration/properties/not_rfc_mx_lookup_flow",
+                  "type": "boolean",
+                  "title": "The not_rfc_mx_lookup_flow schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": false,
+                  "examples": [
+                      false
+                  ]
+              },
+              "smtp_safe_check": {
+                  "$id": "#/properties/configuration/properties/smtp_safe_check",
+                  "type": "boolean",
+                  "title": "The smtp_safe_check schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": false,
+                  "examples": [
+                      false
+                  ]
+              },
+              "email_pattern": {
+                  "$id": "#/properties/configuration/properties/email_pattern",
+                  "type": "string",
+                  "title": "The email_pattern schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "default gem value"
+                  ]
+              },
+              "smtp_error_body_pattern": {
+                  "$id": "#/properties/configuration/properties/smtp_error_body_pattern",
+                  "type": "string",
+                  "title": "The smtp_error_body_pattern schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "default gem value"
+                  ]
+              }
+          }
       }
-    },
-    "configuration": {
-      "$id": "#/properties/configuration",
-      "type": "object",
-      "title": "The Configuration Schema",
-      "required": [
-        "validation_type_by_domain",
-        "whitelist_validation",
-        "whitelisted_domains",
-        "blacklisted_domains",
-        "smtp_safe_check",
-        "email_pattern",
-        "smtp_error_body_pattern"
-      ],
-      "properties": {
-        "validation_type_by_domain": {
-          "$id": "#/properties/configuration/properties/validation_type_by_domain",
-          "type": [
-            "object",
-            "null"
-          ],
-          "title": "The Validation_type_by_domain Schema",
-          "default": null,
-          "examples": [
-            null
-          ]
-        },
-        "whitelist_validation": {
-          "$id": "#/properties/configuration/properties/whitelist_validation",
-          "type": "boolean",
-          "title": "The Whitelist_validation Schema",
-          "default": false,
-          "examples": [
-            false
-          ]
-        },
-        "whitelisted_domains": {
-          "$id": "#/properties/configuration/properties/whitelisted_domains",
-          "type": [
-            "array",
-            "null"
-          ],
-          "title": "The Whitelisted_domains Schema",
-          "default": null,
-          "examples": [
-            null
-          ]
-        },
-        "blacklisted_domains": {
-          "$id": "#/properties/configuration/properties/blacklisted_domains",
-          "type": [
-            "array",
-            "null"
-          ],
-          "title": "The Blacklisted_domains Schema",
-          "default": null,
-          "examples": [
-            null
-          ]
-        },
-        "smtp_safe_check": {
-          "$id": "#/properties/configuration/properties/smtp_safe_check",
-          "type": "boolean",
-          "title": "The Smtp_safe_check Schema",
-          "default": false,
-          "examples": [
-            false
-          ]
-        },
-        "email_pattern": {
-          "$id": "#/properties/configuration/properties/email_pattern",
-          "type": "string",
-          "title": "The Email_pattern Schema",
-          "default": "",
-          "examples": [
-            "default gem value"
-          ],
-          "pattern": "^(.*)$"
-        },
-        "smtp_error_body_pattern": {
-          "$id": "#/properties/configuration/properties/smtp_error_body_pattern",
-          "type": "string",
-          "title": "The Smtp_error_body_pattern Schema",
-          "default": "",
-          "examples": [
-            "default gem value"
-          ],
-          "pattern": "^(.*)$"
-        }
-      }
-    }
   }
 }

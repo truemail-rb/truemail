@@ -1,11 +1,59 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.1] - 2020.05.10
+
+## Added
+
+- Ability to show `not_rfc_mx_lookup_flow` attribute in serialized validation result
+
+```ruby
+Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
+
+=>
+# Serialized Truemail::Validator instance
+{
+  "date": "2020-05-10 10:00:00 +0200",
+  "email": "nonexistent_email@bestweb.com.ua",
+  "validation_type": "smtp",
+  "success": false,
+  "errors": {
+    "smtp": "smtp error"
+  },
+  "smtp_debug": [
+    {
+      "mail_host": "213.180.193.89",
+      "port_opened": true,
+      "connection": true,
+      "errors": {
+        "rcptto": "550 5.7.1 No such user!\n"
+      }
+    }
+  ],
+  "configuration": {
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null,
+    "blacklisted_domains": null,
+    "not_rfc_mx_lookup_flow": false,
+    "smtp_safe_check": false,
+    "email_pattern": "default gem value",
+    "smtp_error_body_pattern": "default gem value"
+  }
+}
+```
+
+### Changed
+
+- `Truemail::Log::Serializer::Base`
+- `Truemail::VERSION`
+- gem documentation
+
 ## [1.7.0] - 2020.05.09
 
 ## Added
 
-- Possibility to use not RFC MX lookup flow (MX and Null MX records will be checked on the DNS validation layer only)
+- Ability to use not RFC MX lookup flow (MX and Null MX records will be checked on the DNS validation layer only)
 
 ```ruby
 Truemail.configure do |config|
