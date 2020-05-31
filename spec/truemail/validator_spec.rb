@@ -165,7 +165,7 @@ RSpec.describe Truemail::Validator::Result do
   let(:email) { FFaker::Internet.email }
 
   specify do
-    expect(result_instance.members).to include(*Truemail::Validator::RESULT_ATTRS)
+    expect(result_instance.members).to match_array(Truemail::Validator::RESULT_ATTRS)
   end
 
   it 'has .valid? alias' do

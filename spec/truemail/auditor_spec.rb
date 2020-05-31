@@ -17,7 +17,7 @@ RSpec.describe Truemail::Auditor do
 
   describe '#run' do
     it 'runs audition methods' do
-      expect(Truemail::Audit::Ptr).to receive(:check)
+      expect(Truemail::Audit::Ip).to receive(:check)
       expect(auditor_instance.run).to be_an_instance_of(described_class)
     end
   end
@@ -27,10 +27,10 @@ RSpec.describe Truemail::Auditor::Result do
   subject(:result_instance) { described_class.new }
 
   it 'has attribute accessors warnings, configuration' do
-    expect(result_instance.members).to include(:warnings, :configuration)
+    expect(result_instance.members).to match_array(%i[current_host_ip warnings configuration])
   end
 
-  it 'has default values for attributes' do
+  it 'has default value for warnings attribute' do
     expect(result_instance.warnings).to eq({})
   end
 

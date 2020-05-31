@@ -195,7 +195,7 @@ RSpec.describe Truemail do
       it 'returns auditor instance' do
         expect(Truemail::Auditor).to receive(:new).and_call_original
         expect_any_instance_of(Truemail::Auditor).to receive(:run).and_call_original
-        expect(Truemail::Audit::Ptr).to receive(:check).and_return(true)
+        expect(Truemail::Audit::Ip).to receive(:check).and_return(true)
         expect(host_audit).to be_an_instance_of(Truemail::Auditor)
       end
     end
