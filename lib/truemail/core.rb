@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module Truemail
-  require 'truemail/version'
-  require 'truemail/configuration'
-  require 'truemail/worker'
-  require 'truemail/wrapper'
-  require 'truemail/auditor'
-  require 'truemail/validator'
-  require 'truemail/logger'
+  require_relative '../truemail/version'
+  require_relative '../truemail/configuration'
+  require_relative '../truemail/worker'
+  require_relative '../truemail/wrapper'
+  require_relative '../truemail/auditor'
+  require_relative '../truemail/validator'
+  require_relative '../truemail/logger'
 
   ConfigurationError = Class.new(StandardError)
 
@@ -37,24 +37,26 @@ module Truemail
   end
 
   module Audit
-    require 'truemail/audit/base'
-    require 'truemail/audit/ptr'
+    require_relative '../truemail/audit/base'
+    require_relative '../truemail/audit/ip'
+    require_relative '../truemail/audit/dns'
+    require_relative '../truemail/audit/ptr'
   end
 
   module Validate
-    require 'truemail/validate/base'
-    require 'truemail/validate/domain_list_match'
-    require 'truemail/validate/regex'
-    require 'truemail/validate/mx'
-    require 'truemail/validate/smtp'
-    require 'truemail/validate/smtp/response'
-    require 'truemail/validate/smtp/request'
+    require_relative '../truemail/validate/base'
+    require_relative '../truemail/validate/domain_list_match'
+    require_relative '../truemail/validate/regex'
+    require_relative '../truemail/validate/mx'
+    require_relative '../truemail/validate/smtp'
+    require_relative '../truemail/validate/smtp/response'
+    require_relative '../truemail/validate/smtp/request'
   end
 
   module Log
-    require 'truemail/log/event'
-    require 'truemail/log/serializer/base'
-    require 'truemail/log/serializer/text'
-    require 'truemail/log/serializer/json'
+    require_relative '../truemail/log/event'
+    require_relative '../truemail/log/serializer/base'
+    require_relative '../truemail/log/serializer/text'
+    require_relative '../truemail/log/serializer/json'
   end
 end

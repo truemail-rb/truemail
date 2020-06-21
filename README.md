@@ -36,7 +36,10 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
     - [Available tracking events](#available-tracking-events)
   - [JSON serializer](#json-serializer)
   - [Host audit features](#host-audit-features)
+    - [IP audit](#ip-audit)
+    - [DNS audit](#dns-audit)
     - [PTR audit](#ptr-audit)
+    - [Example of using](#example-of-using)
   - [Truemail helpers](#truemail-helpers)
     - [.valid?](#valid)
     - [#as_json](#as_json)
@@ -70,6 +73,7 @@ Also Truemail gem allows performing an audit of the host in which runs.
 - Whitelist/blacklist validation layers
 - Simple SMTP debugger
 - Event logger
+- Host auditor tools (helps to detect common host problems interfering to proper email verification)
 - JSON serializer
 
 ## Requirements
@@ -951,11 +955,23 @@ Truemail::Log::Serializer::Json.call(Truemail.validate('nonexistent_email@bestwe
 
 ### Host audit features
 
-Truemail gem allows performing an audit of the host in which runs. Only PTR record audit performs for today.
+Truemail gem allows performing an audit of the host in which runs. It will help to detect common host problems interfering to proper email verification.
+
+#### IP audit
+
+Checks is current Truemail host has proper internet connection and detects current host ip address.
+
+#### DNS audit
+
+Checks is verifier domain refer to current Truemail host IP address.
 
 #### PTR audit
 
 So what is a PTR record? A PTR record, or pointer record, enables someone to perform a reverse DNS lookup. This allows them to determine your domain name based on your IP address. Because generic domain names without a PTR are often associated with spammers, incoming mail servers identify email from hosts without PTR records as spam and you can't verify yours emails qualitatively.
+
+Checks is PTR record exists for your Truemail host ip address exists and refers to current verifier domain.
+
+#### Example of using
 
 ```ruby
 Truemail.host_audit
@@ -963,6 +979,7 @@ Truemail.host_audit
 => #<Truemail::Auditor:0x00005580df358828
    @result=
      #<struct Truemail::Auditor::Result
+       current_host_ip="127.0.0.1",
        warnings={}>,
        configuration=
         #<Truemail::Configuration:0x00005615e86327a8
@@ -981,12 +998,15 @@ Truemail.host_audit
          @whitelist_validation=false,
          @whitelisted_domains=[]>
 
-# Has PTR warning
+# Has audit warnings
 => #<Truemail::Auditor:0x00005580df358828
    @result=
      #<struct Truemail::Auditor::Result
-       warnings=
-         {:ptr=>"ptr record does not reference to current verifier domain"}>,
+       current_host_ip="127.0.0.1",
+       warnings={
+         :dns=>"a record of verifier domain not refers to current host ip address",
+         :ptr=>"ptr record does not reference to current verifier domain"
+       },
        configuration=
         #<Truemail::Configuration:0x00005615e86327a8
          @blacklisted_domains=[],
