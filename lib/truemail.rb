@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'truemail/core'
+require_relative 'truemail/core'
 
 module Truemail
   INCOMPLETE_CONFIG = 'verifier_email is required parameter'

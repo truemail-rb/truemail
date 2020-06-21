@@ -1,5 +1,53 @@
 # Changelog
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.8.0] - 2020.06.21
+
+## Added
+
+Separated audit features for verifier host.
+
+- `Truemail::Audit::Ip`
+- `Truemail::Audit::Dns`
+
+```ruby
+Truemail.host_audit
+
+=> #<Truemail::Auditor:0x00005580df358828
+@result=
+  #<struct Truemail::Auditor::Result
+    current_host_ip="127.0.0.1",
+    warnings={
+      :dns=>"a record of verifier domain not refers to current host ip address",
+      :ptr=>"ptr record does not reference to current verifier domain"
+    },
+    configuration=
+    #<Truemail::Configuration:0x00005615e86327a8
+      @blacklisted_domains=[],
+      @connection_attempts=2,
+      @connection_timeout=2,
+      @default_validation_type=:smtp,
+      @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@((?i-mx:[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}))\z)/,
+      @response_timeout=2,
+      @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+      @not_rfc_mx_lookup_flow=false,
+      @smtp_safe_check=false,
+      @validation_type_by_domain={},
+      @verifier_domain="example.com",
+      @verifier_email="verifier@example.com",
+      @whitelist_validation=false,
+      @whitelisted_domains=[]>
+```
+
+### Changed
+
+- `Truemail::Auditor`
+- `Truemail::Auditor::Result`
+- `Truemail::Audit::Base`
+- `Truemail::Audit::Ptr`
+- `Truemail::VERSION`
+- gem documentation
 
 ## [1.7.1] - 2020.05.10
 

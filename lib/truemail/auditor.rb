@@ -2,7 +2,7 @@
 
 module Truemail
   class Auditor
-    Result = Struct.new(:warnings, :configuration, keyword_init: true) do
+    Result = Struct.new(:current_host_ip, :warnings, :configuration, keyword_init: true) do
       def initialize(warnings: {}, **args)
         super
       end
@@ -15,7 +15,7 @@ module Truemail
     end
 
     def run
-      Truemail::Audit::Ptr.check(result)
+      Truemail::Audit::Ip.check(result)
       self
     end
   end
