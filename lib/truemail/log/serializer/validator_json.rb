@@ -3,7 +3,7 @@
 module Truemail
   module Log
     module Serializer
-      class Json < Truemail::Log::Serializer::Base
+      class ValidatorJson < Truemail::Log::Serializer::ValidatorBase
         def serialize
           result.to_json
         end

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe Truemail::Log::Serializer::Text do
+RSpec.describe Truemail::Log::Serializer::ValidatorText do
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:ATTEMPT) }
   end
 
   describe 'inheritance' do
-    specify { expect(described_class).to be < Truemail::Log::Serializer::Base }
+    specify { expect(described_class).to be < Truemail::Log::Serializer::ValidatorBase }
   end
 
   describe '.call' do

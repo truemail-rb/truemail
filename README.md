@@ -1,4 +1,4 @@
-# <img src='https://repository-images.githubusercontent.com/173723932/6dffee00-e88e-11e9-94b6-c97aacc0df00' height='250' alt='Truemail - configurable framework agnostic plain Ruby email validator' />
+![Truemail - configurable framework agnostic plain Ruby email validator](https://truemail-rb.org/assets/images/truemail_logo.png)
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/maintainability)](https://codeclimate.com/github/rubygarage/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/test_coverage)](https://codeclimate.com/github/rubygarage/truemail/test_coverage) [![CircleCI](https://circleci.com/gh/rubygarage/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/rubygarage/truemail/tree/master) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![Downloads](https://img.shields.io/gem/dt/truemail.svg?colorA=004d99&colorB=0073e6)](https://rubygems.org/gems/truemail) [![Gitter](https://badges.gitter.im/truemail-rb/community.svg)](https://gitter.im/truemail-rb/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
@@ -32,14 +32,16 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
     - [SMTP validation](#smtp-validation)
       - [SMTP safe check disabled](#smtp-safe-check-disabled)
       - [SMTP safe check enabled](#smtp-safe-check-enabled)
-  - [Event logger](#event-logger)
-    - [Available tracking events](#available-tracking-events)
-  - [JSON serializer](#json-serializer)
   - [Host audit features](#host-audit-features)
     - [IP audit](#ip-audit)
     - [DNS audit](#dns-audit)
     - [PTR audit](#ptr-audit)
     - [Example of using](#example-of-using)
+  - [Event logger](#event-logger)
+    - [Available tracking events](#available-tracking-events)
+  - [JSON serializers](#json-serializers)
+    - [Auditor JSON serializer](#auditor-json-serializer)
+    - [Validator JSON serializer](#validator-json-serializer)
   - [Truemail helpers](#truemail-helpers)
     - [.valid?](#valid)
     - [#as_json](#as_json)
@@ -51,11 +53,11 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
 - [Credits](#credits)
 - [Versioning](#versioning)
 - [Changelog](CHANGELOG.md)
-- [Wiki](https://github.com/rubygarage/truemail/wiki)
+- [Developers Documentation](https://truemail-rb.org/truemail-gem/)
 
 ## Synopsis
 
-Email validation is a tricky thing. There are a number of different ways to validate an email address and all mechanisms must conform with the best practices and provide proper validation. You can get more information about email validation techniques in our [blog](https://rubygarage.org/blog/how-to-validate-emails). The Truemail gem helps you validate emails via regex pattern, presence of DNS records, and real existence of email account on a current email server.
+Email validation is a tricky thing. There are a number of different ways to validate an email address and all mechanisms must conform with the best practices and provide proper validation. The Truemail gem helps you validate emails via regex pattern, presence of DNS records, and real existence of email account on a current email server.
 
 **Syntax Checking**: Checks the email addresses via regex pattern.
 
@@ -74,7 +76,7 @@ Also Truemail gem allows performing an audit of the host in which runs.
 - Simple SMTP debugger
 - Event logger
 - Host auditor tools (helps to detect common host problems interfering to proper email verification)
-- JSON serializer
+- JSON serializers
 
 ## Requirements
 
@@ -896,63 +898,6 @@ Truemail.validate('email@example.com')
     @validation_type=:smtp>
 ```
 
-### Event logger
-
-Truemail gem allows to output tracking events to stdout/file or both of these. Please note, at least one of the outputs must exist. Tracking event by default is `:error`
-
-```ruby
-Truemail.configure do |config|
-  config.logger = { tracking_event: :all, stdout: true, log_absolute_path: '/home/app/log/truemail.log' }
-end
-```
-
-#### Available tracking events
-
-- `:all`, all detected events including success validation cases
-- `:unrecognized_error`, unrecognized errors only (when `smtp_safe_check = true` and SMTP server does not return an exact answer that the email does not exist)
-- `:recognized_error`, recognized errors only
-- `:error`, recognized and unrecognized errors only
-
-### JSON serializer
-
-Truemail has built in JSON serializer for `Truemail::Validator` instance, so you can represent your email validation result as json.
-
-```ruby
-Truemail::Log::Serializer::Json.call(Truemail.validate('nonexistent_email@bestweb.com.ua'))
-
-=>
-# Serialized Truemail::Validator instance
-{
-  "date": "2019-10-28 10:15:51 +0200",
-  "email": "nonexistent_email@bestweb.com.ua",
-  "validation_type": "smtp",
-  "success": false,
-  "errors": {
-    "smtp": "smtp error"
-  },
-  "smtp_debug": [
-    {
-      "mail_host": "213.180.193.89",
-      "port_opened": true,
-      "connection": true,
-      "errors": {
-        "rcptto": "550 5.7.1 No such user!\n"
-      }
-    }
-  ],
-  "configuration": {
-    "validation_type_by_domain": null,
-    "whitelist_validation": false,
-    "whitelisted_domains": null,
-    "blacklisted_domains": null,
-    "not_rfc_mx_lookup_flow": false,
-    "smtp_safe_check": false,
-    "email_pattern": "default gem value",
-    "smtp_error_body_pattern": "default gem value"
-  }
-}
-```
-
 ### Host audit features
 
 Truemail gem allows performing an audit of the host in which runs. It will help to detect common host problems interfering to proper email verification.
@@ -1004,8 +949,8 @@ Truemail.host_audit
      #<struct Truemail::Auditor::Result
        current_host_ip="127.0.0.1",
        warnings={
-         :dns=>"a record of verifier domain not refers to current host ip address",
-         :ptr=>"ptr record does not reference to current verifier domain"
+         :dns=>"A-record of verifier domain not refers to current host ip address",
+         :ptr=>"PTR-record does not reference to current verifier domain"
        },
        configuration=
         #<Truemail::Configuration:0x00005615e86327a8
@@ -1025,6 +970,91 @@ Truemail.host_audit
          @whitelisted_domains=[]>
 ```
 
+### Event logger
+
+Truemail gem allows to output tracking events to stdout/file or both of these. Please note, at least one of the outputs must exist. Tracking event by default is `:error`
+
+```ruby
+Truemail.configure do |config|
+  config.logger = { tracking_event: :all, stdout: true, log_absolute_path: '/home/app/log/truemail.log' }
+end
+```
+
+#### Available tracking events
+
+- `:all`, all detected events including success validation cases
+- `:unrecognized_error`, unrecognized errors only (when `smtp_safe_check = true` and SMTP server does not return an exact answer that the email does not exist)
+- `:recognized_error`, recognized errors only
+- `:error`, recognized and unrecognized errors only
+
+### JSON serializers
+
+Truemail has built in JSON serializers for `Truemail::Auditor` and `Truemail::Validator` instances, so you can represent your host audition or email validation result as json. Also you can use [#as_json](#as_json) helper for shortcuting.
+
+#### Auditor JSON serializer
+
+```ruby
+Truemail::Log::Serializer::AuditorJson.call(Truemail.host_audit)
+
+=>
+# Serialized Truemail::Auditor instance
+{
+  "date": "2020-08-31 22:33:43 +0300",
+  "current_host_ip": "127.0.0.1",
+  "warnings": {
+    "dns": "A-record of verifier domain not refers to current host ip address", "ptr": "PTR-record does not reference to current verifier domain"
+  },
+ "configuration": {
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null,
+    "blacklisted_domains": null,
+    "not_rfc_mx_lookup_flow": false,
+    "smtp_safe_check": false,
+    "email_pattern": "default gem value",
+    "smtp_error_body_pattern": "default gem value"
+  }
+}
+```
+
+#### Validator JSON serializer
+
+```ruby
+Truemail::Log::Serializer::ValidatorJson.call(Truemail.validate('nonexistent_email@bestweb.com.ua'))
+
+=>
+# Serialized Truemail::Validator instance
+{
+  "date": "2019-10-28 10:15:51 +0200",
+  "email": "nonexistent_email@bestweb.com.ua",
+  "validation_type": "smtp",
+  "success": false,
+  "errors": {
+    "smtp": "smtp error"
+  },
+  "smtp_debug": [
+    {
+      "mail_host": "213.180.193.89",
+      "port_opened": true,
+      "connection": true,
+      "errors": {
+        "rcptto": "550 5.7.1 No such user!\n"
+      }
+    }
+  ],
+  "configuration": {
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null,
+    "blacklisted_domains": null,
+    "not_rfc_mx_lookup_flow": false,
+    "smtp_safe_check": false,
+    "email_pattern": "default gem value",
+    "smtp_error_body_pattern": "default gem value"
+  }
+}
+```
+
 ### Truemail helpers
 
 #### .valid?
@@ -1039,9 +1069,32 @@ Truemail.valid?('email@example.com')
 
 #### #as_json
 
-You can use `#as_json` helper for represent `Truemail::Validator` instance as json. Under the hood it uses internal json serializer [`Truemail::Log::Serializer::Json`](#json-serializer):
+You can use `#as_json` helper for represent `Truemail::Auditor` or `Truemail::Validator` instances as json. Under the hood it uses internal json `Truemail::Log::Serializer::AuditorJson` and `Truemail::Log::Serializer::ValidatorJson` [serializers](#json-serializers):
 
 ```ruby
+Truemail.host_audit.as_json
+
+=>
+# Serialized Truemail::Auditor instance
+{
+  "date": "2020-08-31 22:33:43 +0300",
+  "current_host_ip": "127.0.0.1",
+  "warnings": {
+    "dns": "A-record of verifier domain not refers to current host ip address", "ptr": "PTR-record does not reference to current verifier domain"
+  },
+ "configuration": {
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null,
+    "blacklisted_domains": null,
+    "not_rfc_mx_lookup_flow": false,
+    "smtp_safe_check": false,
+    "email_pattern": "default gem value",
+    "smtp_error_body_pattern": "default gem value"
+  }
+}
+
+
 Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
 
 =>
@@ -1112,15 +1165,15 @@ end
 
 ## Truemail family
 
-All Truemail extensions: https://github.com/truemail-rb
+All Truemail solutions: https://truemail-rb.org
 
 | Name | Type | Description |
 | --- | --- | --- |
-| [truemail server](https://github.com/truemail-rb/truemail-rack) | ruby app | Lightweight rack based web API wrapper for Truemail |
+| [truemail server](https://github.com/truemail-rb/truemail-rack) | ruby app | Lightweight rack based web API wrapper for Truemail gem |
 | [truemail-rack-docker](https://github.com/truemail-rb/truemail-rack-docker-image) | docker image | Lightweight rack based web API [dockerized image](https://hub.docker.com/r/truemail/truemail-rack) :whale: of Truemail server |
-| [truemail-ruby-client](https://github.com/truemail-rb/truemail-ruby-client) | ruby gem | Truemail web API client library for Ruby |
-| [truemail-crystal-client](https://github.com/truemail-rb/truemail-crystal-client) | crystal shard | Truemail web API client library for Crystal |
-| [truemail-rspec](https://github.com/truemail-rb/truemail-rspec) | ruby gem | Truemail configuration and validator RSpec helpers |
+| [truemail-ruby-client](https://github.com/truemail-rb/truemail-ruby-client) | ruby gem | Web API Ruby client for Truemail Server |
+| [truemail-crystal-client](https://github.com/truemail-rb/truemail-crystal-client) | crystal shard | Web API Crystal client for Truemail Server |
+| [truemail-rspec](https://github.com/truemail-rb/truemail-rspec) | ruby gem | Truemail configuration, auditor and validator RSpec helpers |
 
 ## Contributing
 
@@ -1142,8 +1195,3 @@ Everyone interacting in the Truemail project’s codebases, issue trackers, chat
 ## Versioning
 
 Truemail uses [Semantic Versioning 2.0.0](https://semver.org)
-
----
-<a href="https://rubygarage.org/"><img src="https://rubygarage.s3.amazonaws.com/assets/assets/rg_color_logo_horizontal-919afc51a81d2e40cb6a0b43ee832e3fcd49669d06785156d2d16fd0d799f89e.png" alt="RubyGarage Logo" width="415" height="128"></a>
-
-RubyGarage is a leading software development and consulting company in Eastern Europe. Our main expertise includes Ruby and Ruby on Rails, but we successfully employ other technologies to deliver the best results to our clients. [Check out our portfolio](https://rubygarage.org/portfolio) for even more exciting works!

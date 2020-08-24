@@ -15,6 +15,10 @@ RSpec.describe Truemail::Validator do
     specify { expect(described_class).to be_const_defined(:Result) }
   end
 
+  describe 'inheritance' do
+    specify { expect(described_class).to be < Truemail::Executor }
+  end
+
   describe '.new' do
     Truemail::Validator::VALIDATION_TYPES.each do |validation_type|
       context "with: #{validation_type}" do
@@ -125,7 +129,7 @@ RSpec.describe Truemail::Validator do
     subject(:validator_instance_as_json) { validator_instance.as_json }
 
     specify do
-      expect(Truemail::Log::Serializer::Json).to receive(:call).with(validator_instance).and_call_original
+      expect(Truemail::Log::Serializer::ValidatorJson).to receive(:call).with(validator_instance).and_call_original
       expect(validator_instance_as_json).to match_json_schema('validator')
     end
   end
