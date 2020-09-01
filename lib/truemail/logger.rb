@@ -15,7 +15,7 @@ module Truemail
     def push(validator_instance)
       current_event = Truemail::Log::Event.new(event, validator_instance)
       return unless current_event.valid?
-      create_logs(current_event.log_level, Truemail::Log::Serializer::Text.call(validator_instance))
+      create_logs(current_event.log_level, Truemail::Log::Serializer::ValidatorText.call(validator_instance))
     end
 
     private

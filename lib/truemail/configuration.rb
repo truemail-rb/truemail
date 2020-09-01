@@ -109,7 +109,7 @@ module Truemail
     end
 
     def validate_arguments(argument, method)
-      constant = Truemail::RegexConstant.const_get("regex_#{method[/\A.+_(.+)\=\z/, 1]}_pattern".upcase)
+      constant = Truemail::RegexConstant.const_get("regex_#{method[/\A.+_(.+)=\z/, 1]}_pattern".upcase)
       raise_unless(argument, method, constant.match?(argument.to_s))
     end
 

@@ -2,6 +2,44 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2020.09.01
+
+## Added
+
+- Ability to use `Truemail::Auditor` instance represented as json directly
+- `Truemail::Log::Serializer::AuditorJson`
+
+### Changed
+
+- `Truemail::Auditor`, `Truemail::Validator`
+- serializers namespaces
+- gem development dependencies
+- gem documentation
+
+```ruby
+Truemail.host_audit.as_json
+
+=>
+# Serialized Truemail::Auditor instance
+{
+  "date": "2020-08-31 22:33:43 +0300",
+  "current_host_ip": "127.0.0.1",
+  "warnings": {
+    "dns": "A-record of verifier domain not refers to current host ip address", "ptr": "PTR-record does not reference to current verifier domain"
+  },
+ "configuration": {
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null,
+    "blacklisted_domains": null,
+    "not_rfc_mx_lookup_flow": false,
+    "smtp_safe_check": false,
+    "email_pattern": "default gem value",
+    "smtp_error_body_pattern": "default gem value"
+  }
+}
+```
+
 ## [1.8.0] - 2020.06.21
 
 ## Added
@@ -139,7 +177,7 @@ end
 
 ### Added
 
-- Possibility to use `Truemail::Validator` instance represented as json directly
+- Ability to use `Truemail::Validator` instance represented as json directly
 
 ### Changed
 

@@ -3,7 +3,7 @@
 module Truemail
   module Audit
     class Dns < Truemail::Audit::Base
-      VERIFIER_DOMAIN_NOT_REFER = 'a record of verifier domain not refers to current host ip address'
+      VERIFIER_DOMAIN_NOT_REFER = 'A-record of verifier domain not refers to current host ip address'
 
       def run
         return if verifier_domain_refer_to_current_host_ip?

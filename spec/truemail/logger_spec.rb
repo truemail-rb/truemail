@@ -28,7 +28,7 @@ RSpec.describe Truemail::Logger do
 
       it 'calls create_logs' do
         expect(Truemail::Log::Event).to receive(:new).with(logger_instance.event, validator_instance).and_return(event_instance)
-        expect(Truemail::Log::Serializer::Text).to receive(:call).with(validator_instance).and_return(serialized_object)
+        expect(Truemail::Log::Serializer::ValidatorText).to receive(:call).with(validator_instance).and_return(serialized_object)
         expect(logger_instance).to receive(:create_logs).with(event_instance.log_level, serialized_object)
         push_log
       end

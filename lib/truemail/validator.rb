@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Truemail
-  class Validator
+  class Validator < Truemail::Executor
     RESULT_ATTRS = %i[success email domain mail_servers errors smtp_debug configuration].freeze
     VALIDATION_TYPES = %i[regex mx smtp].freeze
 
@@ -16,7 +16,7 @@ module Truemail
       alias_method :valid?, :success
     end
 
-    attr_reader :validation_type, :result
+    attr_reader :validation_type
 
     def initialize(email, with: nil, configuration:)
       with ||= configuration.default_validation_type
@@ -33,7 +33,7 @@ module Truemail
     end
 
     def as_json
-      Truemail::Log::Serializer::Json.call(self)
+      Truemail::Log::Serializer::ValidatorJson.call(self)
     end
 
     private

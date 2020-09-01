@@ -83,8 +83,8 @@ RSpec.describe Truemail::RegexConstant do
 
     it 'allows tld size between 2 and 63 chars' do
       expect(regex_pattern.match?('i@i.io')).to be(true)
-      expect(regex_pattern.match?('i@i.io' + 'z' * 61)).to be(true)
-      expect(regex_pattern.match?('i@i.io' + 'z' * 62)).to be(false)
+      expect(regex_pattern.match?("i@i.io#{'z' * 61}")).to be(true)
+      expect(regex_pattern.match?("i@i.io#{'z' * 62}")).to be(false)
       expect(regex_pattern.match?('i@i.i')).to be(false)
     end
 
@@ -136,8 +136,8 @@ RSpec.describe Truemail::RegexConstant do
 
     it 'allows tld size between 2 and 63 chars' do
       expect(regex_pattern.match?('domain.io')).to be(true)
-      expect(regex_pattern.match?('domain.iq' + 'z' * 61)).to be(true)
-      expect(regex_pattern.match?('domain.iq' + 'z' * 62)).to be(false)
+      expect(regex_pattern.match?("domain.iq#{'z' * 61}")).to be(true)
+      expect(regex_pattern.match?("domain.iq#{'z' * 62}")).to be(false)
       expect(regex_pattern.match?('domain')).to be(false)
     end
 

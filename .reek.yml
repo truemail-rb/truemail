@@ -39,6 +39,7 @@ detectors:
       - Truemail::Validate::Mx#a_record
       - Truemail::Audit::Base#verifier_domain
       - Truemail::Configuration#domain_matcher
+      - Truemail::Log::Serializer::Base#errors
 
   ControlParameter:
     exclude:
@@ -55,6 +56,8 @@ detectors:
       - Truemail::ConfigurationHelper#create_configuration
       - Truemail::Log::Serializer::Base#smtp_debug
       - Truemail::Log::Serializer::Text#data_composer
+      - Truemail::Log::Serializer::ValidatorBase#smtp_debug
+      - Truemail::Log::Serializer::ValidatorText#data_composer
 
   NilCheck:
     exclude:

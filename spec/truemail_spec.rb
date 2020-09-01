@@ -18,6 +18,7 @@ RSpec.describe Truemail do
     specify { expect(described_class).to be_const_defined(:VERSION) }
     specify { expect(described_class).to be_const_defined(:Configuration) }
     specify { expect(described_class).to be_const_defined(:Worker) }
+    specify { expect(described_class).to be_const_defined(:Executor) }
     specify { expect(described_class).to be_const_defined(:Wrapper) }
     specify { expect(described_class).to be_const_defined(:Auditor) }
     specify { expect(described_class).to be_const_defined(:Validator) }

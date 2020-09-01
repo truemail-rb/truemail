@@ -3,8 +3,8 @@
 module Truemail
   module Audit
     class Ptr < Truemail::Audit::Base
-      PTR_NOT_FOUND = 'ptr record for current host ip address was not found'
-      PTR_NOT_REFER = 'ptr record does not reference to current verifier domain'
+      PTR_NOT_FOUND = 'PTR-record for current host ip address was not found'
+      PTR_NOT_REFER = 'PTR-record does not reference to current verifier domain'
 
       def run
         return add_warning(Truemail::Audit::Ptr::PTR_NOT_FOUND) if ptr_records.empty?

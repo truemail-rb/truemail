@@ -4,6 +4,7 @@ module Truemail
   require_relative '../truemail/version'
   require_relative '../truemail/configuration'
   require_relative '../truemail/worker'
+  require_relative '../truemail/executor'
   require_relative '../truemail/wrapper'
   require_relative '../truemail/auditor'
   require_relative '../truemail/validator'
@@ -29,8 +30,8 @@ module Truemail
   end
 
   module RegexConstant
-    REGEX_DOMAIN = /[\p{L}0-9]+([\-\.]{1}[\p{L}0-9]+)*\.[\p{L}]{2,63}/i.freeze
-    REGEX_EMAIL_PATTERN = /(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|\.|\+]*)@(#{REGEX_DOMAIN})\z)/.freeze
+    REGEX_DOMAIN = /[\p{L}0-9]+([\-.]{1}[\p{L}0-9]+)*\.\p{L}{2,63}/i.freeze
+    REGEX_EMAIL_PATTERN = /(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-|.|+]*)@(#{REGEX_DOMAIN})\z)/.freeze
     REGEX_DOMAIN_PATTERN = /(?=\A.{4,255}\z)(\A#{REGEX_DOMAIN}\z)/.freeze
     REGEX_DOMAIN_FROM_EMAIL = /\A.+@(.+)\z/.freeze
     REGEX_SMTP_ERROR_BODY_PATTERN = /(?=.*550)(?=.*(user|account|customer|mailbox)).*/i.freeze
@@ -56,7 +57,9 @@ module Truemail
   module Log
     require_relative '../truemail/log/event'
     require_relative '../truemail/log/serializer/base'
-    require_relative '../truemail/log/serializer/text'
-    require_relative '../truemail/log/serializer/json'
+    require_relative '../truemail/log/serializer/auditor_json'
+    require_relative '../truemail/log/serializer/validator_base'
+    require_relative '../truemail/log/serializer/validator_text'
+    require_relative '../truemail/log/serializer/validator_json'
   end
 end

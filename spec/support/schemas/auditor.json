@@ -1,0 +1,199 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "examples": [
+      {
+          "date": "2020-08-31 21:47:10 +0300",
+          "current_host_ip": null,
+          "warnings": {
+              "ip": "impossible to detect current host address via third party service"
+          },
+          "configuration": {
+              "validation_type_by_domain": null,
+              "whitelist_validation": false,
+              "whitelisted_domains": null,
+              "blacklisted_domains": null,
+              "not_rfc_mx_lookup_flow": false,
+              "smtp_safe_check": false,
+              "email_pattern": "default gem value",
+              "smtp_error_body_pattern": "default gem value"
+          }
+      }
+  ],
+  "required": [
+      "date",
+      "current_host_ip",
+      "warnings",
+      "configuration"
+  ],
+  "properties": {
+      "date": {
+          "$id": "#/properties/date",
+          "type": "string",
+          "title": "The date schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+              "2020-08-31 21:47:10 +0300"
+          ]
+      },
+      "current_host_ip": {
+          "default": null,
+          "description": "An explanation about the purpose of this instance.",
+          "examples": [
+              null
+          ],
+          "title": "The current_host_ip schema",
+          "type": [
+              "null",
+              "string"
+          ]
+      },
+      "warnings": {
+          "default": {},
+          "description": "An explanation about the purpose of this instance.",
+          "examples": [
+              {
+                  "ip": "impossible to detect current host address via third party service"
+              }
+          ],
+          "required": [],
+          "title": "The warnings schema",
+          "type": [
+              "object",
+              "null"
+          ],
+          "properties": {
+              "ip": {
+                  "default": "",
+                  "description": "An explanation about the purpose of this instance.",
+                  "examples": [
+                      "impossible to detect current host address via third party service"
+                  ],
+                  "title": "The ip schema",
+                  "type": [
+                      "string"
+                  ]
+              }
+          },
+          "additionalProperties": false
+      },
+      "configuration": {
+          "$id": "#/properties/configuration",
+          "type": "object",
+          "title": "The configuration schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+              {
+                  "validation_type_by_domain": null,
+                  "whitelist_validation": false,
+                  "whitelisted_domains": null,
+                  "blacklisted_domains": null,
+                  "not_rfc_mx_lookup_flow": false,
+                  "smtp_safe_check": false,
+                  "email_pattern": "default gem value",
+                  "smtp_error_body_pattern": "default gem value"
+              }
+          ],
+          "required": [
+              "validation_type_by_domain",
+              "whitelist_validation",
+              "whitelisted_domains",
+              "blacklisted_domains",
+              "not_rfc_mx_lookup_flow",
+              "smtp_safe_check",
+              "email_pattern",
+              "smtp_error_body_pattern"
+          ],
+          "properties": {
+              "validation_type_by_domain": {
+                  "$id": "#/properties/configuration/properties/validation_type_by_domain",
+                  "type": "null",
+                  "title": "The validation_type_by_domain schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": null,
+                  "examples": [
+                      null
+                  ]
+              },
+              "whitelist_validation": {
+                  "$id": "#/properties/configuration/properties/whitelist_validation",
+                  "type": "boolean",
+                  "title": "The whitelist_validation schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": false,
+                  "examples": [
+                      false
+                  ]
+              },
+              "whitelisted_domains": {
+                  "$id": "#/properties/configuration/properties/whitelisted_domains",
+                  "type": "null",
+                  "title": "The whitelisted_domains schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": null,
+                  "examples": [
+                      null
+                  ]
+              },
+              "blacklisted_domains": {
+                  "$id": "#/properties/configuration/properties/blacklisted_domains",
+                  "type": "null",
+                  "title": "The blacklisted_domains schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": null,
+                  "examples": [
+                      null
+                  ]
+              },
+              "not_rfc_mx_lookup_flow": {
+                  "$id": "#/properties/configuration/properties/not_rfc_mx_lookup_flow",
+                  "type": "boolean",
+                  "title": "The not_rfc_mx_lookup_flow schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": false,
+                  "examples": [
+                      false
+                  ]
+              },
+              "smtp_safe_check": {
+                  "$id": "#/properties/configuration/properties/smtp_safe_check",
+                  "type": "boolean",
+                  "title": "The smtp_safe_check schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": false,
+                  "examples": [
+                      false
+                  ]
+              },
+              "email_pattern": {
+                  "$id": "#/properties/configuration/properties/email_pattern",
+                  "type": "string",
+                  "title": "The email_pattern schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "default gem value"
+                  ]
+              },
+              "smtp_error_body_pattern": {
+                  "$id": "#/properties/configuration/properties/smtp_error_body_pattern",
+                  "type": "string",
+                  "title": "The smtp_error_body_pattern schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                      "default gem value"
+                  ]
+              }
+          },
+          "additionalProperties": false
+      }
+  },
+  "additionalProperties": false
+}
