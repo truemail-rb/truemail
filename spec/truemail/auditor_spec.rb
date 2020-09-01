@@ -9,6 +9,10 @@ RSpec.describe Truemail::Auditor do
     specify { expect(described_class).to be_const_defined(:Result) }
   end
 
+  describe 'inheritance' do
+    specify { expect(described_class).to be < Truemail::Executor }
+  end
+
   describe '.new' do
     it 'creates auditor with result getter' do
       expect(auditor_instance.result).to be_an_instance_of(Truemail::Auditor::Result)
@@ -19,6 +23,15 @@ RSpec.describe Truemail::Auditor do
     it 'runs audition methods' do
       expect(Truemail::Audit::Ip).to receive(:check)
       expect(auditor_instance.run).to be_an_instance_of(described_class)
+    end
+  end
+
+  describe '#as_json' do
+    subject(:auditor_instance_as_json) { auditor_instance.as_json }
+
+    specify do
+      expect(Truemail::Log::Serializer::AuditorJson).to receive(:call).with(auditor_instance).and_call_original
+      expect(auditor_instance_as_json).to match_json_schema('auditor')
     end
   end
 end

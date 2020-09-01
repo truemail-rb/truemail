@@ -3,7 +3,7 @@
 module Truemail
   module Log
     module Serializer
-      class Text < Truemail::Log::Serializer::Base
+      class ValidatorText < Truemail::Log::Serializer::ValidatorBase
         ATTEMPT = 'ATTEMPT #'
 
         def serialize
@@ -30,7 +30,7 @@ module Truemail
 
         def collection_printer(collection)
           collection.inject([]) { |array, hash| array << printer(hash) }.map.with_index do |item, index|
-            "\n#{Truemail::Log::Serializer::Text::ATTEMPT}#{index + 1}:\n#{item}\n"
+            "\n#{Truemail::Log::Serializer::ValidatorText::ATTEMPT}#{index + 1}:\n#{item}\n"
           end
         end
 
