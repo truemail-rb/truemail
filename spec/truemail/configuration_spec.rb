@@ -5,11 +5,31 @@ RSpec.describe Truemail::Configuration do
 
   let(:valid_email) { FFaker::Internet.email }
 
-  describe 'defined constants' do
-    specify { expect(described_class).to be_const_defined(:DEFAULT_CONNECTION_TIMEOUT) }
-    specify { expect(described_class).to be_const_defined(:DEFAULT_RESPONSE_TIMEOUT) }
-    specify { expect(described_class).to be_const_defined(:DEFAULT_CONNECTION_ATTEMPTS) }
-    specify { expect(described_class).to be_const_defined(:DEFAULT_VALIDATION_TYPE) }
+  describe 'class constants' do
+    context 'DEFAULT_CONNECTION_TIMEOUT' do
+      specify { expect(described_class).to be_const_defined(:DEFAULT_CONNECTION_TIMEOUT) }
+      specify { expect(described_class::DEFAULT_CONNECTION_TIMEOUT).to eq(2) }
+    end
+
+    context 'DEFAULT_RESPONSE_TIMEOUT' do
+      specify { expect(described_class).to be_const_defined(:DEFAULT_RESPONSE_TIMEOUT) }
+      specify { expect(described_class::DEFAULT_CONNECTION_TIMEOUT).to eq(2) }
+    end
+
+    context 'DEFAULT_CONNECTION_ATTEMPTS' do
+      specify { expect(described_class).to be_const_defined(:DEFAULT_CONNECTION_ATTEMPTS) }
+      specify { expect(described_class::DEFAULT_CONNECTION_TIMEOUT).to eq(2) }
+    end
+
+    context 'DEFAULT_VALIDATION_TYPE' do
+      specify { expect(described_class).to be_const_defined(:DEFAULT_VALIDATION_TYPE) }
+      specify { expect(described_class::DEFAULT_VALIDATION_TYPE).to eq(:smtp) }
+    end
+
+    context 'DEFAULT_LOGGER_OPTIONS' do
+      specify { expect(described_class).to be_const_defined(:DEFAULT_LOGGER_OPTIONS) }
+      specify { expect(described_class::DEFAULT_LOGGER_OPTIONS).to eq(tracking_event: :error, stdout: false, log_absolute_path: nil) }
+    end
   end
 
   describe '.new' do

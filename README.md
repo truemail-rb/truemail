@@ -4,6 +4,8 @@
 
 Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS and SMTP. Be sure that email address valid and exists.
 
+> Actual and maintainable documentation :books: for developers is living [here](https://truemail-rb.org/truemail-gem).
+
 ## Table of Contents
 
 - [Synopsis](#synopsis)
@@ -53,7 +55,6 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
 - [Credits](#credits)
 - [Versioning](#versioning)
 - [Changelog](CHANGELOG.md)
-- [Developers Documentation](https://truemail-rb.org/truemail-gem/)
 
 ## Synopsis
 

@@ -39,6 +39,7 @@ detectors:
       - Truemail::Validate::Mx#a_record
       - Truemail::Audit::Base#verifier_domain
       - Truemail::Configuration#domain_matcher
+      - Truemail::Configuration#logger_options
       - Truemail::Log::Serializer::Base#errors
 
   ControlParameter:

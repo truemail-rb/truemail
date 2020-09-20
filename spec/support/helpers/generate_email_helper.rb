@@ -3,7 +3,7 @@
 module Truemail
   class GenerateEmailHelper
     def self.call(**options)
-      new(options).call
+      new(**options).call
     end
 
     def initialize(size: :auto, symbols: %w[- _ . +], invalid_email_with: [])
