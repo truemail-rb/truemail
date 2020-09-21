@@ -133,7 +133,7 @@ RSpec.describe Truemail do
     context 'when global configuration successfully set' do
       before do
         described_class.configure do |config|
-          config.verifier_email = 'valdyslav.trotsenko@rubygarage.org'
+          config.verifier_email = 'admin@bestweb.com.ua'
           config.connection_timeout = 1
           config.response_timeout = 1
         end
@@ -141,19 +141,20 @@ RSpec.describe Truemail do
 
       include_examples 'returns validator instance'
 
-      describe 'integration tests' do
-        context 'when checks real email' do
-          specify do
-            expect(described_class.validate('vladyslav.trotsenko@rubygarage.org').result.valid?).to be(true)
-          end
-        end
+      # TODO: should be refactored with smtp-mock server in next release
+      # describe 'integration tests' do
+      #   context 'when checks real email' do
+      #     specify do
+      #       expect(described_class.validate('admin@bestweb.com.ua').result.valid?).to be(true)
+      #     end
+      #   end
 
-        context 'when checks fake email' do
-          specify do
-            expect(described_class.validate('nonexistent_email@rubygarage.org').result.valid?).to be(false)
-          end
-        end
-      end
+      #   context 'when checks fake email' do
+      #     specify do
+      #       expect(described_class.validate('nonexistent_email@bestweb.com.ua').result.valid?).to be(false)
+      #     end
+      #   end
+      # end
     end
 
     context 'when custom configuration passed' do
