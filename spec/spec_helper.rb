@@ -14,6 +14,7 @@ JsonMatchers.schema_root = 'spec/support/schemas'
 rspec_custom = File.join(File.dirname(__FILE__), 'support/**/*.rb')
 Dir[File.expand_path(rspec_custom)].each { |file| require file unless file[/\A.+_spec\.rb\z/] }
 
+RSpec::Mocks.configuration.allow_message_expectations_on_nil = true
 RSpec.configure do |config|
   config.include Truemail::RSpec
   config.example_status_persistence_file_path = '.rspec_status'

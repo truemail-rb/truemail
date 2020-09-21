@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Validator do
-  subject(:validator_instance) { described_class.new(email, options) }
+  subject(:validator_instance) { described_class.new(email, **options) }
 
   let(:email) { FFaker::Internet.email }
   let(:configuration_instance) { create_configuration }

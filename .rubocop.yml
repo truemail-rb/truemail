@@ -103,6 +103,18 @@ Style/SlicingWithRange:
 Style/StringConcatenation:
   Enabled: true
 
+Style/CombinableLoops:
+  Enabled: true
+
+Style/KeywordParametersOrder:
+  Enabled: true
+
+Style/RedundantSelfAssignment:
+  Enabled: true
+
+Style/SoleNestedConditional:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -129,6 +141,9 @@ Layout/SpaceAroundMethodCallOperator:
   Enabled: true
 
 Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+
+Layout/BeginEndAlignment:
   Enabled: true
 
 Lint/NonDeterministicRequireOrder:
@@ -176,6 +191,27 @@ Lint/TopLevelReturnWithArgument:
 Lint/UnreachableLoop:
   Enabled: true
 
+Lint/ConstantDefinitionInBlock:
+  Enabled: true
+
+Lint/DuplicateRequire:
+  Enabled: true
+
+Lint/EmptyFile:
+  Enabled: true
+
+Lint/IdentityComparison:
+  Enabled: true
+
+Lint/TrailingCommaInAttributeDeclaration:
+  Enabled: true
+
+Lint/UselessMethodDefinition:
+  Enabled: true
+
+Lint/UselessTimes:
+  Enabled: true
+
 Performance/AncestorsInclude:
   Enabled: true
 
@@ -198,6 +234,9 @@ Performance/Squeeze:
   Enabled: true
 
 Performance/StringInclude:
+  Enabled: true
+
+Performance/Sum:
   Enabled: true
 
 RSpec/ExampleLength:

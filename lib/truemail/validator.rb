@@ -18,7 +18,7 @@ module Truemail
 
     attr_reader :validation_type
 
-    def initialize(email, with: nil, configuration:)
+    def initialize(email, configuration:, with: nil)
       with ||= configuration.default_validation_type
       raise Truemail::ArgumentError.new(with, :argument) unless Truemail::Validator::VALIDATION_TYPES.include?(with)
       @result = Truemail::Validator::Result.new(email: email, configuration: configuration)

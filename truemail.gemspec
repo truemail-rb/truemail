@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
     'homepage_uri' => 'https://truemail-rb.org',
     'changelog_uri' => 'https://github.com/rubygarage/truemail/blob/master/CHANGELOG.md',
     'source_code_uri' => 'https://github.com/rubygarage/truemail',
-    'documentation_uri' => 'https://truemail-rb.org/truemail-gem/',
+    'documentation_uri' => 'https://truemail-rb.org/truemail-gem',
     'bug_tracker_uri' => 'https://github.com/rubygarage/truemail/issues'
   }
 
@@ -43,9 +43,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.1'
   spec.add_development_dependency 'reek', '~> 6.0', '>= 6.0.1'
   spec.add_development_dependency 'rspec', '~> 3.9'
-  spec.add_development_dependency 'rubocop', '~> 0.89.1'
-  spec.add_development_dependency 'rubocop-performance', '~> 1.7', '>= 1.7.1'
+  spec.add_development_dependency 'rubocop', '~> 0.91.0'
+  spec.add_development_dependency 'rubocop-performance', '~> 1.8', '>= 1.8.1'
   spec.add_development_dependency 'rubocop-rspec', '~> 1.43', '>= 1.43.2'
   spec.add_development_dependency 'simplecov', '~> 0.17.1'
-  spec.add_development_dependency 'truemail-rspec', '~> 0.2.0'
+  spec.add_development_dependency 'truemail-rspec', '~> 0.2.1'
 end

@@ -6,6 +6,7 @@ module Truemail
     DEFAULT_RESPONSE_TIMEOUT = 2
     DEFAULT_CONNECTION_ATTEMPTS = 2
     DEFAULT_VALIDATION_TYPE = :smtp
+    DEFAULT_LOGGER_OPTIONS = { tracking_event: :error, stdout: false, log_absolute_path: nil }.freeze
 
     attr_reader :email_pattern,
                 :smtp_error_body_pattern,
@@ -71,7 +72,8 @@ module Truemail
       end
     end
 
-    def logger=(tracking_event: :error, stdout: false, log_absolute_path: nil)
+    def logger=(options)
+      tracking_event, stdout, log_absolute_path = logger_options(options)
       valid_event = Truemail::Log::Event::TRACKING_EVENTS.key?(tracking_event)
       stdout_only = stdout && log_absolute_path.nil?
       file_only = log_absolute_path.is_a?(String)
@@ -139,6 +141,10 @@ module Truemail
         check_domain(domain)
         check_validation_type(validation_type)
       end
+    end
+
+    def logger_options(current_options)
+      Truemail::Configuration::DEFAULT_LOGGER_OPTIONS.merge(current_options).values
     end
   end
 end
