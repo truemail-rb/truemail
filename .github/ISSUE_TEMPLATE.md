@@ -4,7 +4,7 @@
 
 - [ ] I have updated truemail to the latest version
 - [ ] I have read the [Contribution Guidelines](https://github.com/rubygarage/truemail/blob/master/CONTRIBUTING.md)
-- [ ] I have read the [documentation](https://github.com/rubygarage/truemail/blob/master/README.md)
+- [ ] I have read the [documentation](https://truemail-rb.org/truemail-gem)
 - [ ] I have searched for [existing GitHub issues](https://github.com/rubygarage/truemail/issues)
 
 ### Issue Description
