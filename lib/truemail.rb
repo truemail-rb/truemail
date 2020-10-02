@@ -5,6 +5,7 @@ require_relative 'truemail/core'
 module Truemail
   INCOMPLETE_CONFIG = 'verifier_email is required parameter'
   NOT_CONFIGURED = 'use Truemail.configure before or pass custom configuration'
+  INVALID_TYPE = 'email should be a String'
 
   class << self
     def configuration(&block)
@@ -25,10 +26,12 @@ module Truemail
     end
 
     def validate(email, custom_configuration: nil, **options)
+      check_argument_type(email)
       Truemail::Validator.new(email, configuration: determine_configuration(custom_configuration), **options).run
     end
 
     def valid?(email, **options)
+      check_argument_type(email)
       validate(email, **options).result.valid?
     end
 
@@ -38,8 +41,12 @@ module Truemail
 
     private
 
-    def raise_unless(condition, message)
-      raise Truemail::ConfigurationError, message unless condition
+    def raise_unless(condition, message, error_class = Truemail::ConfigurationError)
+      raise error_class, message unless condition
+    end
+
+    def check_argument_type(argument)
+      raise_unless(argument.is_a?(String), Truemail::INVALID_TYPE, Truemail::TypeError)
     end
 
     def determine_configuration(custom_configuration)

@@ -11,6 +11,7 @@ module Truemail
   require_relative '../truemail/logger'
 
   ConfigurationError = Class.new(StandardError)
+  TypeError = Class.new(StandardError)
 
   ArgumentError = Class.new(StandardError) do
     def initialize(arg_value, arg_name)
