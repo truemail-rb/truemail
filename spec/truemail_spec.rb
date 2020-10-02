@@ -24,6 +24,7 @@ RSpec.describe Truemail do
     specify { expect(described_class).to be_const_defined(:Validator) }
     specify { expect(described_class).to be_const_defined(:Logger) }
     specify { expect(described_class).to be_const_defined(:ConfigurationError) }
+    specify { expect(described_class).to be_const_defined(:TypeError) }
     specify { expect(described_class).to be_const_defined(:ArgumentError) }
     specify { expect(described_class).to be_const_defined(:RegexConstant) }
     specify { expect(described_class).to be_const_defined(:Audit) }
@@ -118,6 +119,16 @@ RSpec.describe Truemail do
     end
   end
 
+  shared_context 'when passed email is not a String' do
+    context 'when passed email is not a String' do
+      let(:email) { nil }
+
+      specify do
+        expect { subject }.to raise_error(Truemail::TypeError, Truemail::INVALID_TYPE) # rubocop:disable RSpec/NamedSubject
+      end
+    end
+  end
+
   describe '.validate' do
     subject(:validate) { described_class.validate(email, custom_configuration: custom_configuration) }
 
@@ -130,38 +141,42 @@ RSpec.describe Truemail do
 
     include_examples 'configuration error'
 
-    context 'when global configuration successfully set' do
-      before do
-        described_class.configure do |config|
-          config.verifier_email = 'admin@bestweb.com.ua'
-          config.connection_timeout = 1
-          config.response_timeout = 1
+    context 'when passed email is a String' do
+      context 'when global configuration successfully set' do
+        before do
+          described_class.configure do |config|
+            config.verifier_email = 'admin@bestweb.com.ua'
+            config.connection_timeout = 1
+            config.response_timeout = 1
+          end
         end
+
+        include_examples 'returns validator instance'
+
+        # TODO: should be refactored with smtp-mock server in next release
+        # describe 'integration tests' do
+        #   context 'when checks real email' do
+        #     specify do
+        #       expect(described_class.validate('admin@bestweb.com.ua').result.valid?).to be(true)
+        #     end
+        #   end
+
+        #   context 'when checks fake email' do
+        #     specify do
+        #       expect(described_class.validate('nonexistent_email@bestweb.com.ua').result.valid?).to be(false)
+        #     end
+        #   end
+        # end
       end
 
-      include_examples 'returns validator instance'
+      context 'when custom configuration passed' do
+        let(:custom_configuration) { create_configuration }
 
-      # TODO: should be refactored with smtp-mock server in next release
-      # describe 'integration tests' do
-      #   context 'when checks real email' do
-      #     specify do
-      #       expect(described_class.validate('admin@bestweb.com.ua').result.valid?).to be(true)
-      #     end
-      #   end
-
-      #   context 'when checks fake email' do
-      #     specify do
-      #       expect(described_class.validate('nonexistent_email@bestweb.com.ua').result.valid?).to be(false)
-      #     end
-      #   end
-      # end
+        include_examples 'returns validator instance'
+      end
     end
 
-    context 'when custom configuration passed' do
-      let(:custom_configuration) { create_configuration }
-
-      include_examples 'returns validator instance'
-    end
+    include_context 'when passed email is not a String'
   end
 
   describe '.valid?' do
@@ -177,17 +192,21 @@ RSpec.describe Truemail do
 
     include_examples 'configuration error'
 
-    context 'when global configuration successfully set' do
-      before { described_class.configure { |config| config.verifier_email = email } }
+    context 'when passed email is a String' do
+      context 'when global configuration successfully set' do
+        before { described_class.configure { |config| config.verifier_email = email } }
 
-      include_examples 'returns boolean'
+        include_examples 'returns boolean'
+      end
+
+      context 'when custom configuration passed' do
+        let(:custom_configuration) { create_configuration }
+
+        include_examples 'returns boolean'
+      end
     end
 
-    context 'when custom configuration passed' do
-      let(:custom_configuration) { create_configuration }
-
-      include_examples 'returns boolean'
-    end
+    include_context 'when passed email is not a String'
   end
 
   describe '.host_audit' do
