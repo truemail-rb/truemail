@@ -3,7 +3,7 @@ defaults: &defaults
   docker:
     - image: circleci/ruby:2.5.0-node
   environment:
-    CC_TEST_REPORTER_ID: a98d23d6d916932ae11dbe5df36dee070173cbe376b68758901dcc289e098979
+    CC_TEST_REPORTER_ID: 693272a1328521f6f7c09d7ffd419b21c00410da26e98e94c687fdd38b26e2cb
 
 references:
   restore_bundle_cache: &restore_bundle_cache

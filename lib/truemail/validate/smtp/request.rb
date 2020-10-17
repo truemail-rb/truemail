@@ -31,8 +31,8 @@ module Truemail
         end
 
         def run
-          session.start do |smtp_request|
-            response.connection = true
+          session.start(configuration.verifier_domain) do |smtp_request|
+            response.connection = response.helo = true
             smtp_handshakes(smtp_request, response)
           end
         rescue => error
@@ -83,7 +83,6 @@ module Truemail
 
         def session_data
           {
-            helo: configuration.verifier_domain,
             mailfrom: configuration.verifier_email,
             rcptto: email
           }
