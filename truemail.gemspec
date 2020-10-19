@@ -13,15 +13,15 @@ Gem::Specification.new do |spec|
   spec.summary       = %(truemail)
   spec.description   = %(Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS and SMTP.)
 
-  spec.homepage      = 'https://github.com/rubygarage/truemail'
+  spec.homepage      = 'https://github.com/truemail-rb/truemail'
   spec.license       = 'MIT'
 
   spec.metadata = {
     'homepage_uri' => 'https://truemail-rb.org',
-    'changelog_uri' => 'https://github.com/rubygarage/truemail/blob/master/CHANGELOG.md',
-    'source_code_uri' => 'https://github.com/rubygarage/truemail',
+    'changelog_uri' => 'https://github.com/truemail-rb/truemail/blob/master/CHANGELOG.md',
+    'source_code_uri' => 'https://github.com/truemail-rb/truemail',
     'documentation_uri' => 'https://truemail-rb.org/truemail-gem',
-    'bug_tracker_uri' => 'https://github.com/rubygarage/truemail/issues'
+    'bug_tracker_uri' => 'https://github.com/truemail-rb/truemail/issues'
   }
 
   spec.required_ruby_version = '>= 2.5.0'

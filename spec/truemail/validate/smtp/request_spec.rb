@@ -167,7 +167,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       context 'when remote server has dropped connection during session' do
         let(:error_stubs) do
           allow(session).to receive(:start).and_yield(session).and_raise(EOFError)
-          allow(session).to receive(:helo).and_raise(StandardError)
+          allow(session).to receive(:mailfrom).and_raise(StandardError)
         end
 
         specify do
@@ -176,11 +176,12 @@ RSpec.describe Truemail::Validate::Smtp::Request do
           expect { response_instance_target_method }
             .to change(response_instance, :connection)
             .from(nil).to(false)
-            .and change(response_instance, :errors)
-            .from({}).to(connection: Truemail::Validate::Smtp::Request::CONNECTION_DROPPED, helo: 'StandardError')
             .and change(response_instance, :helo)
+            .from(nil).to(true)
+            .and change(response_instance, :errors)
+            .from({}).to(connection: Truemail::Validate::Smtp::Request::CONNECTION_DROPPED, mailfrom: 'StandardError')
+            .and change(response_instance, :mailfrom)
             .from(nil).to(false)
-            .and not_change(response_instance, :mailfrom)
             .and not_change(response_instance, :rcptto)
 
           expect(response_instance_target_method).to be(false)
@@ -213,28 +214,6 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       end
 
       context 'when smtp response errors' do
-        it 'helo smtp server response timeout' do
-          allow(session).to receive(:start).and_yield(session)
-          allow(session).to receive(:helo).and_raise(Net::ReadTimeout)
-          allow(session).to receive(:mailfrom)
-          allow(session).to receive(:rcptto)
-
-          expect { response_instance_target_method }
-            .to change(response_instance, :connection)
-            .from(nil).to(true)
-            .and change(response_instance, :helo)
-            .from(nil).to(false)
-            .and change(response_instance, :errors)
-            .from({}).to(helo: Truemail::Validate::Smtp::Request::RESPONSE_TIMEOUT_ERROR)
-            .and not_change(response_instance, :mailfrom)
-            .and not_change(response_instance, :rcptto)
-
-          expect(session).not_to have_received(:mailfrom)
-          expect(session).not_to have_received(:rcptto)
-
-          expect(response_instance_target_method).to be(false)
-        end
-
         it 'mailfrom smtp server error' do
           allow(session).to receive(:start).and_yield(session)
           allow(session).to receive(:helo).and_return(true)
