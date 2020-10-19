@@ -1,6 +1,6 @@
-![Truemail - configurable framework agnostic plain Ruby email validator](https://truemail-rb.org/assets/images/truemail_logo.png)
+# ![Truemail - configurable framework agnostic plain Ruby email validator](https://truemail-rb.org/assets/images/truemail_logo.png)
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/maintainability)](https://codeclimate.com/github/rubygarage/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/657aa241399927dcd2e2/test_coverage)](https://codeclimate.com/github/rubygarage/truemail/test_coverage) [![CircleCI](https://circleci.com/gh/rubygarage/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/rubygarage/truemail/tree/master) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![Downloads](https://img.shields.io/gem/dt/truemail.svg?colorA=004d99&colorB=0073e6)](https://rubygems.org/gems/truemail) [![Gitter](https://badges.gitter.im/truemail-rb/community.svg)](https://gitter.im/truemail-rb/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0fea6d2e64d78d66b149/maintainability)](https://codeclimate.com/github/truemail-rb/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/0fea6d2e64d78d66b149/test_coverage)](https://codeclimate.com/github/truemail-rb/truemail/test_coverage) [![CircleCI](https://circleci.com/gh/truemail-rb/truemail/tree/develop.svg?style=svg)](https://circleci.com/gh/truemail-rb/truemail/tree/develop) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![Downloads](https://img.shields.io/gem/dt/truemail.svg?colorA=004d99&colorB=0073e6)](https://rubygems.org/gems/truemail) [![Gitter](https://badges.gitter.im/truemail-rb/community.svg)](https://gitter.im/truemail-rb/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS and SMTP. Be sure that email address valid and exists.
 
@@ -127,7 +127,7 @@ You can use global gem configuration or custom independent configuration. Availa
 
 #### Setting global configuration
 
-To have an access for ```Truemail.configuration``` and gem configuration features, you must configure it first as in the example below:
+To have an access for `Truemail.configuration` and gem configuration features, you must configure it first as in the example below:
 
 ```ruby
 require 'truemail'
@@ -289,11 +289,12 @@ Please note, you should have global or custom configuration for use Truemail gem
 
 #### Whitelist/Blacklist check
 
-Whitelist/Blacklist check is zero validation level. You can define white and black list domains. It means that validation of email which contains whitelisted domain always will return ```true```, and for blacklisted domain will return ```false```.
+Whitelist/Blacklist check is zero validation level. You can define white and black list domains. It means that validation of email which contains whitelisted domain always will return `true`, and for blacklisted domain will return `false`.
 
-Please note, other validations will not processed even if it was defined in ```validation_type_for```.
+Please note, other validations will not processed even if it was defined in `validation_type_for`.
 
 **Sequence of domain list check:**
+
 1. Whitelist check
 2. Whitelist validation check
 3. Blacklist check
@@ -356,8 +357,7 @@ Truemail.configure do |config|
 end
 ```
 
-When email domain in whitelist and ```whitelist_validation``` is sets equal to ```true``` validation type will be passed to other validators.
-Validation of email which not contains whitelisted domain always will return ```false```.
+When email domain in whitelist and `whitelist_validation` is sets equal to `true` validation type will be passed to other validators. Validation of email which not contains whitelisted domain always will return `false`.
 
 ###### Email has whitelisted domain
 
@@ -459,7 +459,7 @@ Truemail.validate('email@black-domain.com')
 
 ##### Duplication case
 
-Validation result for this email returns ```true```, because it was found in whitelisted domains list first. Also ```validation_type``` for this case will be redefined.
+Validation result for this email returns `true`, because it was found in whitelisted domains list first. Also `validation_type` for this case will be redefined.
 
 ```ruby
 Truemail.validate('email@somedomain.com')
@@ -591,7 +591,7 @@ In fact it's DNS validation because it checks not MX records only. DNS validatio
 [Whitelist/Blacklist] -> [Regex validation] -> [MX validation]
 ```
 
-Please note, Truemail MX validator [not performs](https://github.com/rubygarage/truemail/issues/26) strict compliance of the [RFC 5321](https://tools.ietf.org/html/rfc5321#section-5) standard for best validation outcome.
+Please note, Truemail MX validator [not performs](https://github.com/truemail-rb/truemail/issues/26) strict compliance of the [RFC 5321](https://tools.ietf.org/html/rfc5321#section-5) standard for best validation outcome.
 
 ##### RFC MX lookup flow
 
@@ -688,13 +688,13 @@ SMTP validation is a final, third validation level. This type of validation trie
 [Whitelist/Blacklist] -> [Regex validation] -> [MX validation] -> [SMTP validation]
 ```
 
-If total count of MX servers is equal to one, ```Truemail::Smtp``` validator will use value from ```Truemail.configuration.connection_attempts``` as connection attempts. By default it's equal 2.
+If total count of MX servers is equal to one, `Truemail::Smtp` validator will use value from `Truemail.configuration.connection_attempts` as connection attempts. By default it's equal `2`.
 
 By default, you don't need pass with-parameter to use it. Example of usage is specified below:
 
 ##### SMTP safe check disabled
 
-With ```smtp_safe_check = false```
+With `smtp_safe_check = false`
 
 ```ruby
 require 'truemail'
@@ -757,10 +757,7 @@ Truemail.validate('email@example.com')
               #<struct Truemail::Validate::Smtp::Response
                 port_opened=true,
                 connection=true,
-                helo=
-                  #<Net::SMTP::Response:0x0000000002d5aca8
-                    @status="250",
-                    @string="250 127.0.1.1 Hello example.com\n">,
+                helo=true,
                 mailfrom=
                   #<Net::SMTP::Response:0x0000000002d5a618
                     @status="250",
@@ -788,7 +785,7 @@ Truemail.validate('email@example.com')
 
 ##### SMTP safe check enabled
 
-With ```smtp_safe_check = true```
+With `smtp_safe_check = true`
 
 ```ruby
 require 'truemail'
@@ -824,10 +821,7 @@ Truemail.validate('email@example.com')
               #<struct Truemail::Validate::Smtp::Response
                 port_opened=true,
                 connection=false,
-                helo=
-                  #<Net::SMTP::Response:0x0000000002c934c8
-                  @status="250",
-                  @string="250 127.0.1.1\n">,
+                helo=true,
                 mailfrom=false,
                 rcptto=nil,
                 errors={:mailfrom=>"554 5.7.1 Client host blocked\n", :connection=>"server dropped connection after response"}>>,]>,
@@ -873,10 +867,7 @@ Truemail.validate('email@example.com')
             #<struct Truemail::Validate::Smtp::Response
               port_opened=true,
               connection=true,
-              helo=
-              #<Net::SMTP::Response:0x0000000002d5aca8
-                @status="250",
-                @string="250 127.0.1.1 Hello example.com\n">,
+              helo=true,
               mailfrom=#<Net::SMTP::Response:0x0000000002d5a618 @status="250", @string="250 OK\n">,
               rcptto=false,
               errors={:rcptto=>"550 User not found\n"}>>]>,
@@ -1178,7 +1169,7 @@ All Truemail solutions: https://truemail-rb.org
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/rubygarage/truemail. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct. Please check the [open tikets](https://github.com/rubygarage/truemail/issues). Be shure to follow Contributor Code of Conduct below and our [Contributing Guidelines](CONTRIBUTING.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/truemail-rb/truemail. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct. Please check the [open tikets](https://github.com/truemail-rb/truemail/issues). Be shure to follow Contributor Code of Conduct below and our [Contributing Guidelines](CONTRIBUTING.md).
 
 ## License
 
@@ -1190,8 +1181,8 @@ Everyone interacting in the Truemail project’s codebases, issue trackers, chat
 
 ## Credits
 
-- [The Contributors](https://github.com/rubygarage/truemail/graphs/contributors) for code and awesome suggestions
-- [The Stargazers](https://github.com/rubygarage/truemail/stargazers) for showing their support
+- [The Contributors](https://github.com/truemail-rb/truemail/graphs/contributors) for code and awesome suggestions
+- [The Stargazers](https://github.com/truemail-rb/truemail/stargazers) for showing their support
 
 ## Versioning
 

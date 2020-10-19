@@ -2,6 +2,30 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2020.10.19
+
+### Fixed
+
+SMTP connection errors: invalid `HELO` hostname (`localhost`), duplicate `HELO` (`verifier domain`).
+
+### Changed
+
+- Updated `Truemail::Validate::Smtp::Request#run`
+- Updated `Truemail::Validate::Smtp::Request#session_data`
+- Updated `Truemail::Validate::Smtp::Response`
+
+Now `helo` is a `Boolean` instead of `Net::SMTP::Response` instance. It was changed because `helo` is sending during SMTP-session initializing (`Net::SMTP.new.start`), and `helo` is always `true` if session up is okay. Also `hello` response won't logged as error if it happens. Example of `Truemail::Validate::Smtp::Response` instance from 1.9.3 version.
+
+```ruby
+#<struct Truemail::Validate::Smtp::Response:0x00007fa74704cd10
+  port_opened=true,
+  connection=true,
+  helo=true, # Returns Boolean instead of Net::SMTP::Response instance
+  mailfrom=false,
+  rcptto=nil,
+  errors={:mailfrom=>"server response timeout"}>
+```
+
 ## [1.9.2] - 2020.10.02
 
 ### Added
@@ -380,7 +404,7 @@ Truemail.validate('email@domain.com', with: :regex)
 
 ### Added
 
-- Configurable default validation type, [issue details](https://github.com/rubygarage/truemail/issues/48)
+- Configurable default validation type, [issue details](https://github.com/truemail-rb/truemail/issues/48)
 
 You can predefine default validation type for ```Truemail.validate('email@email.com')``` call without with-parameter. Available validation types: ```:regex```, ```:mx```, ```:smtp```. By default validation type still remains ```:smtp```
 
@@ -498,7 +522,7 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- SMTP error body configurable option, [issue details](https://github.com/rubygarage/truemail/issues/19)
+- SMTP error body configurable option, [issue details](https://github.com/truemail-rb/truemail/issues/19)
 
 ### Changed
 
@@ -515,11 +539,11 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- Reverse trace, [issue details](https://github.com/rubygarage/truemail/issues/18)
+- Reverse trace, [issue details](https://github.com/truemail-rb/truemail/issues/18)
 
 ### Fixed
 
-- Behaviour of current host address resolver, [issue details](https://github.com/rubygarage/truemail/issues/18)
+- Behaviour of current host address resolver, [issue details](https://github.com/truemail-rb/truemail/issues/18)
 
 ### Changed
 
@@ -530,7 +554,7 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- PTR record audit, [issue details](https://github.com/rubygarage/truemail/issues/18)
+- PTR record audit, [issue details](https://github.com/truemail-rb/truemail/issues/18)
 
 ### Changed
 
@@ -541,12 +565,12 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- MX gem logic with [RFC 7505](https://tools.ietf.org/html/rfc7505), null MX record supporting, [issue details](https://github.com/rubygarage/truemail/issues/27)
+- MX gem logic with [RFC 7505](https://tools.ietf.org/html/rfc7505), null MX record supporting, [issue details](https://github.com/truemail-rb/truemail/issues/27)
 - [Contributing guideline](CONTRIBUTING.md)
 
 ### Fixed
 
-- Multihomed MX records supporting, [issue details](https://github.com/rubygarage/truemail/issues/28)
+- Multihomed MX records supporting, [issue details](https://github.com/truemail-rb/truemail/issues/28)
 
 ### Changed
 
@@ -569,11 +593,11 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- Checking A record presence if ```MX``` and ```CNAME``` records not exist, [issue details](https://github.com/rubygarage/truemail/issues/10)
-- Handling of ```CNAME``` records, [issue details](https://github.com/rubygarage/truemail/issues/11)
-- Checking A record if ```MX``` and ```CNAME``` records not found, [issue details](https://github.com/rubygarage/truemail/issues/12)
-- Supporting of multihomed MX records, conversion host names to ips, [issue details](https://github.com/rubygarage/truemail/issues/17)
-- Timeout configuration for DNS resolver, [issue details](https://github.com/rubygarage/truemail/issues/13)
+- Checking A record presence if ```MX``` and ```CNAME``` records not exist, [issue details](https://github.com/truemail-rb/truemail/issues/10)
+- Handling of ```CNAME``` records, [issue details](https://github.com/truemail-rb/truemail/issues/11)
+- Checking A record if ```MX``` and ```CNAME``` records not found, [issue details](https://github.com/truemail-rb/truemail/issues/12)
+- Supporting of multihomed MX records, conversion host names to ips, [issue details](https://github.com/truemail-rb/truemail/issues/17)
+- Timeout configuration for DNS resolver, [issue details](https://github.com/truemail-rb/truemail/issues/13)
 - ```.valid?``` helper
 
 ### Changed
@@ -589,12 +613,12 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Fixed
 
-- Default ```REGEX_EMAIL_PATTERN```, [issue details](https://github.com/rubygarage/truemail/issues/7)
+- Default ```REGEX_EMAIL_PATTERN```, [issue details](https://github.com/truemail-rb/truemail/issues/7)
   * local part of address can't start with a dot or special symbol
   * local part of address can include ```+``` symbol
-- Default ```REGEX_DOMAIN_PATTERN```, [issue details](https://github.com/rubygarage/truemail/issues/8)
+- Default ```REGEX_DOMAIN_PATTERN```, [issue details](https://github.com/truemail-rb/truemail/issues/8)
   * TLD size increased up to 63 characters
-- Case sensitive domain names, [issue details](https://github.com/rubygarage/truemail/issues/9)
+- Case sensitive domain names, [issue details](https://github.com/truemail-rb/truemail/issues/9)
 
 ### Changed
 
@@ -641,10 +665,7 @@ Truemail.validate('email@example.com')
                 #<struct Truemail::Validate::Smtp::Response
                   port_opened=true,
                   connection=false,
-                  helo=
-                    #<Net::SMTP::Response:0x0000000002c934c8
-                    @status="250",
-                    @string="250 mx1.example.com\n">,
+                  helo=true,
                   mailfrom=false,
                   rcptto=nil,
                   errors={:mailfrom=>"554 5.7.1 Client host blocked\n", :connection=>"server dropped connection after response"}>>,]>,
