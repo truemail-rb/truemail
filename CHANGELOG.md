@@ -2,6 +2,13 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2020.10.20
+
+### Changed
+
+- gem development dependencies
+- gem documentation
+
 ## [2.0.0] - 2020.10.19
 
 ### Fixed
@@ -14,7 +21,7 @@ SMTP connection errors: invalid `HELO` hostname (`localhost`), duplicate `HELO` 
 - Updated `Truemail::Validate::Smtp::Request#session_data`
 - Updated `Truemail::Validate::Smtp::Response`
 
-Now `helo` is a `Boolean` instead of `Net::SMTP::Response` instance. It was changed because `helo` is sending during SMTP-session initializing (`Net::SMTP.new.start`), and `helo` is always `true` if session up is okay. Also `hello` response won't logged as error if it happens. Example of `Truemail::Validate::Smtp::Response` instance from 1.9.3 version.
+Now `helo` is a `Boolean` instead of `Net::SMTP::Response` instance. It was changed because `helo` is sending during SMTP-session initializing (`Net::SMTP.new.start`), and `helo` is always `true` if session up is okay. Also `hello` response won't logged as error if it happens. Example of `Truemail::Validate::Smtp::Response` instance from 2.x version.
 
 ```ruby
 #<struct Truemail::Validate::Smtp::Response:0x00007fa74704cd10
@@ -379,6 +386,7 @@ Truemail.validate('email@white-domain.com', with: :regex)
     smtp_debug=nil>,
   @validation_type=:regex>
 ```
+
 **Email hasn't whitelisted domain**
 
 ```ruby
@@ -406,7 +414,7 @@ Truemail.validate('email@domain.com', with: :regex)
 
 - Configurable default validation type, [issue details](https://github.com/truemail-rb/truemail/issues/48)
 
-You can predefine default validation type for ```Truemail.validate('email@email.com')``` call without with-parameter. Available validation types: ```:regex```, ```:mx```, ```:smtp```. By default validation type still remains ```:smtp```
+You can predefine default validation type for `Truemail.validate('email@email.com')` call without with-parameter. Available validation types: `:regex`, `:mx`, `:smtp`. By default validation type still remains `:smtp`
 
 ```ruby
 Truemail.configure do |config|
@@ -461,7 +469,7 @@ Truemail.validate('email@black-domain.com')
 
 ### Added
 
-- Feature domain whitelist blacklist. Other validations will not processed even if it was defined in ```validation_type_for```.
+- Feature domain whitelist blacklist. Other validations will not processed even if it was defined in `validation_type_for`.
 
 ```ruby
 Truemail.configure do |config|
@@ -484,7 +492,7 @@ Truemail.configuration.blacklisted_domains = ['somedomain1.com', 'somedomain2.co
 
 ### Removed
 
-- ```:skip``` validation type for ```validation_type_for```
+- `:skip` validation type for `validation_type_for`
 
 ### Fixed
 
@@ -499,7 +507,7 @@ Truemail.configuration.blacklisted_domains = ['somedomain1.com', 'somedomain2.co
 
 ### Added
 
-- skip validation by domain for validation_type_for configuration option:
+- skip validation by domain for `validation_type_for` configuration option:
 
 ```ruby
 Truemail.configure do |config|
@@ -581,11 +589,11 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- Retries for ```Truemail::Validate::Smtp``` for cases when one mx server
+- Retries for `Truemail::Validate::Smtp` for cases when one mx server
 
 ### Changed
 
-- ```Truemail::Configuration``` class, please use ```.connection_attempts``` instead ```.retry_count```
+- `Truemail::Configuration` class, please use `.connection_attempts` instead `.retry_count`
 - `Truemail::VERSION`
 - gem documentation
 
@@ -593,12 +601,12 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- Checking A record presence if ```MX``` and ```CNAME``` records not exist, [issue details](https://github.com/truemail-rb/truemail/issues/10)
-- Handling of ```CNAME``` records, [issue details](https://github.com/truemail-rb/truemail/issues/11)
-- Checking A record if ```MX``` and ```CNAME``` records not found, [issue details](https://github.com/truemail-rb/truemail/issues/12)
+- Checking A record presence if `MX` and `CNAME` records not exist, [issue details](https://github.com/truemail-rb/truemail/issues/10)
+- Handling of `CNAME` records, [issue details](https://github.com/truemail-rb/truemail/issues/11)
+- Checking A record if `MX` and `CNAME` records not found, [issue details](https://github.com/truemail-rb/truemail/issues/12)
 - Supporting of multihomed MX records, conversion host names to ips, [issue details](https://github.com/truemail-rb/truemail/issues/17)
 - Timeout configuration for DNS resolver, [issue details](https://github.com/truemail-rb/truemail/issues/13)
-- ```.valid?``` helper
+- `.valid?` helper
 
 ### Changed
 
@@ -609,14 +617,14 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- Independent domain name extractor to ```Truemail::Validate::Mx#run```
+- Independent domain name extractor to `Truemail::Validate::Mx#run`
 
 ### Fixed
 
-- Default ```REGEX_EMAIL_PATTERN```, [issue details](https://github.com/truemail-rb/truemail/issues/7)
+- Default `REGEX_EMAIL_PATTERN`, [issue details](https://github.com/truemail-rb/truemail/issues/7)
   * local part of address can't start with a dot or special symbol
   * local part of address can include ```+``` symbol
-- Default ```REGEX_DOMAIN_PATTERN```, [issue details](https://github.com/truemail-rb/truemail/issues/8)
+- Default `REGEX_DOMAIN_PATTERN`, [issue details](https://github.com/truemail-rb/truemail/issues/8)
   * TLD size increased up to 63 characters
 - Case sensitive domain names, [issue details](https://github.com/truemail-rb/truemail/issues/9)
 

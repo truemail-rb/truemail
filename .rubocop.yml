@@ -115,6 +115,9 @@ Style/RedundantSelfAssignment:
 Style/SoleNestedConditional:
   Enabled: true
 
+Style/ClassEqualityComparison:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -210,6 +213,12 @@ Lint/UselessMethodDefinition:
   Enabled: true
 
 Lint/UselessTimes:
+  Enabled: true
+
+Lint/HashCompareByIdentity:
+  Enabled: true
+
+Lint/RedundantSafeNavigation:
   Enabled: true
 
 Performance/AncestorsInclude:
