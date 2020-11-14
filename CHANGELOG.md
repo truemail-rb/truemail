@@ -2,18 +2,30 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2020.11.14
+
+### Fixed
+
+Timeouts time units in `Setting global configuration` of Truemail documentation's section. Thanks to [@wikiti](https://github.com/wikiti) for report.
+
+### Changed
+
+- Refactored `Truemail::RegexConstant::REGEX_EMAIL_PATTERN`
+- Updated gem development dependencies
+- Updated gem documentation
+
 ## [2.0.1] - 2020.10.20
 
 ### Changed
 
-- gem development dependencies
-- gem documentation
+- Updated gem development dependencies
+- Updated gem documentation
 
 ## [2.0.0] - 2020.10.19
 
 ### Fixed
 
-SMTP connection errors: invalid `HELO` hostname (`localhost`), duplicate `HELO` (`verifier domain`).
+SMTP connection errors: invalid `HELO` hostname (`localhost`), duplicate `HELO` (`verifier domain`). Thanks to [@nenoganchev](https://github.com/nenoganchev) for report.
 
 ### Changed
 
