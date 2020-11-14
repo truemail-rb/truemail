@@ -118,6 +118,24 @@ Style/SoleNestedConditional:
 Style/ClassEqualityComparison:
   Enabled: true
 
+Style/ArgumentsForwarding:
+  Enabled: true
+
+Style/CollectionCompact:
+  Enabled: true
+
+Style/DocumentDynamicEvalDefinition:
+  Enabled: true
+
+Style/NegatedIfElseCondition:
+  Enabled: true
+
+Style/NilLambda:
+  Enabled: true
+
+Style/SwapValues:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -221,6 +239,27 @@ Lint/HashCompareByIdentity:
 Lint/RedundantSafeNavigation:
   Enabled: true
 
+Lint/DuplicateBranch:
+  Enabled: true
+
+Lint/DuplicateRegexpCharacterClassElement:
+  Enabled: true
+
+Lint/EmptyBlock:
+  Enabled: true
+
+Lint/EmptyClass:
+  Enabled: true
+
+Lint/NoReturnInBeginEndBlocks:
+  Enabled: false
+
+Lint/ToEnumArguments:
+  Enabled: true
+
+Lint/UnmodifiedReduceAccumulator:
+  Enabled: true
+
 Performance/AncestorsInclude:
   Enabled: true
 
@@ -273,4 +312,7 @@ RSpec/MultipleDescribes:
   Enabled: false
 
 RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/StubbedMock:
   Enabled: false

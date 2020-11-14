@@ -36,7 +36,7 @@ RSpec.describe Truemail do
     describe '.configure' do
       subject(:configure) { described_class.configure(&config_block) }
 
-      let(:config_block) {}
+      let(:config_block) {} # rubocop:disable Lint/EmptyBlock
 
       context 'without block' do
         specify { expect(configure).to be_nil }
