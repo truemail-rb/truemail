@@ -1,6 +1,9 @@
 # PR Details
 
 <!-- Provide a general summary of your changes in the Title above -->
+<!-- PR name should the same name as your branch name, example: -->
+<!-- Branch name is: feature/add-some-feature -->
+<!-- PR name should be: Feature/Add some feature -->
 
 ## Description
 

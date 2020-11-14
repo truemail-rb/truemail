@@ -1,6 +1,14 @@
 # ![Truemail - configurable framework agnostic plain Ruby email validator](https://truemail-rb.org/assets/images/truemail_logo.png)
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/0fea6d2e64d78d66b149/maintainability)](https://codeclimate.com/github/truemail-rb/truemail/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/0fea6d2e64d78d66b149/test_coverage)](https://codeclimate.com/github/truemail-rb/truemail/test_coverage) [![CircleCI](https://circleci.com/gh/truemail-rb/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/truemail-rb/truemail/tree/master) [![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail) [![Downloads](https://img.shields.io/gem/dt/truemail.svg?colorA=004d99&colorB=0073e6)](https://rubygems.org/gems/truemail) [![Gitter](https://badges.gitter.im/truemail-rb/community.svg)](https://gitter.im/truemail-rb/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0fea6d2e64d78d66b149/maintainability)](https://codeclimate.com/github/truemail-rb/truemail/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/0fea6d2e64d78d66b149/test_coverage)](https://codeclimate.com/github/truemail-rb/truemail/test_coverage)
+[![CircleCI](https://circleci.com/gh/truemail-rb/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/truemail-rb/truemail/tree/master)
+[![Gem Version](https://badge.fury.io/rb/truemail.svg)](https://badge.fury.io/rb/truemail)
+[![Downloads](https://img.shields.io/gem/dt/truemail.svg?colorA=004d99&colorB=0073e6)](https://rubygems.org/gems/truemail)
+[![SemVer compatibility](https://api.dependabot.com/badges/compatibility_score?dependency-name=truemail&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=truemail&package-manager=bundler&version-scheme=semver)
+[![Gitter](https://badges.gitter.im/truemail-rb/community.svg)](https://gitter.im/truemail-rb/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![GitHub](https://img.shields.io/github/license/truemail-rb/truemail)](LICENSE.txt)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS and SMTP. Be sure that email address valid and exists.
 
@@ -146,10 +154,12 @@ Truemail.configure do |config|
   # Optional parameter. You can override default regex pattern
   config.smtp_error_body_pattern = /regex_pattern/
 
-  # Optional parameter. Connection timeout is equal to 2 ms by default.
+  # Optional parameter. Connection timeout in seconds.
+  # It is equal to 2 by default.
   config.connection_timeout = 1
 
-  # Optional parameter. A SMTP server response timeout is equal to 2 ms by default.
+  # Optional parameter. A SMTP server response timeout in seconds.
+  # It is equal to 2 by default.
   config.response_timeout = 1
 
   # Optional parameter. Total of connection attempts. It is equal to 2 by default.
@@ -1165,6 +1175,7 @@ All Truemail solutions: https://truemail-rb.org
 | [truemail-rack-docker](https://github.com/truemail-rb/truemail-rack-docker-image) | docker image | Lightweight rack based web API [dockerized image](https://hub.docker.com/r/truemail/truemail-rack) :whale: of Truemail server |
 | [truemail-ruby-client](https://github.com/truemail-rb/truemail-ruby-client) | ruby gem | Web API Ruby client for Truemail Server |
 | [truemail-crystal-client](https://github.com/truemail-rb/truemail-crystal-client) | crystal shard | Web API Crystal client for Truemail Server |
+| [truemail-java-client](https://github.com/truemail-rb/truemail-java-client) | java lib | Web API Java client for Truemail Server |
 | [truemail-rspec](https://github.com/truemail-rb/truemail-rspec) | ruby gem | Truemail configuration, auditor and validator RSpec helpers |
 
 ## Contributing
