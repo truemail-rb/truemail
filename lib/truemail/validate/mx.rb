@@ -30,7 +30,7 @@ module Truemail
       end
 
       def fetch_target_hosts(hosts)
-        mail_servers.push(*hosts)
+        mail_servers.push(*(hosts.uniq - mail_servers))
       end
 
       def null_mx?(domain_mx_records)
