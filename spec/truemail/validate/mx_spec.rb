@@ -43,6 +43,7 @@ RSpec.describe Truemail::Validate::Mx do
       let(:host_address) { FFaker::Internet.ip_v4_address }
       let(:host_name) { FFaker::Internet.domain_name }
       let(:mail_servers_by_ip) { Array.new(5) { host_address } }
+      let(:uniq_mail_servers_by_ip) { [host_address] }
       let(:mx_records_object) { YAML.load(File.open(mx_records_file, 'r')) } # rubocop:disable Security/YAMLLoad
 
       before do
@@ -69,7 +70,7 @@ RSpec.describe Truemail::Validate::Mx do
               .to change(result_instance, :domain)
               .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
               .and change(result_instance, :mail_servers)
-              .from([]).to(mail_servers_by_ip)
+              .from([]).to(uniq_mail_servers_by_ip)
               .and not_change(result_instance, :success)
           end
 
@@ -105,7 +106,7 @@ RSpec.describe Truemail::Validate::Mx do
               .to change(result_instance, :domain)
               .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
               .and change(result_instance, :mail_servers)
-              .from([]).to(mail_servers_by_ip)
+              .from([]).to(uniq_mail_servers_by_ip)
               .and not_change(result_instance, :success)
           end
 
@@ -117,8 +118,8 @@ RSpec.describe Truemail::Validate::Mx do
         end
 
         context 'when mx records not found' do
-          before do
-            allow(Resolv::DNS).to receive_message_chain(:new, :getresources).and_return(cname_records_object)
+          before do # mock 2 cname records that refer to one specific ip address
+            allow(Resolv::DNS).to receive_message_chain(:new, :getresources).and_return(cname_records_object * 2)
             allow(mx_validator_instance).to receive(:mx_records).and_return([])
           end
 
@@ -130,7 +131,7 @@ RSpec.describe Truemail::Validate::Mx do
               .to change(result_instance, :domain)
               .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
               .and change(result_instance, :mail_servers)
-              .from([]).to([host_address])
+              .from([]).to(uniq_mail_servers_by_ip) # have been collected only unique ip addresses
               .and not_change(result_instance, :success)
           end
 
