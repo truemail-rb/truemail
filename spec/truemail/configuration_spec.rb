@@ -46,6 +46,7 @@ RSpec.describe Truemail::Configuration do
       whitelist_validation
       blacklisted_domains
       not_rfc_mx_lookup_flow
+      smtp_fail_fast
       smtp_safe_check
       logger
     ].each do |attribute|
@@ -81,6 +82,7 @@ RSpec.describe Truemail::Configuration do
       expect(configuration_instance.whitelist_validation).to eq(false)
       expect(configuration_instance.blacklisted_domains).to eq([])
       expect(configuration_instance.not_rfc_mx_lookup_flow).to be(false)
+      expect(configuration_instance.smtp_fail_fast).to be(false)
       expect(configuration_instance.smtp_safe_check).to be(false)
       expect(configuration_instance.logger).to be_nil
     end
@@ -102,6 +104,7 @@ RSpec.describe Truemail::Configuration do
         expect(configuration_instance.whitelist_validation).to eq(false)
         expect(configuration_instance.blacklisted_domains).to eq([])
         expect(configuration_instance.not_rfc_mx_lookup_flow).to be(false)
+        expect(configuration_instance.smtp_fail_fast).to be(false)
         expect(configuration_instance.smtp_safe_check).to be(false)
         expect(configuration_instance.logger).to be_nil
       end
@@ -124,6 +127,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
+          .and not_change(configuration_instance, :smtp_fail_fast)
           .and not_change(configuration_instance, :smtp_safe_check)
           .and not_change(configuration_instance, :logger)
 
@@ -148,6 +152,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
+          .and not_change(configuration_instance, :smtp_fail_fast)
           .and not_change(configuration_instance, :smtp_safe_check)
           .and not_change(configuration_instance, :logger)
 
@@ -172,6 +177,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
+          .and not_change(configuration_instance, :smtp_fail_fast)
           .and not_change(configuration_instance, :smtp_safe_check)
           .and not_change(configuration_instance, :logger)
 
@@ -426,6 +432,14 @@ RSpec.describe Truemail::Configuration do
         it 'sets not RFC MX lookup flow' do
           expect { configuration_instance.not_rfc_mx_lookup_flow = true }
             .to change(configuration_instance, :not_rfc_mx_lookup_flow)
+            .from(false).to(true)
+        end
+      end
+
+      describe '#smtp_fail_fast=' do
+        it 'sets smtp fail fast behaviour' do
+          expect { configuration_instance.smtp_fail_fast = true }
+            .to change(configuration_instance, :smtp_fail_fast)
             .from(false).to(true)
         end
       end

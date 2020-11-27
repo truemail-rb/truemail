@@ -2,9 +2,35 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2020.12.01
+
+Ability to use fail fast behaviour for SMTP validation layer. When `smtp_fail_fast = true` it means that `truemail` ends smtp validation session after first attempt on the first mx server in any fail cases (network connection/timeout error, smtp validation error). This feature helps to reduce total time of SMTP validation session up to 1 second.
+
+### Added
+
+- Added `Truemail::Configuration#smtp_fail_fast`
+- Added `Truemail::Validate::Smtp#smtp_fail_fast?`
+- Added `Truemail::Validate::Smtp#filtered_mail_servers_by_fail_fast_scenario`
+
+### Changed
+
+- Updated `Truemail::Validate::Smtp#attempts`
+- Updated `Truemail::Validate::Smtp#establish_smtp_connection`
+- Updated gem documentation
+
+It's a configurable and not required option:
+
+```ruby
+Truemail.configure do |config|
+  config.smtp_fail_fast = true # by default it's equal to false
+end
+```
+
+Thanks to [@wikiti](https://github.com/wikiti) for timeout reports.
+
 ## [2.1.0] - 2020.11.21
 
-Collecting only unique ip-addresses for target mail servers. This update should reduce email validation time for case when remote server have closed connection via avoiding connection attempt to server with the same ip address.
+Collecting only unique ip-addresses for target mail servers. This update reduces email validation time for case when remote server have closed connection via avoiding connection attempt to server with the same ip address.
 
 ### Changed
 
