@@ -27,6 +27,7 @@ detectors:
     exclude:
       - Truemail::Configuration#whitelist_validation
       - Truemail::Configuration#not_rfc_mx_lookup_flow
+      - Truemail::Configuration#smtp_fail_fast
       - Truemail::Configuration#smtp_safe_check
       - Truemail::Wrapper#attempts
 

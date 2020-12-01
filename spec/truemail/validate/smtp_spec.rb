@@ -44,10 +44,14 @@ RSpec.describe Truemail::Validate::Smtp do
     end
 
     describe '#attempts' do
-      context 'when more then one mail server' do
+      shared_examples 'returns empty hash' do
         it 'returns empty hash' do
           expect(smtp_validator_instance.send(:attempts)).to eq({})
         end
+      end
+
+      context 'when more then one mail server' do
+        include_examples 'returns empty hash'
       end
 
       context 'when one mail server' do
@@ -57,56 +61,106 @@ RSpec.describe Truemail::Validate::Smtp do
           expect(smtp_validator_instance.send(:attempts)).to eq(attempts: configuration_instance.connection_attempts)
         end
       end
+
+      context 'when smtp fail fast enabled' do
+        before { configuration_instance.smtp_fail_fast = true }
+
+        include_examples 'returns empty hash'
+      end
     end
 
     describe '#establish_smtp_connection' do
       before { allow(result_instance.mail_servers).to receive(:each).and_call_original }
 
-      context 'until request port check fails' do
-        it 'creates smtp request instances' do
-          allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(false)
-          allow(Truemail::Validate::Smtp::Request).to receive(:new).and_call_original
-          expect(result_instance)
-            .to receive(:punycode_email).exactly(result_instance.mail_servers.size).and_call_original
+      context 'when establishment smtp connection fails' do
+        context 'when smtp fail fast disabled' do
+          context 'until request port check fails' do
+            it 'creates smtp request instances' do
+              allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(false)
+              allow(Truemail::Validate::Smtp::Request).to receive(:new).and_call_original
 
-          expect { smtp_validator_instance.send(:establish_smtp_connection) }
-            .to change(smtp_results, :size)
-            .from(0).to(result_instance.mail_servers.size)
+              expect(result_instance)
+                .to receive(:punycode_email).exactly(result_instance.mail_servers.size).and_call_original
+              expect { smtp_validator_instance.send(:establish_smtp_connection) }
+                .to change(smtp_results, :size)
+                .from(0).to(result_instance.mail_servers.size)
+
+              expect(smtp_results.map(&:host)).to eq(result_instance.mail_servers)
+            end
+          end
+
+          context 'until request run fails' do
+            it 'creates smtp request instances' do
+              allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
+              allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
+
+              expect { smtp_validator_instance.send(:establish_smtp_connection) }
+                .to change(smtp_results, :size)
+                .from(0).to(result_instance.mail_servers.size)
+
+              expect(smtp_results.map(&:host)).to eq(result_instance.mail_servers)
+            end
+          end
+
+          context 'until request run, rcptto_error fails' do
+            it 'creates only one smtp request instance' do
+              allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
+              allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
+              allow_any_instance_of(Truemail::Validate::Smtp::Response).to receive(:errors).and_return(rcptto: 'error')
+
+              expect { smtp_validator_instance.send(:establish_smtp_connection) }
+                .to change(smtp_results, :size)
+                .from(0).to(1)
+
+              expect(smtp_results.last.send(:host)).to eq(result_instance.mail_servers.first)
+            end
+          end
+        end
+
+        context 'when smtp fail fast enabled' do
+          before { configuration_instance.smtp_fail_fast = true }
+
+          context 'until request port check fails' do
+            it 'creates only one smtp request instance' do
+              allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(false)
+              allow(Truemail::Validate::Smtp::Request).to receive(:new).and_call_original
+
+              expect(result_instance).to receive(:punycode_email).exactly(1).and_call_original
+              expect { smtp_validator_instance.send(:establish_smtp_connection) }
+                .to change(smtp_results, :size)
+                .from(0).to(1)
+
+              expect(smtp_results.last.send(:host)).to eq(result_instance.mail_servers.first)
+            end
+          end
+
+          context 'until request run fails, smtp fail fast enabled' do
+            it 'creates only one smtp request instance' do
+              allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
+              allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
+
+              expect { smtp_validator_instance.send(:establish_smtp_connection) }
+                .to change(smtp_results, :size)
+                .from(0).to(1)
+
+              expect(smtp_results.last.send(:host)).to eq(result_instance.mail_servers.first)
+            end
+          end
         end
       end
 
-      context 'until request run fails' do
-        it 'creates smtp request instances' do
-          allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
-          allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
+      context 'when establishment smtp connection successful' do
+        context 'when request port check run completed successfully' do
+          it 'creates only one smtp request instance' do
+            allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
+            allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(true)
 
-          expect { smtp_validator_instance.send(:establish_smtp_connection) }
-            .to change(smtp_results, :size)
-            .from(0).to(result_instance.mail_servers.size)
-        end
-      end
+            expect(result_instance).to receive(:punycode_email).exactly(1).and_call_original
+            expect { smtp_validator_instance.send(:establish_smtp_connection) }
+              .to change(smtp_results, :size).from(0).to(1)
 
-      context 'until request run fails or rcptto error' do
-        it 'creates smtp request instances' do
-          allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
-          allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
-          allow_any_instance_of(Truemail::Validate::Smtp::Response).to receive(:errors).and_return(rcptto: 'error')
-
-          expect { smtp_validator_instance.send(:establish_smtp_connection) }
-            .to change(smtp_results, :size)
-            .from(0).to(1)
-        end
-      end
-
-      context 'when request port check run completed successfully' do
-        it 'stops creating smtp request instances' do
-          allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
-          allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(true)
-
-          expect { smtp_validator_instance.send(:establish_smtp_connection) }
-            .to change(smtp_results, :size).from(0).to(1)
-
-          expect(smtp_results.last.send(:host)).to eq(result_instance.mail_servers.first)
+            expect(smtp_results.last.send(:host)).to eq(result_instance.mail_servers.first)
+          end
         end
       end
     end
