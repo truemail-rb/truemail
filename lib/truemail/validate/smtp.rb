@@ -24,13 +24,23 @@ module Truemail
 
       private
 
-      def request
-        smtp_results.last
+      def fail_fast?
+        configuration.smtp_fail_fast
+      end
+
+      def filtered_mail_servers_by_fail_fast_scenario
+        fail_fast? ? mail_servers.first(1) : mail_servers
       end
 
       def attempts
-        @attempts ||=
-          mail_servers.one? ? { attempts: configuration.connection_attempts } : {}
+        @attempts ||= begin
+          return {} if fail_fast? || !mail_servers.one?
+          { attempts: configuration.connection_attempts }
+        end
+      end
+
+      def request
+        smtp_results.last
       end
 
       def rcptto_error
@@ -38,7 +48,7 @@ module Truemail
       end
 
       def establish_smtp_connection
-        mail_servers.each do |mail_server|
+        filtered_mail_servers_by_fail_fast_scenario.each do |mail_server|
           smtp_results << Truemail::Validate::Smtp::Request.new(
             configuration: configuration, host: mail_server, email: result.punycode_email, **attempts
           )
