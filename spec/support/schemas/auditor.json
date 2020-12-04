@@ -18,6 +18,7 @@
               "whitelisted_domains": null,
               "blacklisted_domains": null,
               "not_rfc_mx_lookup_flow": false,
+              "smtp_fail_fast": false,
               "smtp_safe_check": false,
               "email_pattern": "default gem value",
               "smtp_error_body_pattern": "default gem value"
@@ -95,6 +96,7 @@
                   "whitelisted_domains": null,
                   "blacklisted_domains": null,
                   "not_rfc_mx_lookup_flow": false,
+                  "smtp_fail_fast": false,
                   "smtp_safe_check": false,
                   "email_pattern": "default gem value",
                   "smtp_error_body_pattern": "default gem value"
@@ -106,6 +108,7 @@
               "whitelisted_domains",
               "blacklisted_domains",
               "not_rfc_mx_lookup_flow",
+              "smtp_fail_fast",
               "smtp_safe_check",
               "email_pattern",
               "smtp_error_body_pattern"
@@ -161,6 +164,16 @@
                       false
                   ]
               },
+              "smtp_fail_fast": {
+                "$id": "#/properties/configuration/properties/smtp_fail_fast",
+                "type": "boolean",
+                "title": "The smtp_fail_fast schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": false,
+                "examples": [
+                    false
+                ]
+            },
               "smtp_safe_check": {
                   "$id": "#/properties/configuration/properties/smtp_safe_check",
                   "type": "boolean",

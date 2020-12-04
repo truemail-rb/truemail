@@ -27,7 +27,7 @@ module Truemail
       instance_initializer.each do |instace_variable, value|
         instance_variable_set(:"@#{instace_variable}", value)
       end
-      tap(&block) if block_given?
+      tap(&block) if block
     end
 
     %i[email_pattern smtp_error_body_pattern].each do |method|

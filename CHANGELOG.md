@@ -2,6 +2,23 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2020.12.06
+
+### Fixed
+
+- Filter out ASCII-8BIT chars for serialized SMTP response errors. Fixed `Encoding::UndefinedConversionError` in `Truemail::Log::Serializer::ValidatorJson#serialize`. Thanks to [@eni9889](https://github.com/eni9889) for report
+- Added missed `smtp_fail_fast` attribute to serialized validator and auditor results
+
+### Added
+
+- Added `Truemail::Log::Serializer::ValidatorBase#replace_invalid_chars`
+
+### Changed
+
+- Updated `Truemail::Log::Serializer::Base`
+- Updated `Truemail::Log::Serializer::ValidatorBase`
+- Updated gem development dependencies
+
 ## [2.2.0] - 2020.12.01
 
 Ability to use fail fast behaviour for SMTP validation layer. When `smtp_fail_fast = true` it means that `truemail` ends smtp validation session after first attempt on the first mx server in any fail cases (network connection/timeout error, smtp validation error). This feature helps to reduce total time of SMTP validation session up to 1 second.

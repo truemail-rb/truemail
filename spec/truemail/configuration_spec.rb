@@ -3,7 +3,7 @@
 RSpec.describe Truemail::Configuration do
   subject(:configuration_instance) { described_class.new }
 
-  let(:valid_email) { FFaker::Internet.email }
+  let(:valid_email) { Faker::Internet.email }
 
   describe 'class constants' do
     context 'DEFAULT_CONNECTION_TIMEOUT' do
@@ -186,7 +186,7 @@ RSpec.describe Truemail::Configuration do
     end
 
     context 'when manual independent configuration' do
-      let(:valid_domain) { FFaker::Internet.domain_name }
+      let(:valid_domain) { Faker::Internet.domain_name }
 
       describe '#verifier_email=' do
         context 'with valid email' do
@@ -357,7 +357,7 @@ RSpec.describe Truemail::Configuration do
       describe '#validation_type_for=' do
         context 'with valid validation type attributes' do
           let(:domains_config) do
-            (1..3).map { FFaker::Internet.unique.domain_name }.zip(%i[regex mx smtp]).to_h
+            (1..3).map { Faker::Internet.unique.domain_name }.zip(%i[regex mx smtp]).to_h
           end
 
           it 'sets validation type for domain' do
@@ -386,7 +386,7 @@ RSpec.describe Truemail::Configuration do
         end
 
         context 'with invalid validation type' do
-          let(:domain)          { FFaker::Internet.domain_name }
+          let(:domain)          { Faker::Internet.domain_name }
           let(:validation_type) { 'wrong_validation_type' }
 
           specify do
@@ -398,7 +398,7 @@ RSpec.describe Truemail::Configuration do
 
       %i[whitelisted_domains= blacklisted_domains=].each do |domain_list_type|
         describe "##{domain_list_type}" do
-          let(:domains_list) { (1..3).map { FFaker::Internet.unique.domain_name } }
+          let(:domains_list) { (1..3).map { Faker::Internet.unique.domain_name } }
 
           context "with valid #{domain_list_type} parameter type and context" do
             it 'sets whitelisted domains list' do

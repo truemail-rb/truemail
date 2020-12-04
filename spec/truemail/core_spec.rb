@@ -23,7 +23,7 @@ RSpec.describe Truemail::PunycodeRepresenter do
     end
 
     context 'when email not includes ascii chars' do
-      let(:email) { FFaker::Internet.email }
+      let(:email) { Faker::Internet.email }
 
       it 'returns not changed email' do
         expect(SimpleIDN).not_to receive(:to_ascii)

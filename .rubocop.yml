@@ -136,6 +136,9 @@ Style/NilLambda:
 Style/SwapValues:
   Enabled: true
 
+Style/RedundantArgument:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -260,6 +263,9 @@ Lint/ToEnumArguments:
 Lint/UnmodifiedReduceAccumulator:
   Enabled: true
 
+Lint/UnexpectedBlockArity:
+  Enabled: true
+
 Performance/AncestorsInclude:
   Enabled: true
 
@@ -285,6 +291,18 @@ Performance/StringInclude:
   Enabled: true
 
 Performance/Sum:
+  Enabled: true
+
+Performance/BlockGivenWithExplicitBlock:
+  Enabled: true
+
+Performance/CollectionLiteralInLoop:
+  Enabled: true
+
+Performance/ConstantRegexp:
+  Enabled: true
+
+Performance/MethodObjectAsBlock:
   Enabled: true
 
 RSpec/ExampleLength:
