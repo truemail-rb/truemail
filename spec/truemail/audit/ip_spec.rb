@@ -33,7 +33,7 @@ RSpec.describe Truemail::Audit::Ip do
 
     describe 'Success' do
       context 'when determination of host ip address was successful' do
-        let(:host_address) { FFaker::Internet.ip_v4_address }
+        let(:host_address) { Faker::Internet.ip_v4_address }
 
         it 'save host address to result, not changes warnings' do
           expect(ip_auditor_instance).to receive(:detect_ip_via_ipify).and_return(host_address)

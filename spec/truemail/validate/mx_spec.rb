@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Validate::Mx do
-  let(:email) { FFaker::Internet.email }
+  let(:email) { Faker::Internet.email }
   let(:configuration) { create_configuration }
   let(:result_instance) { Truemail::Validator::Result.new(email: email, configuration: configuration) }
 
@@ -40,8 +40,8 @@ RSpec.describe Truemail::Validate::Mx do
     end
 
     context 'when validation pass' do
-      let(:host_address) { FFaker::Internet.ip_v4_address }
-      let(:host_name) { FFaker::Internet.domain_name }
+      let(:host_address) { Faker::Internet.ip_v4_address }
+      let(:host_name) { Faker::Internet.domain_name }
       let(:mail_servers_by_ip) { Array.new(5) { host_address } }
       let(:uniq_mail_servers_by_ip) { [host_address] }
       let(:mx_records_object) { YAML.load(File.open(mx_records_file, 'r')) } # rubocop:disable Security/YAMLLoad
