@@ -42,6 +42,7 @@ detectors:
       - Truemail::Configuration#domain_matcher
       - Truemail::Configuration#logger_options
       - Truemail::Log::Serializer::Base#errors
+      - Truemail::Log::Serializer::ValidatorBase#replace_invalid_chars
 
   ControlParameter:
     exclude:

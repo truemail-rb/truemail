@@ -10,8 +10,8 @@ RSpec.describe Truemail::Validate::Smtp::Request do
     )
   end
 
-  let(:mail_server)            { FFaker::Internet.domain_name }
-  let(:target_email)           { FFaker::Internet.email }
+  let(:mail_server)            { Faker::Internet.domain_name }
+  let(:target_email)           { Faker::Internet.email }
   let(:response_instance)      { request_instance.response }
   let(:request_instance_host)  { request_instance.host }
   let(:configuration_instance) { create_configuration }

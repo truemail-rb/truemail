@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail do
-  let(:email) { FFaker::Internet.email }
+  let(:email) { Faker::Internet.email }
   let(:custom_configuration) { nil }
 
   shared_examples 'configuration error' do
@@ -90,9 +90,9 @@ RSpec.describe Truemail do
         ))
       end
 
-      let(:domain) { FFaker::Internet.domain_name }
-      let(:new_email) { FFaker::Internet.email }
-      let(:new_domain) { FFaker::Internet.domain_name }
+      let(:domain) { Faker::Internet.domain_name }
+      let(:new_email) { Faker::Internet.email }
+      let(:new_domain) { Faker::Internet.domain_name }
       let(:new_regex_pattern) { /\A+.\z/ }
       let(:new_smtp_error_body_pattern) { /\A\d+\z/ }
 

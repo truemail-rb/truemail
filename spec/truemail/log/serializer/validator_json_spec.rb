@@ -37,7 +37,29 @@ RSpec.describe Truemail::Log::Serializer::ValidatorJson do
     context 'with fail validation result' do
       let(:success_status) { false }
 
-      include_context 'serialized json'
+      context 'when smtp errors not includes ASCII-8BIT chars' do
+        include_context 'serialized json'
+      end
+
+      context 'when smtp errors includes ASCII-8BIT chars' do
+        let(:error_context_with_ascii_8bit) { "\xD3\xE4\xB2\xBB\xD4" }
+        let(:validator_instance) do
+          create_validator(
+            validation_type,
+            success: success_status,
+            rcptto_error: error_context_with_ascii_8bit,
+            configuration: create_configuration(validation_type_for: { 'somedomain.com' => :regex })
+          )
+        end
+
+        it 'replaces all invalid chars' do
+          encoded_utf8_string = JSON.parse(json_serializer)['smtp_debug'].first.dig('errors', 'rcptto')
+          expect(encoded_utf8_string.size).to eq(3)
+          expect(encoded_utf8_string).to eq("\uFFFD䲻\uFFFD")
+        end
+
+        include_context 'serialized json'
+      end
     end
   end
 end

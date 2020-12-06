@@ -12,7 +12,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
   describe '.call' do
     subject(:text_serializer) { described_class.call(validator_instance) }
 
-    let(:email) { FFaker::Internet.email }
+    let(:email) { Faker::Internet.email }
     let(:mx_servers) { create_servers_list }
     let(:validator_instance) { create_validator(validation_type, email, mx_servers, success: success_status) }
 
@@ -31,6 +31,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
           CONFIGURATION SETTINGS:
           whitelist validation: false
           not rfc mx lookup flow: false
+          smtp fail fast: false
           smtp safe check: false
           email pattern: default gem value
           smtp error body pattern: default gem value
@@ -47,6 +48,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
             whitelist validation: false
             whitelisted domains: #{email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]}
             not rfc mx lookup flow: false
+            smtp fail fast: false
             smtp safe check: false
             email pattern: default gem value
             smtp error body pattern: default gem value
@@ -84,6 +86,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
           CONFIGURATION SETTINGS:
           whitelist validation: false
           not rfc mx lookup flow: false
+          smtp fail fast: false
           smtp safe check: false
           email pattern: default gem value
           smtp error body pattern: default gem value
@@ -100,6 +103,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
             whitelist validation: false
             blacklisted domains: #{email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]}
             not rfc mx lookup flow: false
+            smtp fail fast: false
             smtp safe check: false
             email pattern: default gem value
             smtp error body pattern: default gem value
@@ -126,27 +130,66 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
       describe 'smtp validation' do
         let(:validation_type) { :smtp }
         let(:error) { 'smtp: smtp error' }
-        let(:expected_output) do
-          <<~EXPECTED_OUTPUT
-            Truemail #{validation_type} validation for #{email} failed (#{error})
 
-            ATTEMPT #1:
-            mail host: #{mx_servers.first}
-            port opened: true
-            connection: true
-            errors:\u0020
-            rcptto: user not found
+        context 'when smtp errors not includes ASCII-8BIT chars' do
+          let(:expected_output) do
+            <<~EXPECTED_OUTPUT
+              Truemail #{validation_type} validation for #{email} failed (#{error})
 
-            CONFIGURATION SETTINGS:
-            whitelist validation: false
-            not rfc mx lookup flow: false
-            smtp safe check: false
-            email pattern: default gem value
-            smtp error body pattern: default gem value
-          EXPECTED_OUTPUT
+              ATTEMPT #1:
+              mail host: #{mx_servers.first}
+              port opened: true
+              connection: true
+              errors:\u0020
+              rcptto: user not found
+
+              CONFIGURATION SETTINGS:
+              whitelist validation: false
+              not rfc mx lookup flow: false
+              smtp fail fast: false
+              smtp safe check: false
+              email pattern: default gem value
+              smtp error body pattern: default gem value
+            EXPECTED_OUTPUT
+          end
+
+          include_examples 'formatted text output'
         end
 
-        include_examples 'formatted text output'
+        context 'when smtp errors includes ASCII-8BIT chars' do
+          let(:error_context_with_ascii_8bit) { "\xD3\xE4\xB2\xBB\xD4" }
+          let(:validator_instance) do
+            create_validator(
+              validation_type,
+              email,
+              mx_servers,
+              success: success_status,
+              rcptto_error: error_context_with_ascii_8bit
+            )
+          end
+          let(:expected_output) do
+            <<~EXPECTED_OUTPUT
+              Truemail #{validation_type} validation for #{email} failed (#{error})
+
+              ATTEMPT #1:
+              mail host: #{mx_servers.first}
+              port opened: true
+              connection: true
+              errors:\u0020
+              rcptto: \uFFFD䲻\uFFFD
+
+              CONFIGURATION SETTINGS:
+              whitelist validation: false
+              not rfc mx lookup flow: false
+              smtp fail fast: false
+              smtp safe check: false
+              email pattern: default gem value
+              smtp error body pattern: default gem value
+            EXPECTED_OUTPUT
+          end
+
+          include_examples 'formatted text output'
+        end
       end
     end
   end

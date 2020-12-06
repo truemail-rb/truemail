@@ -13,6 +13,10 @@ module Truemail
 
         attr_reader :validation_type
 
+        def replace_invalid_chars
+          ->(value) { value.encode('UTF-8', invalid: :replace) }
+        end
+
         def smtp_debug
           validation_smtp_debug = executor_result.smtp_debug
           return unless validation_smtp_debug
@@ -22,7 +26,7 @@ module Truemail
               mail_host: smtp_request.host,
               port_opened: smtp_response.port_opened,
               connection: smtp_response.connection,
-              errors: smtp_response.errors
+              errors: smtp_response.errors.transform_values(&replace_invalid_chars)
             }
           end
         end

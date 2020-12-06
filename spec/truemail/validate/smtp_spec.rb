@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Validate::Smtp do
-  let(:email) { FFaker::Internet.email }
+  let(:email) { Faker::Internet.email }
   let(:configuration_instance) { create_configuration }
 
   describe 'defined constants' do
@@ -20,7 +20,7 @@ RSpec.describe Truemail::Validate::Smtp do
       described_class.new(
         Truemail::Validator::Result.new(
           email: email,
-          mail_servers: Array.new(3) { FFaker::Internet.ip_v4_address },
+          mail_servers: Array.new(3) { Faker::Internet.ip_v4_address },
           configuration: configuration_instance
         )
       )

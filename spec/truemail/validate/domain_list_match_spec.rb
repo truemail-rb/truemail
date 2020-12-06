@@ -12,7 +12,7 @@ RSpec.describe Truemail::Validate::DomainListMatch do
   describe '.check' do
     subject(:list_match_validator) { described_class.check(result_instance) }
 
-    let(:email) { FFaker::Internet.email }
+    let(:email) { Faker::Internet.email }
     let(:domain) { email[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1] }
     let(:configuration_instance) { create_configuration }
     let(:result_instance) { Truemail::Validator::Result.new(email: email, configuration: configuration_instance) }
