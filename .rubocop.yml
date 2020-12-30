@@ -139,6 +139,9 @@ Style/SwapValues:
 Style/RedundantArgument:
   Enabled: true
 
+Style/HashExcept:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -168,6 +171,9 @@ Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
 
 Layout/BeginEndAlignment:
+  Enabled: true
+
+Layout/SpaceBeforeBrackets:
   Enabled: true
 
 Lint/NonDeterministicRequireOrder:
@@ -264,6 +270,9 @@ Lint/UnmodifiedReduceAccumulator:
   Enabled: true
 
 Lint/UnexpectedBlockArity:
+  Enabled: true
+
+Lint/AmbiguousAssignment:
   Enabled: true
 
 Performance/AncestorsInclude:
