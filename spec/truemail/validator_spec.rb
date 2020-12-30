@@ -114,7 +114,7 @@ RSpec.describe Truemail::Validator do
 
       describe 'works with logs' do
         context 'when logger configured' do
-          let(:logger_instance) { true }
+          let(:logger_instance) { instance_double('LoggerInstance') }
 
           it 'pushes logs' do
             expect(logger_instance).to receive(:push).with(validator_instance)
