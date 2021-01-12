@@ -13,17 +13,22 @@ module Truemail
 
         attr_reader :configuration, :host, :email, :response
 
-        def initialize(configuration:, host:, email:, attempts: nil)
+        def initialize(configuration:, host:, email:, attempts: nil, port_open_status: proc { true })
           @configuration = Truemail::Validate::Smtp::Request::Configuration.new(configuration)
           @response = Truemail::Validate::Smtp::Response.new
           @host = host
           @email = email
           @attempts = attempts
+          @port_open_status = port_open_status
         end
 
         def check_port
-          response.port_opened =
-            Socket.tcp(host, Truemail::Validate::Smtp::Request::SMTP_PORT, connect_timeout: configuration.connection_timeout) { true }
+          response.port_opened = Socket.tcp(
+            host,
+            Truemail::Validate::Smtp::Request::SMTP_PORT,
+            connect_timeout: configuration.connection_timeout,
+            &port_open_status
+          )
         rescue => error
           retry if attempts_exist? && error.is_a?(Errno::ETIMEDOUT)
           response.port_opened = false
@@ -52,7 +57,7 @@ module Truemail
           end
         end
 
-        attr_reader :attempts
+        attr_reader :attempts, :port_open_status
 
         def attempts_exist?
           return false unless attempts
