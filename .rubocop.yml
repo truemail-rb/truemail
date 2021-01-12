@@ -142,6 +142,9 @@ Style/RedundantArgument:
 Style/HashExcept:
   Enabled: true
 
+Style/EndlessMethod:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -273,6 +276,15 @@ Lint/UnexpectedBlockArity:
   Enabled: true
 
 Lint/AmbiguousAssignment:
+  Enabled: true
+
+Lint/DeprecatedConstants:
+  Enabled: true
+
+Lint/LambdaWithoutLiteralBlock:
+  Enabled: true
+
+Lint/RedundantDirGlobSort:
   Enabled: true
 
 Performance/AncestorsInclude:

@@ -6,6 +6,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       configuration: configuration_instance,
       host: mail_server,
       email: target_email,
+      port_open_status: port_open_status,
       **attempts
     )
   end
@@ -18,6 +19,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
   let(:connection_timeout)     { configuration_instance.connection_timeout }
   let(:response_timeout)       { configuration_instance.response_timeout }
   let(:attempts)               { {} }
+  let(:port_open_status)       { proc { true } }
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:SMTP_PORT) }
@@ -42,8 +44,13 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
     context 'when port opened' do
       specify do
-        allow(Timeout).to receive(:timeout).with(connection_timeout).and_call_original
-        allow(TCPSocket).to receive_message_chain(:new, :close)
+        allow(Socket).to receive(:tcp)
+          .with(
+            mail_server,
+            Truemail::Validate::Smtp::Request::SMTP_PORT,
+            connect_timeout: connection_timeout
+          ) { |&block| expect(block).to eq(port_open_status) }
+          .and_return(true)
         expect { request_instance.check_port }
           .to change(response_instance, :port_opened).from(nil).to(true)
       end
@@ -51,16 +58,17 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
     context 'when port closed' do
       let(:error_stubs) do
-        allow(Timeout).to receive(:timeout).with(connection_timeout).and_raise(Timeout::Error)
+        allow(Socket).to receive(:tcp)
+          .with(
+            mail_server,
+            Truemail::Validate::Smtp::Request::SMTP_PORT,
+            connect_timeout: connection_timeout
+          )
+          .and_raise(Errno::ETIMEDOUT)
       end
 
       specify do
         error_stubs
-        expect { response_instance_target_method }.to change(response_instance, :port_opened).from(nil).to(false)
-      end
-
-      specify do
-        allow(TCPSocket).to receive(:new).and_raise(SocketError)
         expect { response_instance_target_method }.to change(response_instance, :port_opened).from(nil).to(false)
       end
 
