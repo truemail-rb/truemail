@@ -13,6 +13,7 @@ detectors:
       - Truemail::Validate::Smtp#run
       - Truemail::Validate::Mx#hosts_from_cname_records
       - Truemail::Configuration#logger=
+      - Truemail::Validate::Smtp::Request#initialize
 
   TooManyInstanceVariables:
     exclude:
