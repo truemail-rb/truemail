@@ -42,8 +42,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
     context 'when port opened' do
       specify do
-        allow(Timeout).to receive(:timeout).with(connection_timeout).and_call_original
-        allow(TCPSocket).to receive_message_chain(:new, :close)
+        allow(Socket).to receive(:tcp).and_return(true)
         expect { request_instance.check_port }
           .to change(response_instance, :port_opened).from(nil).to(true)
       end
@@ -51,7 +50,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
     context 'when port closed' do
       let(:error_stubs) do
-        allow(Timeout).to receive(:timeout).with(connection_timeout).and_raise(Timeout::Error)
+        allow(Socket).to receive(:tcp).and_raise(Errno::ETIMEDOUT)
       end
 
       specify do
@@ -60,7 +59,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       end
 
       specify do
-        allow(TCPSocket).to receive(:new).and_raise(SocketError)
+        allow(Socket).to receive(:tcp).and_raise(SocketError)
         expect { response_instance_target_method }.to change(response_instance, :port_opened).from(nil).to(false)
       end
 

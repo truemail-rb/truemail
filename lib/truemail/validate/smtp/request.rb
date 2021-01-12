@@ -22,11 +22,10 @@ module Truemail
         end
 
         def check_port
-          Timeout.timeout(configuration.connection_timeout) do
-            return response.port_opened = !TCPSocket.new(host, Truemail::Validate::Smtp::Request::SMTP_PORT).close
-          end
+          response.port_opened =
+            Socket.tcp(host, Truemail::Validate::Smtp::Request::SMTP_PORT, connect_timeout: configuration.connection_timeout) { true }
         rescue => error
-          retry if attempts_exist? && error.is_a?(Timeout::Error)
+          retry if attempts_exist? && error.is_a?(Errno::ETIMEDOUT)
           response.port_opened = false
         end
 
