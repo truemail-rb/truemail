@@ -7,6 +7,7 @@ require 'json_matchers/rspec'
 require 'pry'
 require 'truemail'
 require 'truemail/rspec'
+require 'dns_mock/test_framework/rspec'
 
 SimpleCov.start
 JsonMatchers.schema_root = 'spec/support/schemas'
@@ -17,6 +18,7 @@ Dir[File.expand_path(rspec_custom)].each { |file| require file unless file[/\A.+
 RSpec::Mocks.configuration.allow_message_expectations_on_nil = true
 RSpec.configure do |config|
   config.include Truemail::RSpec
+  config.include DnsMock::TestFramework::RSpec::Helper
   config.example_status_persistence_file_path = '.rspec_status'
   config.disable_monkey_patching!
   config.expect_with(:rspec) { |c| c.syntax = :expect }
