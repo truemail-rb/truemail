@@ -190,7 +190,7 @@ RSpec.describe Truemail::Validator::Result do
     subject(:result_instance) { described_class.new(email: email) }
 
     it 'calls with memoization punycode representer' do
-      expect(Truemail::PunycodeRepresenter).to receive(:call).once.with(email).and_call_original
+      expect(Truemail::Dns::PunycodeRepresenter).to receive(:call).once.with(email).and_call_original
       2.times { result_instance.punycode_email }
     end
   end

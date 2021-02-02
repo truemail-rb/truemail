@@ -12,21 +12,9 @@ module Truemail
 
   ConfigurationError = Class.new(StandardError)
   TypeError = Class.new(StandardError)
-
   ArgumentError = Class.new(StandardError) do
     def initialize(arg_value, arg_name)
       super("#{arg_value} is not a valid #{arg_name}")
-    end
-  end
-
-  PunycodeRepresenter = Class.new do
-    require 'simpleidn'
-
-    def self.call(email)
-      return unless email.is_a?(String)
-      return email if email.ascii_only?
-      user, domain = email.split('@')
-      "#{user}@#{SimpleIDN.to_ascii(domain.downcase)}"
     end
   end
 
@@ -36,6 +24,12 @@ module Truemail
     REGEX_DOMAIN_PATTERN = /(?=\A.{4,255}\z)(\A#{REGEX_DOMAIN}\z)/.freeze
     REGEX_DOMAIN_FROM_EMAIL = /\A.+@(.+)\z/.freeze
     REGEX_SMTP_ERROR_BODY_PATTERN = /(?=.*550)(?=.*(user|account|customer|mailbox)).*/i.freeze
+  end
+
+  module Dns
+    require_relative '../truemail/dns/punycode_representer'
+    require_relative '../truemail/dns/worker'
+    require_relative '../truemail/dns/resolver'
   end
 
   module Audit

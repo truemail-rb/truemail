@@ -12,39 +12,6 @@ RSpec.describe Truemail::ArgumentError do
   specify { expect(argument_error_instance.to_s).to eq('arg_value is not a valid arg_name') }
 end
 
-RSpec.describe Truemail::PunycodeRepresenter do
-  describe '.call' do
-    subject(:service) { described_class.call(email) }
-
-    context 'when email is not a string' do
-      let(:email) { true }
-
-      specify { expect(service).to be_nil }
-    end
-
-    context 'when email not includes ascii chars' do
-      let(:email) { Faker::Internet.email }
-
-      it 'returns not changed email' do
-        expect(SimpleIDN).not_to receive(:to_ascii)
-        expect(service).to eq(email)
-      end
-    end
-
-    context 'when email includes ascii chars' do
-      let(:user) { 'niña' }
-      let(:domain) { 'Mañana.cøm' }
-      let(:punycode) { 'xn--maana-pta.xn--cm-lka' }
-      let(:email) { "#{user}@#{domain}" }
-
-      it 'returns email with domain represented as punycode' do
-        expect(SimpleIDN).to receive(:to_ascii).with(domain.downcase).and_call_original
-        expect(service).to eq("#{user}@#{punycode}")
-      end
-    end
-  end
-end
-
 RSpec.describe Truemail::RegexConstant do
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN) }

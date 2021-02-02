@@ -11,7 +11,7 @@ module Truemail
       end
 
       def punycode_email
-        @punycode_email ||= Truemail::PunycodeRepresenter.call(email)
+        @punycode_email ||= Truemail::Dns::PunycodeRepresenter.call(email)
       end
       alias_method :valid?, :success
     end
