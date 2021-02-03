@@ -30,7 +30,7 @@ module Truemail
 
         alias warnings errors
 
-        %i[validation_type_by_domain whitelisted_domains blacklisted_domains].each do |method|
+        %i[validation_type_by_domain whitelisted_domains blacklisted_domains dns].each do |method|
           define_method(method) do
             value = executor_configuration.public_send(method)
             return if value.empty?
@@ -55,6 +55,7 @@ module Truemail
             whitelist_validation: executor_configuration.whitelist_validation,
             whitelisted_domains: whitelisted_domains,
             blacklisted_domains: blacklisted_domains,
+            dns: dns,
             not_rfc_mx_lookup_flow: executor_configuration.not_rfc_mx_lookup_flow,
             smtp_fail_fast: executor_configuration.smtp_fail_fast,
             smtp_safe_check: executor_configuration.smtp_safe_check,

@@ -13,7 +13,7 @@ module Truemail
         def result
           @result ||=
             {
-              date: Time.now,
+              date: ::Time.now,
               current_host_ip: executor_result.current_host_ip,
               warnings: warnings(executor_result.warnings),
               configuration: configuration

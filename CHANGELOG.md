@@ -2,6 +2,39 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2020.02.05
+
+### Added
+
+- Ability to use custom DNS gateway. Thanks [@le0pard](https://github.com/le0pard) for the great idea and [@verdi8](https://github.com/verdi8) for feature [request](https://github.com/truemail-rb/truemail/issues/126).
+
+```ruby
+Truemail.configure do |config|
+  # Optional parameter. This option will provide to use custom DNS gateway when Truemail interacts
+  # with DNS. If you won't specify nameserver's ports DNS validation layer will use default DNS
+  # TCP/UDP port 53. By default Truemail uses DNS gateway from system settings and this option
+  # is equal to empty array.
+  config.dns = ['10.0.0.1', '10.0.0.2:5300']
+end
+```
+
+- Added `Truemail::Dns::Resolver`
+- Added `Truemail::Dns::Worker`
+
+### Changed
+
+- Updated `Truemail::Configuration`, tests
+- Updated `Truemail::Validate::Mx`, tests
+- Updated `Truemail::Audit::Base`
+- Updated `Truemail::Audit::Dns`, tests
+- Updated `Truemail::Audit::Ptr`, tests
+- Updated `Truemail::Log::Serializer::Base`, dependent tests
+- Updated namespaces for stdlib classes
+- Updated gem development dependencies
+- Updated linters/codeclimate configs
+- Updated gem runtime/development dependencies
+- Updated gem documentation, changelog, version
+
 ## [2.2.3] - 2020.01.12
 
 ### Fixed

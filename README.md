@@ -132,6 +132,7 @@ You can use global gem configuration or custom independent configuration. Availa
 - whitelisted domains
 - whitelist validation
 - blacklisted domains
+- custom DNS gateway(s)
 - RFC MX lookup flow
 - SMTP fail fast
 - SMTP safe check
@@ -201,6 +202,12 @@ Truemail.configure do |config|
   # It is equal to empty array by default.
   config.blacklisted_domains = ['somedomain1.com', 'somedomain2.com']
 
+  # Optional parameter. This option will provide to use custom DNS gateway when Truemail interacts
+  # with DNS. If you won't specify nameserver's ports DNS validation layer will use default DNS
+  # TCP/UDP port 53. By default Truemail uses DNS gateway from system settings and this option
+  # is equal to empty array.
+  config.dns = ['10.0.0.1', '10.0.0.2:54']
+
   # Optional parameter. This option will provide to use not RFC MX lookup flow.
   # It means that MX and Null MX records will be cheked on the DNS validation layer only.
   # By default this option is disabled.
@@ -242,6 +249,7 @@ Truemail.configuration
  @whitelisted_domains=[],
  @whitelist_validation=true,
  @blacklisted_domains=[],
+ @dns=[],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com",
  @not_rfc_mx_lookup_flow=true,
@@ -272,6 +280,7 @@ Truemail.configuration
  @whitelisted_domains=[],
  @whitelist_validation=true,
  @blacklisted_domains=[],
+ @dns=[],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com",
  @not_rfc_mx_lookup_flow=true,
@@ -352,6 +361,7 @@ Truemail.validate('email@white-domain.com')
     smtp_debug=nil>,
     configuration=#<Truemail::Configuration:0x00005629f801bd28
      @blacklisted_domains=["black-domain.com", "somedomain.com"],
+     @dns=[],
      @connection_attempts=2,
      @connection_timeout=2,
      @default_validation_type=:smtp,
@@ -399,6 +409,7 @@ Truemail.validate('email@white-domain.com', with: :regex)
     configuration=
     #<Truemail::Configuration:0x0000563f0d2605c8
      @blacklisted_domains=[],
+     @dns=[],
      @connection_attempts=2,
      @connection_timeout=2,
      @default_validation_type=:smtp,
@@ -432,6 +443,7 @@ Truemail.validate('email@domain.com', with: :regex)
     configuration=
     #<Truemail::Configuration:0x0000563f0cd82ab0
      @blacklisted_domains=[],
+     @dns=[],
      @connection_attempts=2,
      @connection_timeout=2,
      @default_validation_type=:smtp,
@@ -467,6 +479,7 @@ Truemail.validate('email@black-domain.com')
     configuration=
     #<Truemail::Configuration:0x0000563f0d36f4f0
      @blacklisted_domains=[],
+     @dns=[],
      @connection_attempts=2,
      @connection_timeout=2,
      @default_validation_type=:smtp,
@@ -502,6 +515,7 @@ Truemail.validate('email@somedomain.com')
     configuration=
     #<Truemail::Configuration:0x0000563f0d3f8fc0
      @blacklisted_domains=[],
+     @dns=[],
      @connection_attempts=2,
      @connection_timeout=2,
      @default_validation_type=:smtp,
@@ -553,6 +567,7 @@ Truemail.validate('email@example.com', with: :regex)
       configuration=
       #<Truemail::Configuration:0x000055aa56a54d48
        @blacklisted_domains=[],
+       @dns=[],
        @connection_attempts=2,
        @connection_timeout=2,
        @default_validation_type=:smtp,
@@ -596,6 +611,7 @@ Truemail.validate('email@example.com', with: :regex)
       configuration=
       #<Truemail::Configuration:0x0000560e58d80830
        @blacklisted_domains=[],
+       @dns=[],
        @connection_attempts=2,
        @connection_timeout=2,
        @default_validation_type=:smtp,
@@ -650,6 +666,7 @@ Truemail.validate('email@example.com', with: :mx)
       configuration=
       #<Truemail::Configuration:0x0000559b6e44af70
        @blacklisted_domains=[],
+       @dns=[],
        @connection_attempts=2,
        @connection_timeout=2,
        @default_validation_type=:smtp,
@@ -695,6 +712,7 @@ Truemail.validate('email@example.com', with: :mx)
       configuration=
       #<Truemail::Configuration:0x0000559b6e44af70
        @blacklisted_domains=[],
+       @dns=[],
        @connection_attempts=2,
        @connection_timeout=2,
        @default_validation_type=:smtp,
@@ -769,6 +787,7 @@ Truemail.validate('email@example.com')
         configuration=
           #<Truemail::Configuration:0x00007fdc4504f5c8
             @blacklisted_domains=[],
+            @dns=[],
             @connection_attempts=2,
             @connection_timeout=2,
             @default_validation_type=:smtp,
@@ -812,6 +831,7 @@ Truemail.validate('email@example.com')
       configuration=
       #<Truemail::Configuration:0x00005615e87b9298
        @blacklisted_domains=[],
+       @dns=[],
        @connection_attempts=2,
        @connection_timeout=2,
        @default_validation_type=:smtp,
@@ -862,6 +882,7 @@ Truemail.validate('email@example.com')
           configuration=
             #<Truemail::Configuration:0x00005615e87b9298
              @blacklisted_domains=[],
+             @dns=[],
              @connection_attempts=2,
              @connection_timeout=2,
              @default_validation_type=:smtp,
@@ -924,6 +945,7 @@ Truemail.validate('email@example.com')
         configuration=
             #<Truemail::Configuration:0x00005615e87b9298
              @blacklisted_domains=[],
+             @dns=[],
              @connection_attempts=2,
              @connection_timeout=2,
              @default_validation_type=:smtp,
@@ -971,6 +993,7 @@ Truemail.validate('email@example.com')
       configuration=
             #<Truemail::Configuration:0x00005615e87b9298
              @blacklisted_domains=[],
+             @dns=[],
              @connection_attempts=2,
              @connection_timeout=2,
              @default_validation_type=:smtp,
@@ -1019,6 +1042,7 @@ Truemail.host_audit
        configuration=
         #<Truemail::Configuration:0x00005615e86327a8
          @blacklisted_domains=[],
+         @dns=[],
          @connection_attempts=2,
          @connection_timeout=2,
          @default_validation_type=:smtp,
@@ -1046,6 +1070,7 @@ Truemail.host_audit
        configuration=
         #<Truemail::Configuration:0x00005615e86327a8
          @blacklisted_domains=[],
+         @dns=[],
          @connection_attempts=2,
          @connection_timeout=2,
          @default_validation_type=:smtp,
@@ -1101,6 +1126,7 @@ Truemail::Log::Serializer::AuditorJson.call(Truemail.host_audit)
     "whitelist_validation": false,
     "whitelisted_domains": null,
     "blacklisted_domains": null,
+    "dns": null,
     "not_rfc_mx_lookup_flow": false,
     "smtp_fail_fast": false,
     "smtp_safe_check": false,
@@ -1140,6 +1166,7 @@ Truemail::Log::Serializer::ValidatorJson.call(Truemail.validate('nonexistent_ema
     "whitelist_validation": false,
     "whitelisted_domains": null,
     "blacklisted_domains": null,
+    "dns": null,
     "not_rfc_mx_lookup_flow": false,
     "smtp_fail_fast": false,
     "smtp_safe_check": false,
@@ -1181,6 +1208,7 @@ Truemail.host_audit.as_json
     "whitelist_validation": false,
     "whitelisted_domains": null,
     "blacklisted_domains": null,
+    "dns": null,
     "not_rfc_mx_lookup_flow": false,
     "smtp_fail_fast": false,
     "smtp_safe_check": false,
@@ -1217,6 +1245,7 @@ Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
     "whitelist_validation": false,
     "whitelisted_domains": null,
     "blacklisted_domains": null,
+    "dns": null,
     "not_rfc_mx_lookup_flow": false,
     "smtp_fail_fast": false,
     "smtp_safe_check": false,
