@@ -30,6 +30,22 @@ RSpec.describe Truemail::Configuration do
       specify { expect(described_class).to be_const_defined(:DEFAULT_LOGGER_OPTIONS) }
       specify { expect(described_class::DEFAULT_LOGGER_OPTIONS).to eq(tracking_event: :error, stdout: false, log_absolute_path: nil) }
     end
+
+    context 'SETTERS' do
+      specify { expect(described_class).to be_const_defined(:SETTERS) }
+
+      specify do
+        expect(described_class::SETTERS).to include(
+          :email_pattern,
+          :smtp_error_body_pattern,
+          :connection_timeout,
+          :response_timeout,
+          :connection_attempts,
+          :whitelisted_domains,
+          :blacklisted_domains
+        )
+      end
+    end
   end
 
   describe '.new' do

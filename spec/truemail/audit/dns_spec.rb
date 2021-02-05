@@ -62,7 +62,7 @@ RSpec.describe Truemail::Audit::Dns do
       end
 
       context 'when a record of verifier domain not refers to currernt host ip address' do
-        before { dns_mock_server.assign_mocks(verifier_domain => { a: [current_host_ip.next] }) }
+        before { dns_mock_server.assign_mocks(verifier_domain => { a: [Faker::Internet.ip_v4_address] }) }
 
         include_examples 'addes verifier domain not refer warning to result instance'
       end
