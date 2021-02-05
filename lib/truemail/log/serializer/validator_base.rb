@@ -34,7 +34,7 @@ module Truemail
         def result
           @result ||=
             {
-              date: Time.now,
+              date: ::Time.now,
               email: executor_result.email,
               validation_type: validation_type,
               success: executor_result.success,

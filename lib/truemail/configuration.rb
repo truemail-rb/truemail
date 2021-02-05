@@ -7,19 +7,23 @@ module Truemail
     DEFAULT_CONNECTION_ATTEMPTS = 2
     DEFAULT_VALIDATION_TYPE = :smtp
     DEFAULT_LOGGER_OPTIONS = { tracking_event: :error, stdout: false, log_absolute_path: nil }.freeze
+    SETTERS = %i[
+      email_pattern
+      smtp_error_body_pattern
+      connection_timeout
+      response_timeout
+      connection_attempts
+      whitelisted_domains
+      blacklisted_domains
+    ].freeze
 
-    attr_reader :email_pattern,
-                :smtp_error_body_pattern,
-                :verifier_email,
+    attr_reader :verifier_email,
                 :verifier_domain,
-                :connection_timeout,
-                :response_timeout,
-                :connection_attempts,
                 :default_validation_type,
                 :validation_type_by_domain,
-                :whitelisted_domains,
-                :blacklisted_domains,
-                :logger
+                :dns,
+                :logger,
+                *Truemail::Configuration::SETTERS
 
     attr_accessor :whitelist_validation, :not_rfc_mx_lookup_flow, :smtp_fail_fast, :smtp_safe_check
 
@@ -28,13 +32,6 @@ module Truemail
         instance_variable_set(:"@#{instace_variable}", value)
       end
       tap(&block) if block
-    end
-
-    %i[email_pattern smtp_error_body_pattern].each do |method|
-      define_method("#{method}=") do |argument|
-        raise_unless(argument, __method__, argument.is_a?(Regexp))
-        instance_variable_set(:"@#{method}", argument)
-      end
     end
 
     def verifier_email=(email)
@@ -48,15 +45,8 @@ module Truemail
       @verifier_domain = domain.downcase
     end
 
-    %i[connection_timeout response_timeout connection_attempts].each do |method|
-      define_method("#{method}=") do |argument|
-        raise_unless(argument, __method__, argument.is_a?(Integer) && argument.positive?)
-        instance_variable_set(:"@#{method}", argument)
-      end
-    end
-
     def default_validation_type=(argument)
-      raise_unless(argument, __method__, argument.is_a?(Symbol) && Truemail::Validator::VALIDATION_TYPES.include?(argument))
+      raise_unless(argument, __method__, argument.is_a?(::Symbol) && Truemail::Validator::VALIDATION_TYPES.include?(argument))
       @default_validation_type = argument
     end
 
@@ -65,18 +55,31 @@ module Truemail
       validation_type_by_domain.merge!(settings)
     end
 
-    %i[whitelisted_domains blacklisted_domains].each do |method|
+    def argument_consistent?(argument)
+      case argument
+      when ::Array then check_domain_list(argument)
+      when ::Integer then argument.positive?
+      when ::Regexp then true
+      end
+    end
+
+    Truemail::Configuration::SETTERS.each do |method|
       define_method("#{method}=") do |argument|
-        raise_unless(argument, __method__, argument.is_a?(Array) && check_domain_list(argument))
+        raise_unless(argument, __method__, argument_consistent?(argument))
         instance_variable_set(:"@#{method}", argument)
       end
+    end
+
+    def dns=(argument)
+      raise_unless(argument, __method__, argument.is_a?(::Array) && check_dns_settings(argument))
+      @dns = argument
     end
 
     def logger=(options)
       tracking_event, stdout, log_absolute_path = logger_options(options)
       valid_event = Truemail::Log::Event::TRACKING_EVENTS.key?(tracking_event)
       stdout_only = stdout && log_absolute_path.nil?
-      file_only = log_absolute_path.is_a?(String)
+      file_only = log_absolute_path.is_a?(::String)
       both_types = stdout && file_only
       argument_info = valid_event ? log_absolute_path : tracking_event
       raise_unless(argument_info, __method__, valid_event && (stdout_only || file_only || both_types))
@@ -89,7 +92,7 @@ module Truemail
 
     private
 
-    def instance_initializer
+    def instance_initializer # rubocop:disable Metrics/MethodLength
       {
         email_pattern: Truemail::RegexConstant::REGEX_EMAIL_PATTERN,
         smtp_error_body_pattern: Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN,
@@ -101,6 +104,7 @@ module Truemail
         whitelisted_domains: [],
         whitelist_validation: false,
         blacklisted_domains: [],
+        dns: [],
         not_rfc_mx_lookup_flow: false,
         smtp_fail_fast: false,
         smtp_safe_check: false
@@ -137,11 +141,15 @@ module Truemail
     end
 
     def validate_validation_type(settings)
-      raise_unless(settings, 'hash with settings', settings.is_a?(Hash))
+      raise_unless(settings, 'hash with settings', settings.is_a?(::Hash))
       settings.each do |domain, validation_type|
         check_domain(domain)
         check_validation_type(validation_type)
       end
+    end
+
+    def check_dns_settings(dns_servers)
+      dns_servers.all? { |dns_server| Truemail::RegexConstant::REGEX_DNS_SERVER_ADDRESS_PATTERN.match?(dns_server.to_s) }
     end
 
     def logger_options(current_options)

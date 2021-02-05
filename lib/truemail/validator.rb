@@ -5,13 +5,13 @@ module Truemail
     RESULT_ATTRS = %i[success email domain mail_servers errors smtp_debug configuration].freeze
     VALIDATION_TYPES = %i[regex mx smtp].freeze
 
-    Result = Struct.new(*RESULT_ATTRS, keyword_init: true) do
+    Result = ::Struct.new(*RESULT_ATTRS, keyword_init: true) do
       def initialize(mail_servers: [], errors: {}, **args)
         super
       end
 
       def punycode_email
-        @punycode_email ||= Truemail::PunycodeRepresenter.call(email)
+        @punycode_email ||= Truemail::Dns::PunycodeRepresenter.call(email)
       end
       alias_method :valid?, :success
     end

@@ -44,6 +44,8 @@ detectors:
       - Truemail::Configuration#logger_options
       - Truemail::Log::Serializer::Base#errors
       - Truemail::Log::Serializer::ValidatorBase#replace_invalid_chars
+      - Truemail::Dns::Worker#nameserver_port
+      - Truemail::Configuration#check_dns_settings
 
   ControlParameter:
     exclude:
@@ -72,6 +74,11 @@ detectors:
   BooleanParameter:
     exclude:
       - Truemail::Configuration#logger=
+
+  TooManyConstants:
+    exclude:
+      - Truemail::Configuration
+      - Truemail::RegexConstant
 
 exclude_paths:
   - spec/support/helpers

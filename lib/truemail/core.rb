@@ -10,23 +10,11 @@ module Truemail
   require_relative '../truemail/validator'
   require_relative '../truemail/logger'
 
-  ConfigurationError = Class.new(StandardError)
-  TypeError = Class.new(StandardError)
-
-  ArgumentError = Class.new(StandardError) do
+  ConfigurationError = ::Class.new(::StandardError)
+  TypeError = ::Class.new(::StandardError)
+  ArgumentError = ::Class.new(::StandardError) do
     def initialize(arg_value, arg_name)
       super("#{arg_value} is not a valid #{arg_name}")
-    end
-  end
-
-  PunycodeRepresenter = Class.new do
-    require 'simpleidn'
-
-    def self.call(email)
-      return unless email.is_a?(String)
-      return email if email.ascii_only?
-      user, domain = email.split('@')
-      "#{user}@#{SimpleIDN.to_ascii(domain.downcase)}"
     end
   end
 
@@ -36,6 +24,14 @@ module Truemail
     REGEX_DOMAIN_PATTERN = /(?=\A.{4,255}\z)(\A#{REGEX_DOMAIN}\z)/.freeze
     REGEX_DOMAIN_FROM_EMAIL = /\A.+@(.+)\z/.freeze
     REGEX_SMTP_ERROR_BODY_PATTERN = /(?=.*550)(?=.*(user|account|customer|mailbox)).*/i.freeze
+    REGEX_PORT_NUMBER = /(6553[0-5]|655[0-2][0-9]\d|65[0-4](\d){2}|6[0-4](\d){3}|[1-5](\d){4}|[1-9](\d){0,3})/.freeze
+    REGEX_DNS_SERVER_ADDRESS_PATTERN = /\A((1\d|[1-9]|2[0-4])?\d|25[0-5])(\.\g<1>){3}(:#{REGEX_PORT_NUMBER})?\z/.freeze
+  end
+
+  module Dns
+    require_relative '../truemail/dns/punycode_representer'
+    require_relative '../truemail/dns/worker'
+    require_relative '../truemail/dns/resolver'
   end
 
   module Audit

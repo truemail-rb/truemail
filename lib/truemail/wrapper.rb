@@ -15,10 +15,10 @@ module Truemail
     end
 
     def call(&block)
-      Timeout.timeout(timeout, &block)
-    rescue Resolv::ResolvError, IPAddr::InvalidAddressError
+      ::Timeout.timeout(timeout, &block)
+    rescue ::Resolv::ResolvError, ::IPAddr::InvalidAddressError
       false
-    rescue Timeout::Error
+    rescue ::Timeout::Error
       retry unless (self.attempts -= 1).zero?
       false
     end

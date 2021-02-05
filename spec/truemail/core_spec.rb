@@ -12,39 +12,6 @@ RSpec.describe Truemail::ArgumentError do
   specify { expect(argument_error_instance.to_s).to eq('arg_value is not a valid arg_name') }
 end
 
-RSpec.describe Truemail::PunycodeRepresenter do
-  describe '.call' do
-    subject(:service) { described_class.call(email) }
-
-    context 'when email is not a string' do
-      let(:email) { true }
-
-      specify { expect(service).to be_nil }
-    end
-
-    context 'when email not includes ascii chars' do
-      let(:email) { Faker::Internet.email }
-
-      it 'returns not changed email' do
-        expect(SimpleIDN).not_to receive(:to_ascii)
-        expect(service).to eq(email)
-      end
-    end
-
-    context 'when email includes ascii chars' do
-      let(:user) { 'niña' }
-      let(:domain) { 'Mañana.cøm' }
-      let(:punycode) { 'xn--maana-pta.xn--cm-lka' }
-      let(:email) { "#{user}@#{domain}" }
-
-      it 'returns email with domain represented as punycode' do
-        expect(SimpleIDN).to receive(:to_ascii).with(domain.downcase).and_call_original
-        expect(service).to eq("#{user}@#{punycode}")
-      end
-    end
-  end
-end
-
 RSpec.describe Truemail::RegexConstant do
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN) }
@@ -175,8 +142,83 @@ RSpec.describe Truemail::RegexConstant do
 
     let(:smtp_error_context) { 'some smtp 550 error with' }
 
-    %w[user account customer mailbox].map { |item| [item, item.upcase] }.flatten.each do |account_name_type|
+    %w[user account customer mailbox].flat_map { |item| [item, item.upcase] }.each do |account_name_type|
       specify { expect(regex_pattern.match?("#{smtp_error_context} #{account_name_type}")).to be(true) }
+    end
+  end
+
+  describe 'Truemail::RegexConstant::REGEX_DNS_SERVER_ADDRESS_PATTERN' do
+    subject(:regex_pattern) { described_class::REGEX_DNS_SERVER_ADDRESS_PATTERN }
+
+    def valid_port_number
+      ->(item) { "#{item}:#{rand(1..65_535)}" }
+    end
+
+    def invalid_port_number
+      outside = 65_536
+      outside_port_number = ((outside..(outside + rand)).to_a << 0).sample
+      ->(item) { "#{item}:#{outside_port_number}" }
+    end
+
+    shared_examples 'matches with regex dns server address pattern' do
+      specify { ip_range.all? { |item| expect(regex_pattern.match?(item)).to eq(expectation) } }
+    end
+
+    let(:valid_local_ip_addresses) { %w[10.0.0.1 169.254.0.0 172.16.0.0 192.168.0.1 0.0.0.0] }
+    let(:valid_internet_ip_addresses) { create_servers_list }
+
+    describe 'Success' do
+      let(:local_ip_addresses) { valid_local_ip_addresses }
+      let(:internet_ip_addresses) { valid_internet_ip_addresses }
+      let(:expectation) { true }
+
+      context 'when valid ip address without port number' do
+        let(:ip_range) { local_ip_addresses + internet_ip_addresses }
+
+        include_examples 'matches with regex dns server address pattern'
+      end
+
+      context 'when valid ip address with valid port number' do
+        let(:ip_range) { (local_ip_addresses + internet_ip_addresses).map(&valid_port_number) }
+
+        include_examples 'matches with regex dns server address pattern'
+      end
+    end
+
+    describe 'Failure' do
+      let(:local_ip_addresses) { %w[10.0.0.256 169.300.0.0 172.16.257.0 192.168.0.260 0.0.0.00] }
+      let(:internet_ip_addresses) { %w[01.1.1.1 8.08.8.8 231.266.255.1000] }
+      let(:expectation) { false }
+
+      context 'when invalid ip address without port number' do
+        let(:ip_range) { local_ip_addresses + internet_ip_addresses }
+
+        include_examples 'matches with regex dns server address pattern'
+      end
+
+      context 'when valid ip address with invalid port number' do
+        let(:ip_range) { (valid_local_ip_addresses + valid_internet_ip_addresses).map(&invalid_port_number) }
+
+        include_examples 'matches with regex dns server address pattern'
+      end
+
+      context 'when invalid ip address with valid port number' do
+        let(:ip_range) { (local_ip_addresses + internet_ip_addresses).map(&valid_port_number) }
+
+        include_examples 'matches with regex dns server address pattern'
+      end
+
+      context 'when invalid ip address with invalid port number' do
+        let(:ip_range) { (local_ip_addresses + internet_ip_addresses).map(&invalid_port_number) }
+
+        include_examples 'matches with regex dns server address pattern'
+      end
+
+      context 'with zero port number' do
+        let(:ip_range) { %w[0.0.0.0:0 255.255.255.255:0] }
+
+        include_examples 'matches with regex dns server address pattern'
+      end
     end
   end
 end

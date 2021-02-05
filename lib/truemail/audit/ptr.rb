@@ -15,13 +15,14 @@ module Truemail
       private
 
       def current_host_reverse_lookup
-        IPAddr.new(current_host_ip).reverse
+        ::IPAddr.new(current_host_ip).reverse
       end
 
       def ptr_records
         @ptr_records ||= Truemail::Wrapper.call(configuration: configuration) do
-          Resolv::DNS.new.getresources(
-            current_host_reverse_lookup, Resolv::DNS::Resource::IN::PTR
+          Truemail::Dns::Resolver.ptr_records(
+            current_host_reverse_lookup,
+            configuration: configuration
           ).map { |ptr_record| ptr_record.name.to_s }
         end || []
       end

@@ -2,7 +2,7 @@
 
 RSpec.describe Truemail::Validate::Mx do
   let(:email) { Faker::Internet.email }
-  let(:configuration) { create_configuration }
+  let(:configuration) { create_configuration(dns: ["127.0.0.1:#{dns_mock_server.port}"]) }
   let(:result_instance) { Truemail::Validator::Result.new(email: email, configuration: configuration) }
 
   describe 'defined constants' do
@@ -40,25 +40,25 @@ RSpec.describe Truemail::Validate::Mx do
     end
 
     context 'when validation pass' do
-      let(:host_address) { Faker::Internet.ip_v4_address }
-      let(:host_name) { Faker::Internet.domain_name }
-      let(:mail_servers_by_ip) { Array.new(5) { host_address } }
-      let(:uniq_mail_servers_by_ip) { [host_address] }
-      let(:mx_records_object) { YAML.load(File.open(mx_records_file, 'r')) } # rubocop:disable Security/YAMLLoad
-
       before do
         allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
         result_instance.success = true
       end
 
       context 'when mx records found' do
-        let(:mx_records_file) { "#{File.expand_path('../../', __dir__)}/support/objects/mx_records.yml" }
+        let(:total_records) { 2 }
+        let(:mx_records) { ::Array.new(total_records) { Faker::Internet.domain_name } }
+        let(:a_record) { Faker::Internet.ip_v4_address }
+        let(:a_records) { ::Array.new(total_records) { [Faker::Internet.ip_v4_address, a_record] } }
+        let(:uniq_mail_servers_by_ip) { a_records.flatten.uniq }
+        let(:mx_records_dns_mock) { mx_records.zip(a_records).to_h.transform_values { |value| { a: value } } }
+        let(:dns_mock_records) do
+          { email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3] => { mx: mx_records } }.merge(mx_records_dns_mock)
+        end
 
-        before { allow(Resolv::DNS).to receive_message_chain(:new, :getresources).and_return(mx_records_object) }
+        before { dns_mock_server.assign_mocks(dns_mock_records) }
 
         context 'without null mx' do
-          before { allow(Resolv).to receive(:getaddresses).and_return([host_address]) }
-
           specify do
             expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
             expect(mx_validator_instance).to receive(:mx_records).and_call_original
@@ -76,29 +76,32 @@ RSpec.describe Truemail::Validate::Mx do
 
           include_examples 'calls email punycode representer'
 
-          it 'returns true' do
-            expect(mx_validator).to be(true)
-          end
+          specify { expect(mx_validator).to be(true) }
         end
       end
 
       context 'when cname records found' do
-        let(:cname_records_file) { "#{File.expand_path('../../', __dir__)}/support/objects/cname_records.yml" }
-        let(:cname_records_object) { YAML.load(File.open(cname_records_file, 'r')) } # rubocop:disable Security/YAMLLoad
-
-        before do
-          allow(mx_validator_instance).to receive(:hosts_from_mx_records?)
-          allow(Resolv).to receive(:getname).and_return(host_name)
-          allow(Resolv).to receive(:getaddress).and_return(host_address)
+        let(:total_records) { 2 }
+        let(:cname_records) { [Faker::Internet.domain_name] }
+        let(:a_records) { [Faker::Internet.ip_v4_address] }
+        let(:mx_records) { ::Array.new(total_records) { Faker::Internet.domain_name } }
+        let(:a_record) { Faker::Internet.ip_v4_address }
+        let(:mx_a_records) { ::Array.new(total_records) { [Faker::Internet.ip_v4_address, a_record] } }
+        let(:uniq_mail_servers_by_ip) { mx_a_records.flatten.uniq }
+        let(:cname_records_dns_mock) { cname_records.zip(a_records).to_h.transform_values { |value| { a: [value], mx: mx_records } } }
+        let(:ptr_records_dns_mock) { a_records.zip(cname_records).to_h.transform_values { |value| { ptr: [value] } } }
+        let(:mx_records_dns_mock) { mx_records.zip(mx_a_records).to_h.transform_values { |value| { a: value } } }
+        let(:dns_mock_records) do
+          {
+            email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3] => { cname: cname_records.first }
+          }.merge(cname_records_dns_mock).merge(ptr_records_dns_mock).merge(mx_records_dns_mock)
         end
 
-        context 'when mx records found' do
-          before do
-            allow(Resolv::DNS).to receive_message_chain(:new, :getresources).and_return(cname_records_object)
-            allow(mx_validator_instance).to receive(:mx_records).and_return(mail_servers_by_ip)
-          end
+        before { dns_mock_server.assign_mocks(dns_mock_records) }
 
+        context 'when mx records found' do
           specify do
+            expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
             expect(mx_validator_instance).to receive(:hosts_from_cname_records?).and_call_original
             expect(mx_validator_instance).not_to receive(:host_from_a_record?)
 
@@ -112,71 +115,58 @@ RSpec.describe Truemail::Validate::Mx do
 
           include_examples 'calls email punycode representer'
 
-          it 'returns true' do
-            expect(mx_validator).to be(true)
-          end
+          specify { expect(mx_validator).to be(true) }
         end
 
         context 'when mx records not found' do
-          before do # mock 2 cname records that refer to one specific ip address
-            allow(Resolv::DNS).to receive_message_chain(:new, :getresources).and_return(cname_records_object * 2)
-            allow(mx_validator_instance).to receive(:mx_records).and_return([])
-          end
+          let(:mx_records_dns_mock) { {} }
+          let(:cname_records_dns_mock) { cname_records.zip(a_records).to_h.transform_values { |value| { a: [value] } } }
 
           specify do
             expect(mx_validator_instance).to receive(:hosts_from_cname_records?).and_call_original
             expect(mx_validator_instance).not_to receive(:host_from_a_record?)
-
             expect { mx_validator }
               .to change(result_instance, :domain)
               .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
               .and change(result_instance, :mail_servers)
-              .from([]).to(uniq_mail_servers_by_ip) # have been collected only unique ip addresses
+              .from([]).to([a_records.first]) # one cname record is equal to one a record
               .and not_change(result_instance, :success)
           end
 
           include_examples 'calls email punycode representer'
 
-          it 'returns true' do
-            expect(mx_validator).to be(true)
-          end
+          specify { expect(mx_validator).to be(true) }
         end
       end
 
       context 'when a record found' do
-        before do
-          allow(mx_validator_instance).to receive(:hosts_from_mx_records?)
-          allow(mx_validator_instance).to receive(:hosts_from_cname_records?)
-          allow(Resolv).to receive(:getaddress).and_return(host_address)
-        end
+        let(:a_record) { Faker::Internet.ip_v4_address }
+        let(:dns_mock_records) { { email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3] => { a: [a_record] } } }
+
+        before { dns_mock_server.assign_mocks(dns_mock_records) }
 
         specify do
+          expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
+          expect(mx_validator_instance).to receive(:hosts_from_cname_records?).and_call_original
+          expect(mx_validator_instance).to receive(:host_from_a_record?).and_call_original
           expect { mx_validator }
             .to change(result_instance, :domain)
             .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
             .and change(result_instance, :mail_servers)
-            .from([]).to([host_address])
+            .from([]).to([a_record])
             .and not_change(result_instance, :success)
         end
 
         include_examples 'calls email punycode representer'
 
-        it 'returns true' do
-          expect(mx_validator).to be(true)
-        end
+        specify { expect(mx_validator).to be(true) }
       end
     end
 
     context 'when validation fails' do
-      let(:methods_calls_expectations) do
-        expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)
-        expect(mx_validator_instance).not_to receive(:host_from_a_record?)
-      end
-
       shared_examples 'validation fails' do
         specify do
-          methods_calls_expectations
-
+          mx_lookup_chain_expectations
           expect { mx_validator }
             .to change(result_instance, :domain)
             .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
@@ -186,52 +176,57 @@ RSpec.describe Truemail::Validate::Mx do
 
         include_examples 'calls email punycode representer'
 
-        it 'returns false' do
-          expect(mx_validator).to be(false)
-        end
+        specify { is_expected.to be(false) }
       end
 
       context 'when mx records found with null mx' do
-        let(:mx_records_object) { YAML.load(File.open(mx_records_file, 'r')) } # rubocop:disable Security/YAMLLoad
-        let(:mx_records_file) { "#{File.expand_path('../../', __dir__)}/support/objects/mx_records.yml" }
-        let(:target_mx_record) { mx_records_object.first }
+        let(:dns_mock_records) { { email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3] => { mx: %w[.:0] } } }
+        let(:mx_lookup_chain_expectations) do
+          expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
+          expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)
+          expect(mx_validator_instance).not_to receive(:host_from_a_record?)
+        end
 
         before do
           allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
           result_instance.success = true
-          allow(Resolv::DNS).to receive_message_chain(:new, :getresources).and_return(mx_records_object)
-          allow(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
-          allow(mx_validator_instance).to receive(:mx_records).and_call_original
-          allow(mx_validator_instance).to receive(:null_mx?).and_call_original
-          allow(mx_records_object).to receive(:one?).and_return(true)
-          allow(target_mx_record).to receive_message_chain(:preference, :zero?).and_return(true)
-          allow(target_mx_record).to receive_message_chain(:exchange, :to_s, :empty?).and_return(true)
+          dns_mock_server.assign_mocks(dns_mock_records)
         end
 
         include_examples 'validation fails'
       end
 
       context 'when not RFC MX lookup flow enabled' do
-        let(:configuration) { create_configuration(not_rfc_mx_lookup_flow: true) }
+        let(:configuration) do
+          create_configuration(
+            not_rfc_mx_lookup_flow: true,
+            dns: ["127.0.0.1:#{dns_mock_server.port}"]
+          )
+        end
+        let(:mx_lookup_chain_expectations) do
+          expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
+          expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)
+          expect(mx_validator_instance).not_to receive(:host_from_a_record?)
+        end
 
         before do
           allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
           result_instance.success = true
-          allow(mx_validator_instance).to receive(:hosts_from_mx_records?)
         end
 
         include_examples 'validation fails'
       end
 
       context 'when any of mx lookup methods fail' do
-        let(:methods_calls_expectations) { nil }
+        let(:mx_lookup_chain_expectations) do
+          expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
+          expect(mx_validator_instance).to receive(:hosts_from_cname_records?).and_call_original
+          expect(mx_validator_instance).to receive(:host_from_a_record?).and_call_original
+        end
 
         before do
           allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
           result_instance.success = true
-          allow(mx_validator_instance).to receive(:hosts_from_mx_records?)
-          allow(mx_validator_instance).to receive(:hosts_from_cname_records?)
-          allow(mx_validator_instance).to receive(:host_from_a_record?)
         end
 
         include_examples 'validation fails'
@@ -248,9 +243,7 @@ RSpec.describe Truemail::Validate::Mx do
           expect { mx_validator }.to not_change(result_instance, :success)
         end
 
-        it 'returns false' do
-          expect(mx_validator).to be(false)
-        end
+        specify { is_expected.to be(false) }
       end
     end
   end
