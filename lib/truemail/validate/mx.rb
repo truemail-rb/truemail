@@ -3,8 +3,6 @@
 module Truemail
   module Validate
     class Mx < Truemail::Validate::Base
-      require 'resolv'
-
       ERROR = 'target host(s) not found'
       NULL_MX_RECORD = 'null_mx_record'
 
@@ -43,11 +41,11 @@ module Truemail
       end
 
       def mx_records(hostname)
-        domain_mx_records = Resolv::DNS.new.getresources(hostname, Resolv::DNS::Resource::IN::MX)
+        domain_mx_records = Truemail::Dns::Resolver.mx_records(hostname, configuration: configuration)
         return [Truemail::Validate::Mx::NULL_MX_RECORD] if null_mx?(domain_mx_records)
-        domain_mx_records.sort_by(&:preference).map do |mx_record|
-          Resolv.getaddresses(mx_record.exchange.to_s)
-        end.flatten
+        domain_mx_records.sort_by(&:preference).flat_map do |mx_record|
+          Truemail::Dns::Resolver.a_records(mx_record.exchange.to_s, configuration: configuration)
+        end
       end
 
       def mail_servers_found?
@@ -64,15 +62,15 @@ module Truemail
       end
 
       def a_record(hostname)
-        Resolv.getaddress(hostname)
+        Truemail::Dns::Resolver.a_record(hostname, configuration: configuration)
       end
 
       def hosts_from_cname_records?
-        cname_records = Resolv::DNS.new.getresources(domain, Resolv::DNS::Resource::IN::CNAME)
+        cname_records = Truemail::Dns::Resolver.cname_records(domain, configuration: configuration)
         return if cname_records.empty?
         cname_records.each do |cname_record|
           host = a_record(cname_record.name.to_s)
-          hostname = Resolv.getname(host)
+          hostname = Truemail::Dns::Resolver.dns_lookup(host, configuration: configuration)
           found_hosts = mx_records(hostname)
           fetch_target_hosts(found_hosts.empty? ? [host] : found_hosts)
         end

@@ -14,7 +14,7 @@ module Truemail
 
       def a_record
         Truemail::Wrapper.call(configuration: configuration) do
-          Resolv::DNS.new.getaddress(verifier_domain).to_s
+          Truemail::Dns::Resolver.a_record(verifier_domain, configuration: configuration)
         end
       end
 

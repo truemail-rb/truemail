@@ -15,7 +15,7 @@ module Truemail
       private
 
       def detect_ip_via_ipify
-        Net::HTTP.get(URI(Truemail::Audit::Ip::GET_MY_IP_URL))
+        ::Net::HTTP.get(URI(Truemail::Audit::Ip::GET_MY_IP_URL))
       end
 
       def detect_current_host_ip

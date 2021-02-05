@@ -46,7 +46,7 @@ module Truemail
     end
 
     def check_argument_type(argument)
-      raise_unless(argument.is_a?(String), Truemail::INVALID_TYPE, Truemail::TypeError)
+      raise_unless(argument.is_a?(::String), Truemail::INVALID_TYPE, Truemail::TypeError)
     end
 
     def determine_configuration(custom_configuration)

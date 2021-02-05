@@ -23,7 +23,7 @@ module Truemail
     def init_log_file
       output_file = Pathname(file)
       return output_file if output_file.exist?
-      output_file.parent.mkpath && FileUtils.touch(output_file)
+      output_file.parent.mkpath && ::FileUtils.touch(output_file)
       output_file
     end
 

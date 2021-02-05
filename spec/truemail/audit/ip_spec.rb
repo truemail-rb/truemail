@@ -35,8 +35,9 @@ RSpec.describe Truemail::Audit::Ip do
       context 'when determination of host ip address was successful' do
         let(:host_address) { Faker::Internet.ip_v4_address }
 
+        before { mock_ipify_request(host_address) }
+
         it 'save host address to result, not changes warnings' do
-          expect(ip_auditor_instance).to receive(:detect_ip_via_ipify).and_return(host_address)
           expect(Truemail::Audit::Dns).to receive(:check).with(result_instance)
           expect(Truemail::Audit::Ptr).to receive(:check).with(result_instance)
           expect { ip_auditor }
@@ -44,10 +45,10 @@ RSpec.describe Truemail::Audit::Ip do
             .from(nil)
             .to(host_address)
             .and not_change(result_instance, :warnings)
+          expect(result_instance.current_host_ip).to match_to_ip_address
         end
 
         it 'not sensitive to the audit result, runs all possible audit checks' do
-          expect(ip_auditor_instance).to receive(:detect_ip_via_ipify).and_return(host_address)
           expect(Truemail::Audit::Dns).to receive(:check).with(result_instance).and_return(false)
           expect(Truemail::Audit::Ptr).to receive(:check).with(result_instance)
           ip_auditor
@@ -61,7 +62,13 @@ RSpec.describe Truemail::Audit::Ip do
           expectation
           expect(Truemail::Audit::Dns).not_to receive(:check).with(result_instance)
           expect(Truemail::Audit::Ptr).not_to receive(:check).with(result_instance)
-          expect { ip_auditor }.to change(result_instance, :warnings).from({}).to(ip: Truemail::Audit::Ip::IPIFY_ERROR)
+          expect { ip_auditor }
+            .to change(result_instance, :warnings)
+            .from({})
+            .to(ip: Truemail::Audit::Ip::IPIFY_ERROR)
+            .and change(result_instance, :current_host_ip)
+            .from(nil)
+            .to(false)
         end
       end
 
@@ -75,22 +82,6 @@ RSpec.describe Truemail::Audit::Ip do
         let(:expectation) { expect(ip_auditor_instance).to receive(:detect_ip_via_ipify).and_raise(IPAddr::InvalidAddressError) }
 
         include_examples 'addes ipify warning to result instance'
-      end
-    end
-  end
-
-  describe 'ipify third party service integration tests' do
-    context 'when calles #detect_ip_via_ipify' do
-      subject(:ipify_response) { ip_auditor_instance.send(:detect_ip_via_ipify) }
-
-      let(:ip_auditor_instance) { described_class.new(result_instance) }
-
-      it 'returns current host ip address as a string' do
-        expect(ipify_response).to be_an_instance_of(String)
-      end
-
-      it 'returned string matches to ip address pattern' do
-        expect(ipify_response).to match_to_ip_address
       end
     end
   end

@@ -7,7 +7,7 @@ RSpec.describe Truemail::GenerateEmailHelper, type: :helper do # rubocop:disable
 
       let(:allowed_symbols) { %w[@ - _ . +] }
 
-      specify { expect(generate_email).to be_an_instance_of(String) }
+      specify { expect(generate_email).to be_an_instance_of(::String) }
       specify { 100.times { expect(generate_email.size).to be_between(15, 255) } }
       specify { 100.times { expect(generate_email[0]).not_to include(*allowed_symbols) } }
       specify { 100.times { expect(generate_email).to include(*allowed_symbols) } }

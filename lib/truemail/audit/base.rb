@@ -5,7 +5,6 @@ module Truemail
     class Base < Truemail::Worker
       require 'net/http'
       require 'ipaddr'
-      require 'resolv'
 
       private
 

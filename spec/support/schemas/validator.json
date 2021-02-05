@@ -240,6 +240,7 @@
                   "smtp_error_body_pattern": "default gem value",
                   "smtp_safe_check": false,
                   "whitelisted_domains": null,
+                  "dns": null,
                   "email_pattern": "default gem value",
                   "not_rfc_mx_lookup_flow": false,
                   "smtp_fail_fast": false
@@ -250,6 +251,7 @@
               "whitelist_validation",
               "whitelisted_domains",
               "blacklisted_domains",
+              "dns",
               "not_rfc_mx_lookup_flow",
               "smtp_fail_fast",
               "smtp_safe_check",
@@ -307,6 +309,19 @@
                       null
                   ]
               },
+              "dns": {
+                "$id": "#/properties/configuration/properties/dns",
+                "type": [
+                    "array",
+                    "null"
+                ],
+                "title": "The dns schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": null,
+                "examples": [
+                    null
+                ]
+            },
               "not_rfc_mx_lookup_flow": {
                   "$id": "#/properties/configuration/properties/not_rfc_mx_lookup_flow",
                   "type": "boolean",

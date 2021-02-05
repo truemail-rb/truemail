@@ -23,14 +23,14 @@ module Truemail
         end
 
         def check_port
-          response.port_opened = Socket.tcp(
+          response.port_opened = ::Socket.tcp(
             host,
             Truemail::Validate::Smtp::Request::SMTP_PORT,
             connect_timeout: configuration.connection_timeout,
             &port_open_status
           )
         rescue => error
-          retry if attempts_exist? && error.is_a?(Errno::ETIMEDOUT)
+          retry if attempts_exist? && error.is_a?(::Errno::ETIMEDOUT)
           response.port_opened = false
         end
 
@@ -65,7 +65,7 @@ module Truemail
         end
 
         def session
-          Net::SMTP.new(host, Truemail::Validate::Smtp::Request::SMTP_PORT).tap do |settings|
+          ::Net::SMTP.new(host, Truemail::Validate::Smtp::Request::SMTP_PORT).tap do |settings|
             settings.open_timeout = configuration.connection_timeout
             settings.read_timeout = configuration.response_timeout
           end

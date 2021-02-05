@@ -45,6 +45,7 @@ RSpec.describe Truemail::Configuration do
       whitelisted_domains
       whitelist_validation
       blacklisted_domains
+      dns
       not_rfc_mx_lookup_flow
       smtp_fail_fast
       smtp_safe_check
@@ -81,6 +82,7 @@ RSpec.describe Truemail::Configuration do
       expect(configuration_instance.whitelisted_domains).to eq([])
       expect(configuration_instance.whitelist_validation).to eq(false)
       expect(configuration_instance.blacklisted_domains).to eq([])
+      expect(configuration_instance.dns).to eq([])
       expect(configuration_instance.not_rfc_mx_lookup_flow).to be(false)
       expect(configuration_instance.smtp_fail_fast).to be(false)
       expect(configuration_instance.smtp_safe_check).to be(false)
@@ -103,6 +105,7 @@ RSpec.describe Truemail::Configuration do
         expect(configuration_instance.whitelisted_domains).to eq([])
         expect(configuration_instance.whitelist_validation).to eq(false)
         expect(configuration_instance.blacklisted_domains).to eq([])
+        expect(configuration_instance.dns).to eq([])
         expect(configuration_instance.not_rfc_mx_lookup_flow).to be(false)
         expect(configuration_instance.smtp_fail_fast).to be(false)
         expect(configuration_instance.smtp_safe_check).to be(false)
@@ -126,6 +129,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
+          .and not_change(configuration_instance, :dns)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
           .and not_change(configuration_instance, :smtp_fail_fast)
           .and not_change(configuration_instance, :smtp_safe_check)
@@ -151,6 +155,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
+          .and not_change(configuration_instance, :dns)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
           .and not_change(configuration_instance, :smtp_fail_fast)
           .and not_change(configuration_instance, :smtp_safe_check)
@@ -176,6 +181,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
+          .and not_change(configuration_instance, :dns)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
           .and not_change(configuration_instance, :smtp_fail_fast)
           .and not_change(configuration_instance, :smtp_safe_check)
@@ -357,7 +363,7 @@ RSpec.describe Truemail::Configuration do
       describe '#validation_type_for=' do
         context 'with valid validation type attributes' do
           let(:domains_config) do
-            (1..3).map { Faker::Internet.unique.domain_name }.zip(%i[regex mx smtp]).to_h
+            ::Array.new(2) { Faker::Internet.unique.domain_name }.zip(%i[regex mx smtp]).to_h
           end
 
           it 'sets validation type for domain' do
@@ -398,32 +404,72 @@ RSpec.describe Truemail::Configuration do
 
       %i[whitelisted_domains= blacklisted_domains=].each do |domain_list_type|
         describe "##{domain_list_type}" do
-          let(:domains_list) { (1..3).map { Faker::Internet.unique.domain_name } }
+          let(:setter) { domain_list_type }
+          let(:domains_list) { ::Array.new(2) { Faker::Internet.unique.domain_name } }
 
           context "with valid #{domain_list_type} parameter type and context" do
             it 'sets whitelisted domains list' do
-              expect { configuration_instance.public_send(domain_list_type, domains_list) }
-                .to change(configuration_instance, domain_list_type[0...-1].to_sym)
+              expect { configuration_instance.public_send(setter, domains_list) }
+                .to change(configuration_instance, setter[0...-1].to_sym)
                 .from([]).to(domains_list)
             end
           end
 
           context "with invalid #{domain_list_type} parameter type" do
-            let(:wrong_parameter_type) { 'not_array' }
+            let(:invalid_argument) { 'not_array' }
 
-            specify do
-              expect { configuration_instance.public_send(domain_list_type, wrong_parameter_type) }
-                .to raise_error(Truemail::ArgumentError, "#{wrong_parameter_type} is not a valid #{domain_list_type}")
-            end
+            include_examples 'raises extended argument error'
           end
 
           context 'with invalid whitelisted_domains= parameter context' do
-            let(:wrong_parameter_context) { ['not_domain', 123] }
+            let(:invalid_argument) { ['not_domain', 123] }
 
-            specify do
-              expect { configuration_instance.public_send(domain_list_type, wrong_parameter_context) }
-                .to raise_error(Truemail::ArgumentError, "#{wrong_parameter_context} is not a valid #{domain_list_type}")
-            end
+            include_examples 'raises extended argument error'
+          end
+        end
+      end
+
+      describe '#dns=' do
+        let(:setter) { :dns= }
+
+        context 'with valid dns parameter type and context' do
+          let(:dns_servers_list) do
+            [
+              Faker::Internet.ip_v4_address,
+              "#{Faker::Internet.ip_v4_address}:#{rand(1..65_535)}"
+            ].shuffle
+          end
+
+          it 'sets custom dns gateway (dns servers list)' do
+            expect { configuration_instance.public_send(setter, dns_servers_list) }
+              .to change(configuration_instance, setter[0...-1].to_sym)
+              .from([]).to(dns_servers_list)
+          end
+        end
+
+        context 'with invalid dns parameter type' do
+          let(:invalid_argument) { 'not_array' }
+
+          include_examples 'raises extended argument error'
+        end
+
+        context 'with invalid dns parameter context' do
+          context 'when includes not a String' do
+            let(:invalid_argument) { [42, Faker::Internet.ip_v4_address] }
+
+            include_examples 'raises extended argument error'
+          end
+
+          context 'when includes wrong ip address' do
+            let(:invalid_argument) { ['not_ip_address', Faker::Internet.ip_v4_address] }
+
+            include_examples 'raises extended argument error'
+          end
+
+          context 'when includes wrong port' do
+            let(:invalid_argument) { [Faker::Internet.ip_v4_address, "#{Faker::Internet.ip_v4_address}:0"] }
+
+            include_examples 'raises extended argument error'
           end
         end
       end

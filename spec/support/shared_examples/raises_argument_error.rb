@@ -14,4 +14,11 @@ module Truemail
         .to raise_error(Truemail::ArgumentError, "-1 is not a valid #{setter}")
     end
   end
+
+  RSpec.shared_examples 'raises extended argument error' do
+    specify do
+      expect { configuration_instance.public_send(setter, invalid_argument) }
+        .to raise_error(Truemail::ArgumentError, "#{invalid_argument} is not a valid #{setter}")
+    end
+  end
 end
