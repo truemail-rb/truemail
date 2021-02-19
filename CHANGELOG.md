@@ -10,10 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ```ruby
 Truemail.configure do |config|
-  # Optional parameter. This option will provide to use custom DNS gateway when Truemail interacts
-  # with DNS. If you won't specify nameserver's ports DNS validation layer will use default DNS
-  # TCP/UDP port 53. By default Truemail uses DNS gateway from system settings and this option
-  # is equal to empty array.
+  # Optional parameter. This option will provide to use custom DNS gateway when Truemail
+  # interacts with DNS. If you won't specify nameserver's ports Truemail will use default
+  # DNS TCP/UDP port 53. By default Truemail uses DNS gateway from system settings
+  # and this option is equal to empty array.
   config.dns = ['10.0.0.1', '10.0.0.2:5300']
 end
 ```
