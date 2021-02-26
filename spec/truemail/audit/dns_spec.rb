@@ -34,7 +34,7 @@ RSpec.describe Truemail::Audit::Dns do
 
     describe 'Success' do
       context 'when a record found and refers to current host ip' do
-        let(:current_host_ip) { Faker::Internet.ip_v4_address }
+        let(:current_host_ip) { random_ip_address }
 
         before { dns_mock_server.assign_mocks(verifier_domain => { a: [current_host_ip] }) }
 
@@ -46,7 +46,7 @@ RSpec.describe Truemail::Audit::Dns do
     end
 
     describe 'Fails' do
-      let(:current_host_ip) { Faker::Internet.ip_v4_address }
+      let(:current_host_ip) { random_ip_address }
 
       shared_examples 'addes verifier domain not refer warning to result instance' do
         it 'addes verifier domain not refer warning to result instance' do
@@ -62,7 +62,7 @@ RSpec.describe Truemail::Audit::Dns do
       end
 
       context 'when a record of verifier domain not refers to currernt host ip address' do
-        before { dns_mock_server.assign_mocks(verifier_domain => { a: [Faker::Internet.ip_v4_address] }) }
+        before { dns_mock_server.assign_mocks(verifier_domain => { a: [random_ip_address] }) }
 
         include_examples 'addes verifier domain not refer warning to result instance'
       end

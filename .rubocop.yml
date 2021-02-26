@@ -148,6 +148,9 @@ Style/EndlessMethod:
 Style/IfWithBooleanLiteralBranches:
   Enabled: true
 
+Style/HashConversion:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -300,6 +303,9 @@ Lint/SymbolConversion:
   Enabled: true
 
 Lint/TripleQuotes:
+  Enabled: true
+
+Gemspec/DateAssignment:
   Enabled: true
 
 Performance/AncestorsInclude:

@@ -3,7 +3,7 @@
 RSpec.describe Truemail::Configuration do
   subject(:configuration_instance) { described_class.new }
 
-  let(:valid_email) { Faker::Internet.email }
+  let(:valid_email) { random_email }
 
   describe 'class constants' do
     context 'DEFAULT_CONNECTION_TIMEOUT' do
@@ -208,7 +208,7 @@ RSpec.describe Truemail::Configuration do
     end
 
     context 'when manual independent configuration' do
-      let(:valid_domain) { Faker::Internet.domain_name }
+      let(:valid_domain) { random_domain_name }
 
       describe '#verifier_email=' do
         context 'with valid email' do
@@ -379,7 +379,7 @@ RSpec.describe Truemail::Configuration do
       describe '#validation_type_for=' do
         context 'with valid validation type attributes' do
           let(:domains_config) do
-            ::Array.new(2) { Faker::Internet.unique.domain_name }.zip(%i[regex mx smtp]).to_h
+            ::Array.new(2) { random_uniq_domain_name }.zip(%i[regex mx smtp]).to_h
           end
 
           it 'sets validation type for domain' do
@@ -408,7 +408,7 @@ RSpec.describe Truemail::Configuration do
         end
 
         context 'with invalid validation type' do
-          let(:domain)          { Faker::Internet.domain_name }
+          let(:domain)          { random_domain_name }
           let(:validation_type) { 'wrong_validation_type' }
 
           specify do
@@ -421,7 +421,7 @@ RSpec.describe Truemail::Configuration do
       %i[whitelisted_domains= blacklisted_domains=].each do |domain_list_type|
         describe "##{domain_list_type}" do
           let(:setter) { domain_list_type }
-          let(:domains_list) { ::Array.new(2) { Faker::Internet.unique.domain_name } }
+          let(:domains_list) { ::Array.new(2) { random_uniq_domain_name } }
 
           context "with valid #{domain_list_type} parameter type and context" do
             it 'sets whitelisted domains list' do
@@ -451,8 +451,8 @@ RSpec.describe Truemail::Configuration do
         context 'with valid dns parameter type and context' do
           let(:dns_servers_list) do
             [
-              Faker::Internet.ip_v4_address,
-              "#{Faker::Internet.ip_v4_address}:#{rand(1..65_535)}"
+              random_ip_address,
+              "#{random_ip_address}:#{rand(1..65_535)}"
             ].shuffle
           end
 
@@ -471,19 +471,19 @@ RSpec.describe Truemail::Configuration do
 
         context 'with invalid dns parameter context' do
           context 'when includes not a String' do
-            let(:invalid_argument) { [42, Faker::Internet.ip_v4_address] }
+            let(:invalid_argument) { [42, random_ip_address] }
 
             include_examples 'raises extended argument error'
           end
 
           context 'when includes wrong ip address' do
-            let(:invalid_argument) { ['not_ip_address', Faker::Internet.ip_v4_address] }
+            let(:invalid_argument) { ['not_ip_address', random_ip_address] }
 
             include_examples 'raises extended argument error'
           end
 
           context 'when includes wrong port' do
-            let(:invalid_argument) { [Faker::Internet.ip_v4_address, "#{Faker::Internet.ip_v4_address}:0"] }
+            let(:invalid_argument) { [random_ip_address, "#{random_ip_address}:0"] }
 
             include_examples 'raises extended argument error'
           end

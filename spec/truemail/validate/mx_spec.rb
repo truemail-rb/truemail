@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Validate::Mx do
-  let(:email) { Faker::Internet.email }
+  let(:email) { random_email }
   let(:configuration) { create_configuration(dns: ["127.0.0.1:#{dns_mock_server.port}"]) }
   let(:result_instance) { Truemail::Validator::Result.new(email: email, configuration: configuration) }
 
@@ -47,9 +47,9 @@ RSpec.describe Truemail::Validate::Mx do
 
       context 'when mx records found' do
         let(:total_records) { 2 }
-        let(:mx_records) { ::Array.new(total_records) { Faker::Internet.domain_name } }
-        let(:a_record) { Faker::Internet.ip_v4_address }
-        let(:a_records) { ::Array.new(total_records) { [Faker::Internet.ip_v4_address, a_record] } }
+        let(:mx_records) { ::Array.new(total_records) { random_domain_name } }
+        let(:a_record) { random_ip_address }
+        let(:a_records) { ::Array.new(total_records) { [random_ip_address, a_record] } }
         let(:uniq_mail_servers_by_ip) { a_records.flatten.uniq }
         let(:mx_records_dns_mock) { mx_records.zip(a_records).to_h.transform_values { |value| { a: value } } }
         let(:dns_mock_records) do
@@ -82,11 +82,11 @@ RSpec.describe Truemail::Validate::Mx do
 
       context 'when cname records found' do
         let(:total_records) { 2 }
-        let(:cname_records) { [Faker::Internet.domain_name] }
-        let(:a_records) { [Faker::Internet.ip_v4_address] }
-        let(:mx_records) { ::Array.new(total_records) { Faker::Internet.domain_name } }
-        let(:a_record) { Faker::Internet.ip_v4_address }
-        let(:mx_a_records) { ::Array.new(total_records) { [Faker::Internet.ip_v4_address, a_record] } }
+        let(:cname_records) { [random_domain_name] }
+        let(:a_records) { [random_ip_address] }
+        let(:mx_records) { ::Array.new(total_records) { random_domain_name } }
+        let(:a_record) { random_ip_address }
+        let(:mx_a_records) { ::Array.new(total_records) { [random_ip_address, a_record] } }
         let(:uniq_mail_servers_by_ip) { mx_a_records.flatten.uniq }
         let(:cname_records_dns_mock) { cname_records.zip(a_records).to_h.transform_values { |value| { a: [value], mx: mx_records } } }
         let(:ptr_records_dns_mock) { a_records.zip(cname_records).to_h.transform_values { |value| { ptr: [value] } } }
@@ -140,7 +140,7 @@ RSpec.describe Truemail::Validate::Mx do
       end
 
       context 'when a record found' do
-        let(:a_record) { Faker::Internet.ip_v4_address }
+        let(:a_record) { random_ip_address }
         let(:dns_mock_records) { { email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3] => { a: [a_record] } } }
 
         before { dns_mock_server.assign_mocks(dns_mock_records) }

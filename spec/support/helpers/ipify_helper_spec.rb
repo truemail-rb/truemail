@@ -2,7 +2,7 @@
 
 RSpec.describe Truemail::IpifyHelper, type: :helper do # rubocop:disable RSpec/FilePath
   describe '#mock_ipify_request' do
-    let(:ip_address) { Faker::Internet.ip_v4_address }
+    let(:ip_address) { random_ip_address }
 
     specify do
       mock_ipify_request(ip_address)

@@ -3,7 +3,7 @@
 RSpec.describe Truemail::Validator do
   subject(:validator_instance) { described_class.new(email, **options) }
 
-  let(:email) { Faker::Internet.email }
+  let(:email) { random_email }
   let(:configuration_instance) { create_configuration }
   let(:configuration) { { configuration: configuration_instance } }
   let(:options) { { **configuration } }
@@ -141,7 +141,7 @@ RSpec.describe Truemail::Validator do
 
     let(:current_validation_type) { :regex }
     let(:new_validation_type)     { :mx }
-    let(:domain)                  { Faker::Internet.domain_name }
+    let(:domain)                  { random_domain_name }
 
     before { configuration_instance.validation_type_for = { domain => new_validation_type } }
 
@@ -166,7 +166,7 @@ end
 RSpec.describe Truemail::Validator::Result do
   subject(:result_instance) { described_class.new }
 
-  let(:email) { Faker::Internet.email }
+  let(:email) { random_email }
 
   specify do
     expect(result_instance.members).to match_array(Truemail::Validator::RESULT_ATTRS)
