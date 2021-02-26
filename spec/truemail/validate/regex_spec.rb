@@ -14,7 +14,7 @@ RSpec.describe Truemail::Validate::Regex do
 
     let(:configuration_instance) { create_configuration }
     let(:result_instance) do
-      Truemail::Validator::Result.new(email: Faker::Internet.email, configuration: configuration_instance)
+      Truemail::Validator::Result.new(email: random_email, configuration: configuration_instance)
     end
 
     context 'when validation pass' do

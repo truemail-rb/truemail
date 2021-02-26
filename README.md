@@ -202,10 +202,10 @@ Truemail.configure do |config|
   # It is equal to empty array by default.
   config.blacklisted_domains = ['somedomain1.com', 'somedomain2.com']
 
-  # Optional parameter. This option will provide to use custom DNS gateway when Truemail interacts
-  # with DNS. If you won't specify nameserver's ports DNS validation layer will use default DNS
-  # TCP/UDP port 53. By default Truemail uses DNS gateway from system settings and this option
-  # is equal to empty array.
+  # Optional parameter. This option will provide to use custom DNS gateway when Truemail
+  # interacts with DNS. If you won't specify nameserver's ports Truemail will use default
+  # DNS TCP/UDP port 53. By default Truemail uses DNS gateway from system settings
+  # and this option is equal to empty array.
   config.dns = ['10.0.0.1', '10.0.0.2:54']
 
   # Optional parameter. This option will provide to use not RFC MX lookup flow.
@@ -1122,16 +1122,16 @@ Truemail::Log::Serializer::AuditorJson.call(Truemail.host_audit)
     "dns": "A-record of verifier domain not refers to current host ip address", "ptr": "PTR-record does not reference to current verifier domain"
   },
  "configuration": {
-    "validation_type_by_domain": null,
-    "whitelist_validation": false,
-    "whitelisted_domains": null,
     "blacklisted_domains": null,
     "dns": null,
+    "email_pattern": "default gem value",
     "not_rfc_mx_lookup_flow": false,
+    "smtp_error_body_pattern": "default gem value",
     "smtp_fail_fast": false,
     "smtp_safe_check": false,
-    "email_pattern": "default gem value",
-    "smtp_error_body_pattern": "default gem value"
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null
   }
 }
 ```
@@ -1162,16 +1162,16 @@ Truemail::Log::Serializer::ValidatorJson.call(Truemail.validate('nonexistent_ema
     }
   ],
   "configuration": {
-    "validation_type_by_domain": null,
-    "whitelist_validation": false,
-    "whitelisted_domains": null,
     "blacklisted_domains": null,
     "dns": null,
+    "email_pattern": "default gem value",
     "not_rfc_mx_lookup_flow": false,
+    "smtp_error_body_pattern": "default gem value",
     "smtp_fail_fast": false,
     "smtp_safe_check": false,
-    "email_pattern": "default gem value",
-    "smtp_error_body_pattern": "default gem value"
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null
   }
 }
 ```
@@ -1204,16 +1204,16 @@ Truemail.host_audit.as_json
     "dns": "A-record of verifier domain not refers to current host ip address", "ptr": "PTR-record does not reference to current verifier domain"
   },
  "configuration": {
-    "validation_type_by_domain": null,
-    "whitelist_validation": false,
-    "whitelisted_domains": null,
     "blacklisted_domains": null,
     "dns": null,
+    "email_pattern": "default gem value",
     "not_rfc_mx_lookup_flow": false,
+    "smtp_error_body_pattern": "default gem value",
     "smtp_fail_fast": false,
     "smtp_safe_check": false,
-    "email_pattern": "default gem value",
-    "smtp_error_body_pattern": "default gem value"
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null
   }
 }
 
@@ -1241,16 +1241,16 @@ Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
     }
   ],
   "configuration": {
-    "validation_type_by_domain": null,
-    "whitelist_validation": false,
-    "whitelisted_domains": null,
     "blacklisted_domains": null,
     "dns": null,
+    "email_pattern": "default gem value",
     "not_rfc_mx_lookup_flow": false,
+    "smtp_error_body_pattern": "default gem value",
     "smtp_fail_fast": false,
     "smtp_safe_check": false,
-    "email_pattern": "default gem value",
-    "smtp_error_body_pattern": "default gem value"
+    "validation_type_by_domain": null,
+    "whitelist_validation": false,
+    "whitelisted_domains": null
   }
 }
 ```

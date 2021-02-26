@@ -36,8 +36,8 @@ RSpec.describe Truemail::Dns::Worker do
   describe '#dns_lookup' do
     subject(:dns_lookup) { dns_resolver_worker_instance.dns_lookup(host_address) }
 
-    let(:host_address) { Faker::Internet.ip_v4_address }
-    let(:ptr_record) { Faker::Internet.domain_name }
+    let(:host_address) { random_ip_address }
+    let(:ptr_record) { random_domain_name }
 
     before { dns_mock_server.assign_mocks(host_address => { ptr: [ptr_record] }) }
 
@@ -47,8 +47,8 @@ RSpec.describe Truemail::Dns::Worker do
   describe '#a_record' do
     subject(:resolve_a_record) { dns_resolver_worker_instance.a_record(host_name) }
 
-    let(:host_name) { Faker::Internet.domain_name }
-    let(:a_record) { Faker::Internet.ip_v4_address }
+    let(:host_name) { random_domain_name }
+    let(:a_record) { random_ip_address }
 
     before { dns_mock_server.assign_mocks(host_name => { a: [a_record] }) }
 
@@ -58,8 +58,8 @@ RSpec.describe Truemail::Dns::Worker do
   describe '#a_records' do
     subject(:resolve_a_records) { dns_resolver_worker_instance.a_records(host_name) }
 
-    let(:host_name) { Faker::Internet.domain_name }
-    let(:a_records) { ::Array.new(2) { Faker::Internet.ip_v4_address } }
+    let(:host_name) { random_domain_name }
+    let(:a_records) { ::Array.new(2) { random_ip_address } }
 
     before { dns_mock_server.assign_mocks(host_name => { a: a_records }) }
 
@@ -69,8 +69,8 @@ RSpec.describe Truemail::Dns::Worker do
   describe '#cname_records' do
     subject(:resolve_cname_records) { dns_resolver_worker_instance.cname_records(host_name) }
 
-    let(:host_name) { Faker::Internet.domain_name }
-    let(:cname_record) { Faker::Internet.domain_name }
+    let(:host_name) { random_domain_name }
+    let(:cname_record) { random_domain_name }
 
     before { dns_mock_server.assign_mocks(host_name => { cname: cname_record }) }
 
@@ -80,8 +80,8 @@ RSpec.describe Truemail::Dns::Worker do
   describe '#mx_records' do
     subject(:resolve_mx_records) { dns_resolver_worker_instance.mx_records(host_name) }
 
-    let(:host_name) { Faker::Internet.domain_name }
-    let(:mx_records) { ::Array.new(2) { Faker::Internet.domain_name } }
+    let(:host_name) { random_domain_name }
+    let(:mx_records) { ::Array.new(2) { random_domain_name } }
 
     before { dns_mock_server.assign_mocks(host_name => { mx: mx_records }) }
 
@@ -92,10 +92,10 @@ RSpec.describe Truemail::Dns::Worker do
     subject(:resolve_ptr_records) { dns_resolver_worker_instance.ptr_records(host_address) }
 
     # TODO: change it after update dns_mock
-    # let(:host_address) { Faker::Internet.ip_v4_address }
+    # let(:host_address) { random_ip_address }
     # should works with 42.42.42.42 or 42.42.42.42.in-addr.arpa; request for 42.42.42.42
     let(:host_address) { '42.42.42.42.in-addr.arpa' }
-    let(:ptr_records) { ::Array.new(2) { Faker::Internet.domain_name } }
+    let(:ptr_records) { ::Array.new(2) { random_domain_name } }
 
     before { dns_mock_server.assign_mocks(host_address => { ptr: ptr_records }) }
 
