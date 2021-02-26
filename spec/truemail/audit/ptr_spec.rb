@@ -30,7 +30,7 @@ RSpec.describe Truemail::Audit::Ptr do
     subject(:ptr_auditor) { ptr_auditor_instance.run }
 
     let(:ptr_auditor_instance) { described_class.new(result_instance) }
-    let(:current_host_ip) { Faker::Internet.ip_v4_address }
+    let(:current_host_ip) { random_ip_address }
 
     before { allow(ptr_auditor_instance).to receive(:current_host_ip).and_return(current_host_ip) }
 
@@ -74,7 +74,7 @@ RSpec.describe Truemail::Audit::Ptr do
         context 'when ptr records do not refer to verifier domain' do
           let(:warning_context) { Truemail::Audit::Ptr::PTR_NOT_REFER }
 
-          before { dns_mock_server.assign_mocks(current_host_ip => { ptr: [Faker::Internet.domain_name] }) }
+          before { dns_mock_server.assign_mocks(current_host_ip => { ptr: [random_domain_name] }) }
 
           include_examples 'addes warning context into result instance'
         end

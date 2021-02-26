@@ -12,7 +12,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
   describe '.call' do
     subject(:text_serializer) { described_class.call(validator_instance) }
 
-    let(:email) { Faker::Internet.email }
+    let(:email) { random_email }
     let(:mx_servers) { create_servers_list }
     let(:validator_instance) { create_validator(validation_type, email, mx_servers, success: success_status) }
 

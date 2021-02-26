@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail do
-  let(:email) { Faker::Internet.email }
+  let(:email) { random_email }
   let(:custom_configuration) { nil }
 
   shared_examples 'configuration error' do
@@ -36,7 +36,7 @@ RSpec.describe Truemail do
     describe '.configure' do
       subject(:configure) { described_class.configure(&config_block) }
 
-      let(:config_block) {} # rubocop:disable Lint/EmptyBlock
+      let(:config_block) { nil }
 
       context 'without block' do
         specify { expect(configure).to be_nil }
@@ -90,9 +90,9 @@ RSpec.describe Truemail do
         ))
       end
 
-      let(:domain) { Faker::Internet.domain_name }
-      let(:new_email) { Faker::Internet.email }
-      let(:new_domain) { Faker::Internet.domain_name }
+      let(:domain) { random_domain_name }
+      let(:new_email) { random_email }
+      let(:new_domain) { random_domain_name }
       let(:new_regex_pattern) { /\A+.\z/ }
       let(:new_smtp_error_body_pattern) { /\A\d+\z/ }
 
