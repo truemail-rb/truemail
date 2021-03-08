@@ -347,6 +347,12 @@ Performance/ConstantRegexp:
 Performance/MethodObjectAsBlock:
   Enabled: true
 
+Performance/RedundantEqualityComparisonBlock:
+  Enabled: true
+
+Performance/RedundantSplitRegexpArgument:
+  Enabled: true
+
 RSpec/ExampleLength:
   Enabled: false
 
