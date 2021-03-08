@@ -44,10 +44,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.3'
   spec.add_development_dependency 'reek', '~> 6.0', '>= 6.0.3'
   spec.add_development_dependency 'rspec', '~> 3.10'
-  spec.add_development_dependency 'rubocop', '~> 1.10'
-  spec.add_development_dependency 'rubocop-performance', '~> 1.9', '>= 1.9.2'
+  spec.add_development_dependency 'rubocop', '~> 1.11'
+  spec.add_development_dependency 'rubocop-performance', '~> 1.10', '>= 1.10.1'
   spec.add_development_dependency 'rubocop-rspec', '~> 2.2'
   spec.add_development_dependency 'simplecov', '~> 0.17.1'
   spec.add_development_dependency 'truemail-rspec', '~> 0.4'
-  spec.add_development_dependency 'webmock', '~> 3.12'
+  spec.add_development_dependency 'webmock', '~> 3.12', '>= 3.12.1'
 end
