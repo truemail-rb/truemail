@@ -151,6 +151,9 @@ Style/IfWithBooleanLiteralBranches:
 Style/HashConversion:
   Enabled: true
 
+Style/StringChars:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
