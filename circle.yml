@@ -1,9 +1,14 @@
+version: 2.1
+
 defaults: &defaults
   working_directory: ~/truemail
   docker:
     - image: circleci/ruby:2.5.0-node
   environment:
     CC_TEST_REPORTER_ID: 693272a1328521f6f7c09d7ffd419b21c00410da26e98e94c687fdd38b26e2cb
+
+orbs:
+  ruby: circleci/ruby@1.1.2
 
 references:
   restore_bundle_cache: &restore_bundle_cache
@@ -29,7 +34,6 @@ references:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
 
-version: 2
 jobs:
   linters:
     <<: *defaults
@@ -81,9 +85,28 @@ jobs:
           command: |
             ./cc-test-reporter sum-coverage --output - --parts $CIRCLE_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --debug --input -
 
+  compatibility-with-ruby:
+    parameters:
+      ruby-version:
+        type: string
+    docker:
+      - image: cimg/ruby:<< parameters.ruby-version >>
+    steps:
+      - checkout
+      - ruby/install-deps:
+          bundler-version: '1.16.6'
+          with-cache: false
+          path: './vendor/custom_bundle'
+      - run:
+          name: Running compatibility tests
+          command: bundle exec rspec
+
 workflows:
-  version: 2
-  build:
+  build_and_test:
     jobs:
       - linters
       - tests
+      - compatibility-with-ruby:
+          matrix:
+            parameters:
+              ruby-version: ["2.6", "2.7", "3.0"]
