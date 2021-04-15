@@ -160,11 +160,15 @@ RSpec.describe Truemail::RegexConstant do
       ->(item) { "#{item}:#{outside_port_number}" }
     end
 
-    shared_examples 'matches with regex dns server address pattern' do
-      specify { ip_range.all? { |item| expect(regex_pattern.match?(item)).to eq(expectation) } }
+    shared_examples 'match with regex dns server address pattern' do
+      specify { ip_range.all? { |item| expect(regex_pattern.match?(item)).to be(expectation) } }
     end
 
-    let(:valid_local_ip_addresses) { %w[10.0.0.1 169.254.0.0 172.16.0.0 192.168.0.1 0.0.0.0] }
+    shared_examples 'match with regex port number pattern' do
+      specify { expect(regex_pattern.match?("#{valid_local_ip_addresses.first}:#{port_number}")).to be(expectation) }
+    end
+
+    let(:valid_local_ip_addresses) { %w[127.0.0.1 10.0.0.1 169.254.0.0 172.16.0.0 192.168.0.1 0.0.0.0] }
     let(:valid_internet_ip_addresses) { create_servers_list }
 
     describe 'Success' do
@@ -175,13 +179,57 @@ RSpec.describe Truemail::RegexConstant do
       context 'when valid ip address without port number' do
         let(:ip_range) { local_ip_addresses + internet_ip_addresses }
 
-        include_examples 'matches with regex dns server address pattern'
+        include_examples 'match with regex dns server address pattern'
       end
 
       context 'when valid ip address with valid port number' do
         let(:ip_range) { (local_ip_addresses + internet_ip_addresses).map(&valid_port_number) }
 
-        include_examples 'matches with regex dns server address pattern'
+        include_examples 'match with regex dns server address pattern'
+      end
+
+      describe 'integration REGEX_PORT_NUMBER into REGEX_DNS_SERVER_ADDRESS_PATTERN' do
+        context 'when port number in range from 1 to 9' do
+          let(:port_number) { rand(1..9) }
+
+          include_examples 'match with regex port number pattern'
+        end
+
+        context 'when port number in range from 10 to 99' do
+          let(:port_number) { rand(10..90) }
+
+          include_examples 'match with regex port number pattern'
+        end
+
+        context 'when port number in range from 100 to 999' do
+          let(:port_number) { rand(100..999) }
+
+          include_examples 'match with regex port number pattern'
+        end
+
+        context 'when port number in range from 1000 to 9999' do
+          let(:port_number) { rand(1_000..9_999) }
+
+          include_examples 'match with regex port number pattern'
+        end
+
+        context 'when port number in range from 10000 to 65000' do
+          let(:port_number) { rand(10_000..65_000) }
+
+          include_examples 'match with regex port number pattern'
+        end
+
+        context 'when port number in range from 65000 to 65499' do
+          let(:port_number) { rand(65_000..65_499) }
+
+          include_examples 'match with regex port number pattern'
+        end
+
+        context 'when port number in range from 65500 to 65535' do
+          let(:port_number) { rand(65_500..65_535) }
+
+          include_examples 'match with regex port number pattern'
+        end
       end
     end
 
@@ -193,31 +241,45 @@ RSpec.describe Truemail::RegexConstant do
       context 'when invalid ip address without port number' do
         let(:ip_range) { local_ip_addresses + internet_ip_addresses }
 
-        include_examples 'matches with regex dns server address pattern'
+        include_examples 'match with regex dns server address pattern'
       end
 
       context 'when valid ip address with invalid port number' do
         let(:ip_range) { (valid_local_ip_addresses + valid_internet_ip_addresses).map(&invalid_port_number) }
 
-        include_examples 'matches with regex dns server address pattern'
+        include_examples 'match with regex dns server address pattern'
       end
 
       context 'when invalid ip address with valid port number' do
         let(:ip_range) { (local_ip_addresses + internet_ip_addresses).map(&valid_port_number) }
 
-        include_examples 'matches with regex dns server address pattern'
+        include_examples 'match with regex dns server address pattern'
       end
 
       context 'when invalid ip address with invalid port number' do
         let(:ip_range) { (local_ip_addresses + internet_ip_addresses).map(&invalid_port_number) }
 
-        include_examples 'matches with regex dns server address pattern'
+        include_examples 'match with regex dns server address pattern'
       end
 
       context 'with zero port number' do
         let(:ip_range) { %w[0.0.0.0:0 255.255.255.255:0] }
 
-        include_examples 'matches with regex dns server address pattern'
+        include_examples 'match with regex dns server address pattern'
+      end
+
+      describe 'integration REGEX_PORT_NUMBER into REGEX_DNS_SERVER_ADDRESS_PATTERN' do
+        context 'when port number is equal to 0' do
+          let(:port_number) { 0 }
+
+          include_examples 'match with regex port number pattern'
+        end
+
+        context 'when port number is outside of range 1-65353' do
+          let(:port_number) { rand(65_536..70_000) }
+
+          include_examples 'match with regex port number pattern'
+        end
       end
     end
   end

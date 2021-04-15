@@ -2,6 +2,16 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.4] - 2021.04.16
+
+### Fixed
+
+Fixed bug with impossibility to use valid dns port number. Now validation for dns port for range `1..65535` works as expected.
+
+- Updated `Truemail::RegexConstant::REGEX_PORT_NUMBER`, tests
+- Updated gem documentation
+- CircleCI config moved to `.circleci/config.yml`
+
 ## [2.3.3] - 2021.04.14
 
 ### Changed
