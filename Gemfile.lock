@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    truemail (2.3.3)
+    truemail (2.3.4)
       simpleidn (~> 0.2.1)
 
 GEM

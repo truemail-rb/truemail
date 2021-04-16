@@ -203,9 +203,9 @@ Truemail.configure do |config|
   config.blacklisted_domains = ['somedomain1.com', 'somedomain2.com']
 
   # Optional parameter. This option will provide to use custom DNS gateway when Truemail
-  # interacts with DNS. If you won't specify nameserver's ports Truemail will use default
-  # DNS TCP/UDP port 53. By default Truemail uses DNS gateway from system settings
-  # and this option is equal to empty array.
+  # interacts with DNS. Valid port numbers are in the range 1-65535. If you won't specify
+  # nameserver's ports Truemail will use default DNS TCP/UDP port 53. By default Truemail
+  # uses DNS gateway from system settings and this option is equal to empty array.
   config.dns = ['10.0.0.1', '10.0.0.2:54']
 
   # Optional parameter. This option will provide to use not RFC MX lookup flow.
