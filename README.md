@@ -39,6 +39,7 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
     - [DNS (MX) validation](#mx-validation)
       - [RFC MX lookup flow](#rfc-mx-lookup-flow)
       - [Not RFC MX lookup flow](#not-rfc-mx-lookup-flow)
+    - [MX blacklist validation](#mx-blacklist-validation)
     - [SMTP validation](#smtp-validation)
       - [SMTP fail fast enabled](#smtp-fail-fast-enabled)
       - [SMTP safe check disabled](#smtp-safe-check-disabled)
@@ -132,6 +133,7 @@ You can use global gem configuration or custom independent configuration. Availa
 - whitelisted domains
 - whitelist validation
 - blacklisted domains
+- blacklisted mx ip-addresses
 - custom DNS gateway(s)
 - RFC MX lookup flow
 - SMTP fail fast
@@ -200,7 +202,12 @@ Truemail.configure do |config|
   # Optional parameter. Validation of email which contains blacklisted domain always will
   # return false. Other validations will not processed even if it was defined in validation_type_for
   # It is equal to empty array by default.
-  config.blacklisted_domains = ['somedomain1.com', 'somedomain2.com']
+  config.blacklisted_domains = ['somedomain3.com', 'somedomain4.com']
+
+  # Optional parameter. With this option Truemail will filter out unwanted mx servers via
+  # predefined list of ip addresses. It can be used as a part of DEA (disposable email
+  # address) validations. It is equal to empty array by default.
+  config.blacklisted_mx_ip_addresses = ['1.1.1.1', '2.2.2.2']
 
   # Optional parameter. This option will provide to use custom DNS gateway when Truemail
   # interacts with DNS. Valid port numbers are in the range 1-65535. If you won't specify
@@ -245,11 +252,13 @@ Truemail.configuration
  @smtp_error_body_pattern=/regex_pattern/,
  @response_timeout=1,
  @connection_attempts=3,
- @validation_type_by_domain={},
- @whitelisted_domains=[],
+ @default_validation_type=:mx,
+ @validation_type_by_domain={"somedomain.com" => :regex, "otherdomain.com" => :mx},
+ @whitelisted_domains=["somedomain1.com", "somedomain2.com"],
  @whitelist_validation=true,
- @blacklisted_domains=[],
- @dns=[],
+ @blacklisted_domains=["somedomain3.com", "somedomain4.com"],
+ @blacklisted_mx_ip_addresses=["1.1.1.1", "2.2.2.2"],
+ @dns=["10.0.0.1", "10.0.0.2:54"],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com",
  @not_rfc_mx_lookup_flow=true,
@@ -276,11 +285,13 @@ Truemail.configuration
  @smtp_error_body_pattern=/regex_pattern/,
  @response_timeout=4,
  @connection_attempts=1,
- @validation_type_by_domain={},
- @whitelisted_domains=[],
+ @default_validation_type=:mx,
+ @validation_type_by_domain={"somedomain.com" => :regex, "otherdomain.com" => :mx},
+ @whitelisted_domains=["somedomain1.com", "somedomain2.com"],
  @whitelist_validation=true,
- @blacklisted_domains=[],
- @dns=[],
+ @blacklisted_domains=["somedomain3.com", "somedomain4.com"],
+ @blacklisted_mx_ip_addresses=["1.1.1.1", "2.2.2.2"],
+ @dns=["10.0.0.1", "10.0.0.2:54"],
  @verifier_domain="somedomain.com",
  @verifier_email="verifier@example.com",
  @not_rfc_mx_lookup_flow=true,
@@ -361,6 +372,7 @@ Truemail.validate('email@white-domain.com')
     smtp_debug=nil>,
     configuration=#<Truemail::Configuration:0x00005629f801bd28
      @blacklisted_domains=["black-domain.com", "somedomain.com"],
+     @blacklisted_mx_ip_addresses=[],
      @dns=[],
      @connection_attempts=2,
      @connection_timeout=2,
@@ -409,6 +421,7 @@ Truemail.validate('email@white-domain.com', with: :regex)
     configuration=
     #<Truemail::Configuration:0x0000563f0d2605c8
      @blacklisted_domains=[],
+     @blacklisted_mx_ip_addresses=[],
      @dns=[],
      @connection_attempts=2,
      @connection_timeout=2,
@@ -443,6 +456,7 @@ Truemail.validate('email@domain.com', with: :regex)
     configuration=
     #<Truemail::Configuration:0x0000563f0cd82ab0
      @blacklisted_domains=[],
+     @blacklisted_mx_ip_addresses=[],
      @dns=[],
      @connection_attempts=2,
      @connection_timeout=2,
@@ -463,7 +477,7 @@ Truemail.validate('email@domain.com', with: :regex)
 
 ##### Blacklist case
 
-When email in blacklist, validation type will be redefined too. Validation result returns ```false```
+When email in blacklist, validation type will be redefined too. Validation result returns `false`
 
 ```ruby
 Truemail.validate('email@black-domain.com')
@@ -479,6 +493,7 @@ Truemail.validate('email@black-domain.com')
     configuration=
     #<Truemail::Configuration:0x0000563f0d36f4f0
      @blacklisted_domains=[],
+     @blacklisted_mx_ip_addresses=[],
      @dns=[],
      @connection_attempts=2,
      @connection_timeout=2,
@@ -515,6 +530,7 @@ Truemail.validate('email@somedomain.com')
     configuration=
     #<Truemail::Configuration:0x0000563f0d3f8fc0
      @blacklisted_domains=[],
+     @blacklisted_mx_ip_addresses=[],
      @dns=[],
      @connection_attempts=2,
      @connection_timeout=2,
@@ -567,6 +583,7 @@ Truemail.validate('email@example.com', with: :regex)
       configuration=
       #<Truemail::Configuration:0x000055aa56a54d48
        @blacklisted_domains=[],
+       @blacklisted_mx_ip_addresses=[],
        @dns=[],
        @connection_attempts=2,
        @connection_timeout=2,
@@ -611,6 +628,7 @@ Truemail.validate('email@example.com', with: :regex)
       configuration=
       #<Truemail::Configuration:0x0000560e58d80830
        @blacklisted_domains=[],
+       @blacklisted_mx_ip_addresses=[],
        @dns=[],
        @connection_attempts=2,
        @connection_timeout=2,
@@ -666,6 +684,7 @@ Truemail.validate('email@example.com', with: :mx)
       configuration=
       #<Truemail::Configuration:0x0000559b6e44af70
        @blacklisted_domains=[],
+       @blacklisted_mx_ip_addresses=[],
        @dns=[],
        @connection_attempts=2,
        @connection_timeout=2,
@@ -712,6 +731,7 @@ Truemail.validate('email@example.com', with: :mx)
       configuration=
       #<Truemail::Configuration:0x0000559b6e44af70
        @blacklisted_domains=[],
+       @blacklisted_mx_ip_addresses=[],
        @dns=[],
        @connection_attempts=2,
        @connection_timeout=2,
@@ -730,12 +750,63 @@ Truemail.validate('email@example.com', with: :mx)
   @validation_type=:mx>
 ```
 
-#### SMTP validation
+#### MX blacklist validation
 
-SMTP validation is a final, third validation level. This type of validation tries to check real existence of email account on a current email server. This validation runs a chain of previous validations and if they're complete successfully then runs itself.
+MX blacklist validation is the third validation level. This layer provides checking extracted mail server(s) IP address from MX validation with predefined blacklisted IP addresses list. It can be used as a part of DEA ([disposable email address](https://en.wikipedia.org/wiki/Disposable_email_address)) validations.
 
 ```code
-[Whitelist/Blacklist] -> [Regex validation] -> [MX validation] -> [SMTP validation]
+[Whitelist/Blacklist] -> [Regex validation] -> [MX validation] -> [MX blacklist validation]
+```
+
+Example of usage:
+
+```ruby
+require 'truemail'
+
+Truemail.configure do |config|
+  config.verifier_email = 'verifier@example.com'
+  config.blacklisted_mx_ip_addresses = ['127.0.1.2']
+end
+
+Truemail.validate('email@example.com', with: :mx_blacklist)
+
+=> #<Truemail::Validator:0x00007fca0c8aea70
+ @result=
+  #<struct Truemail::Validator::Result
+   success=false,
+   email="email@example.com",
+   domain="example.com",
+   mail_servers=["127.0.1.1", "127.0.1.2"],
+   errors={:mx_blacklist=>"blacklisted mx server ip address"},
+   smtp_debug=nil,
+   configuration=
+    #<Truemail::Configuration:0x00007fca0c8aeb38
+     @blacklisted_domains=[],
+     @blacklisted_mx_ip_addresses=["127.0.1.2"],
+     @connection_attempts=2,
+     @connection_timeout=2,
+     @default_validation_type=:smtp,
+     @dns=[],
+     @email_pattern=/(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w|\-.+]*)@((?i-mx:[\p{L}0-9]+([\-.]{1}[\p{L}0-9]+)*\.\p{L}{2,63}))\z)/,
+     @not_rfc_mx_lookup_flow=false,
+     @response_timeout=2,
+     @smtp_error_body_pattern=/(?=.*550)(?=.*(user|account|customer|mailbox)).*/i,
+     @smtp_fail_fast=false,
+     @smtp_safe_check=false,
+     @validation_type_by_domain={},
+     @verifier_domain="example.com",
+     @verifier_email="verifier@example.com",
+     @whitelist_validation=false,
+     @whitelisted_domains=[]>>,
+ @validation_type=:mx_blacklist>
+```
+
+#### SMTP validation
+
+SMTP validation is a final, fourth validation level. This type of validation tries to check real existence of email account on a current email server. This validation runs a chain of previous validations and if they're complete successfully then runs itself.
+
+```code
+[Whitelist/Blacklist] -> [Regex validation] -> [MX validation] -> [MX blacklist validation] -> [SMTP validation]
 ```
 
 If total count of MX servers is equal to one, `Truemail::Smtp` validator will use value from `Truemail.configuration.connection_attempts` as connection attempts. By default it's equal `2`.
@@ -787,6 +858,7 @@ Truemail.validate('email@example.com')
         configuration=
           #<Truemail::Configuration:0x00007fdc4504f5c8
             @blacklisted_domains=[],
+            @blacklisted_mx_ip_addresses=[],
             @dns=[],
             @connection_attempts=2,
             @connection_timeout=2,
@@ -831,6 +903,7 @@ Truemail.validate('email@example.com')
       configuration=
       #<Truemail::Configuration:0x00005615e87b9298
        @blacklisted_domains=[],
+       @blacklisted_mx_ip_addresses=[],
        @dns=[],
        @connection_attempts=2,
        @connection_timeout=2,
@@ -882,6 +955,7 @@ Truemail.validate('email@example.com')
           configuration=
             #<Truemail::Configuration:0x00005615e87b9298
              @blacklisted_domains=[],
+             @blacklisted_mx_ip_addresses=[],
              @dns=[],
              @connection_attempts=2,
              @connection_timeout=2,
@@ -945,6 +1019,7 @@ Truemail.validate('email@example.com')
         configuration=
             #<Truemail::Configuration:0x00005615e87b9298
              @blacklisted_domains=[],
+             @blacklisted_mx_ip_addresses=[],
              @dns=[],
              @connection_attempts=2,
              @connection_timeout=2,
@@ -993,6 +1068,7 @@ Truemail.validate('email@example.com')
       configuration=
             #<Truemail::Configuration:0x00005615e87b9298
              @blacklisted_domains=[],
+             @blacklisted_mx_ip_addresses=[],
              @dns=[],
              @connection_attempts=2,
              @connection_timeout=2,
@@ -1042,6 +1118,7 @@ Truemail.host_audit
        configuration=
         #<Truemail::Configuration:0x00005615e86327a8
          @blacklisted_domains=[],
+         @blacklisted_mx_ip_addresses=[],
          @dns=[],
          @connection_attempts=2,
          @connection_timeout=2,
@@ -1070,6 +1147,7 @@ Truemail.host_audit
        configuration=
         #<Truemail::Configuration:0x00005615e86327a8
          @blacklisted_domains=[],
+         @blacklisted_mx_ip_addresses=[],
          @dns=[],
          @connection_attempts=2,
          @connection_timeout=2,
@@ -1123,6 +1201,7 @@ Truemail::Log::Serializer::AuditorJson.call(Truemail.host_audit)
   },
  "configuration": {
     "blacklisted_domains": null,
+    "blacklisted_mx_ip_addresses": null,
     "dns": null,
     "email_pattern": "default gem value",
     "not_rfc_mx_lookup_flow": false,
@@ -1163,6 +1242,7 @@ Truemail::Log::Serializer::ValidatorJson.call(Truemail.validate('nonexistent_ema
   ],
   "configuration": {
     "blacklisted_domains": null,
+    "blacklisted_mx_ip_addresses": null,
     "dns": null,
     "email_pattern": "default gem value",
     "not_rfc_mx_lookup_flow": false,
@@ -1205,6 +1285,7 @@ Truemail.host_audit.as_json
   },
  "configuration": {
     "blacklisted_domains": null,
+    "blacklisted_mx_ip_addresses": null,
     "dns": null,
     "email_pattern": "default gem value",
     "not_rfc_mx_lookup_flow": false,
@@ -1242,6 +1323,7 @@ Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
   ],
   "configuration": {
     "blacklisted_domains": null,
+    "blacklisted_mx_ip_addresses": null,
     "dns": null,
     "email_pattern": "default gem value",
     "not_rfc_mx_lookup_flow": false,

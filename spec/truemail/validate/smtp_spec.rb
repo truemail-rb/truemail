@@ -20,7 +20,7 @@ RSpec.describe Truemail::Validate::Smtp do
       described_class.new(
         Truemail::Validator::Result.new(
           email: email,
-          mail_servers: Array.new(3) { random_ip_address },
+          mail_servers: Array.new(2) { random_ip_address },
           configuration: configuration_instance
         )
       )
@@ -167,7 +167,7 @@ RSpec.describe Truemail::Validate::Smtp do
 
     describe '#run' do
       before do
-        allow(Truemail::Validate::Mx).to receive(:check).and_return(true)
+        allow(Truemail::Validate::MxBlacklist).to receive(:check).and_return(true)
         allow(result_instance.mail_servers).to receive(:each)
         result_instance.success = true
       end

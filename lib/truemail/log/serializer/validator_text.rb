@@ -19,9 +19,9 @@ module Truemail
         def data_composer(enumerable_object)
           enumerable_object.inject([]) do |formatted_data, (key, value)|
             data =
-              case
-              when value.is_a?(::Hash) then "\n#{printer(value)}"
-              when value.is_a?(::Array) then value.join(', ')
+              case value
+              when ::Hash then "\n#{printer(value)}"
+              when ::Array then value.join(', ')
               else value
               end
             formatted_data << "#{key.to_s.tr('_', ' ')}: #{data}".chomp << "\n"

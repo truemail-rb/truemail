@@ -356,6 +356,9 @@ Performance/RedundantEqualityComparisonBlock:
 Performance/RedundantSplitRegexpArgument:
   Enabled: true
 
+Performance/MapCompact:
+  Enabled: true
+
 RSpec/ExampleLength:
   Enabled: false
 

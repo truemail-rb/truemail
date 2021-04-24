@@ -24,8 +24,10 @@ module Truemail
     REGEX_DOMAIN_PATTERN = /(?=\A.{4,255}\z)(\A#{REGEX_DOMAIN}\z)/.freeze
     REGEX_DOMAIN_FROM_EMAIL = /\A.+@(.+)\z/.freeze
     REGEX_SMTP_ERROR_BODY_PATTERN = /(?=.*550)(?=.*(user|account|customer|mailbox)).*/i.freeze
+    REGEX_IP_ADDRESS = /((1\d|[1-9]|2[0-4])?\d|25[0-5])(\.\g<1>){3}/.freeze
+    REGEX_IP_ADDRESS_PATTERN = /\A#{REGEX_IP_ADDRESS}\z/.freeze
     REGEX_PORT_NUMBER = /6553[0-5]|655[0-2]\d|65[0-4](\d){2}|6[0-4](\d){3}|[1-5](\d){4}|[1-9](\d){0,3}/.freeze
-    REGEX_DNS_SERVER_ADDRESS_PATTERN = /\A((1\d|[1-9]|2[0-4])?\d|25[0-5])(\.\g<1>){3}(:#{REGEX_PORT_NUMBER})?\z/.freeze
+    REGEX_DNS_SERVER_ADDRESS_PATTERN = /\A#{REGEX_IP_ADDRESS}(:#{REGEX_PORT_NUMBER})?\z/.freeze
   end
 
   module Dns
@@ -46,6 +48,7 @@ module Truemail
     require_relative '../truemail/validate/domain_list_match'
     require_relative '../truemail/validate/regex'
     require_relative '../truemail/validate/mx'
+    require_relative '../truemail/validate/mx_blacklist'
     require_relative '../truemail/validate/smtp'
     require_relative '../truemail/validate/smtp/response'
     require_relative '../truemail/validate/smtp/request'

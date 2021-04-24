@@ -15,13 +15,14 @@ module Truemail
       connection_attempts
       whitelisted_domains
       blacklisted_domains
+      blacklisted_mx_ip_addresses
+      dns
     ].freeze
 
     attr_reader :verifier_email,
                 :verifier_domain,
                 :default_validation_type,
                 :validation_type_by_domain,
-                :dns,
                 :logger,
                 *Truemail::Configuration::SETTERS
 
@@ -55,9 +56,9 @@ module Truemail
       validation_type_by_domain.merge!(settings)
     end
 
-    def argument_consistent?(argument)
+    def argument_consistent?(method, argument)
       case argument
-      when ::Array then check_domain_list(argument)
+      when ::Array then items_match_regex?(argument, regex_by_method(method))
       when ::Integer then argument.positive?
       when ::Regexp then true
       end
@@ -65,14 +66,9 @@ module Truemail
 
     Truemail::Configuration::SETTERS.each do |method|
       define_method("#{method}=") do |argument|
-        raise_unless(argument, __method__, argument_consistent?(argument))
+        raise_unless(argument, __method__, argument_consistent?(method, argument))
         instance_variable_set(:"@#{method}", argument)
       end
-    end
-
-    def dns=(argument)
-      raise_unless(argument, __method__, argument.is_a?(::Array) && check_dns_settings(argument))
-      @dns = argument
     end
 
     def logger=(options)
@@ -104,6 +100,7 @@ module Truemail
         whitelisted_domains: [],
         whitelist_validation: false,
         blacklisted_domains: [],
+        blacklisted_mx_ip_addresses: [],
         dns: [],
         not_rfc_mx_lookup_flow: false,
         smtp_fail_fast: false,
@@ -115,25 +112,27 @@ module Truemail
       raise Truemail::ArgumentError.new(argument_context, argument_name) unless condition
     end
 
+    def match_regex?(regex_pattern, object)
+      regex_pattern.match?(object.to_s)
+    end
+
     def validate_arguments(argument, method)
-      constant = Truemail::RegexConstant.const_get("regex_#{method[/\A.+_(.+)=\z/, 1]}_pattern".upcase)
-      raise_unless(argument, method, constant.match?(argument.to_s))
+      regex_pattern = Truemail::RegexConstant.const_get("regex_#{method[/\A.+_(.+)=\z/, 1]}_pattern".upcase)
+      raise_unless(argument, method, match_regex?(regex_pattern, argument))
     end
 
     def default_verifier_domain
       self.verifier_domain ||= verifier_email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
     end
 
-    def domain_matcher
-      ->(domain) { Truemail::RegexConstant::REGEX_DOMAIN_PATTERN.match?(domain.to_s) }
+    def regex_by_method(method)
+      return Truemail::RegexConstant::REGEX_IP_ADDRESS_PATTERN if method.eql?(:blacklisted_mx_ip_addresses)
+      return Truemail::RegexConstant::REGEX_DNS_SERVER_ADDRESS_PATTERN if method.eql?(:dns)
+      Truemail::RegexConstant::REGEX_DOMAIN_PATTERN
     end
 
-    def check_domain(domain)
-      raise_unless(domain, 'domain', domain_matcher.call(domain))
-    end
-
-    def check_domain_list(domains)
-      domains.all?(&domain_matcher)
+    def items_match_regex?(items, regex_pattern)
+      items.all? { |item| match_regex?(regex_pattern, item) }
     end
 
     def check_validation_type(validation_type)
@@ -143,13 +142,9 @@ module Truemail
     def validate_validation_type(settings)
       raise_unless(settings, 'hash with settings', settings.is_a?(::Hash))
       settings.each do |domain, validation_type|
-        check_domain(domain)
+        raise_unless(domain, 'domain', match_regex?(Truemail::RegexConstant::REGEX_DOMAIN_PATTERN, domain))
         check_validation_type(validation_type)
       end
-    end
-
-    def check_dns_settings(dns_servers)
-      dns_servers.all? { |dns_server| Truemail::RegexConstant::REGEX_DNS_SERVER_ADDRESS_PATTERN.match?(dns_server.to_s) }
     end
 
     def logger_options(current_options)
