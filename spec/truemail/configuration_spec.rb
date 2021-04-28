@@ -42,7 +42,9 @@ RSpec.describe Truemail::Configuration do
           :response_timeout,
           :connection_attempts,
           :whitelisted_domains,
-          :blacklisted_domains
+          :blacklisted_domains,
+          :blacklisted_mx_ip_addresses,
+          :dns
         )
       end
     end
@@ -61,6 +63,7 @@ RSpec.describe Truemail::Configuration do
       whitelisted_domains
       whitelist_validation
       blacklisted_domains
+      blacklisted_mx_ip_addresses
       dns
       not_rfc_mx_lookup_flow
       smtp_fail_fast
@@ -98,6 +101,7 @@ RSpec.describe Truemail::Configuration do
       expect(configuration_instance.whitelisted_domains).to eq([])
       expect(configuration_instance.whitelist_validation).to eq(false)
       expect(configuration_instance.blacklisted_domains).to eq([])
+      expect(configuration_instance.blacklisted_mx_ip_addresses).to eq([])
       expect(configuration_instance.dns).to eq([])
       expect(configuration_instance.not_rfc_mx_lookup_flow).to be(false)
       expect(configuration_instance.smtp_fail_fast).to be(false)
@@ -121,6 +125,7 @@ RSpec.describe Truemail::Configuration do
         expect(configuration_instance.whitelisted_domains).to eq([])
         expect(configuration_instance.whitelist_validation).to eq(false)
         expect(configuration_instance.blacklisted_domains).to eq([])
+        expect(configuration_instance.blacklisted_mx_ip_addresses).to eq([])
         expect(configuration_instance.dns).to eq([])
         expect(configuration_instance.not_rfc_mx_lookup_flow).to be(false)
         expect(configuration_instance.smtp_fail_fast).to be(false)
@@ -145,6 +150,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
+          .and not_change(configuration_instance, :blacklisted_mx_ip_addresses)
           .and not_change(configuration_instance, :dns)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
           .and not_change(configuration_instance, :smtp_fail_fast)
@@ -171,6 +177,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
+          .and not_change(configuration_instance, :blacklisted_mx_ip_addresses)
           .and not_change(configuration_instance, :dns)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
           .and not_change(configuration_instance, :smtp_fail_fast)
@@ -197,6 +204,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
+          .and not_change(configuration_instance, :blacklisted_mx_ip_addresses)
           .and not_change(configuration_instance, :dns)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
           .and not_change(configuration_instance, :smtp_fail_fast)
@@ -439,6 +447,40 @@ RSpec.describe Truemail::Configuration do
 
           context 'with invalid whitelisted_domains= parameter context' do
             let(:invalid_argument) { ['not_domain', 123] }
+
+            include_examples 'raises extended argument error'
+          end
+        end
+      end
+
+      describe '#blacklisted_mx_ip_addresses=' do
+        let(:setter) { :blacklisted_mx_ip_addresses= }
+
+        context 'with valid blacklisted mx ip addresses parameter type and context' do
+          let(:blacklisted_mx_ip_addresses) { Array.new(2) { random_ip_address } }
+
+          it 'sets blacklisted mx ip addresses list' do
+            expect { configuration_instance.public_send(setter, blacklisted_mx_ip_addresses) }
+              .to change(configuration_instance, setter[0...-1].to_sym)
+              .from([]).to(blacklisted_mx_ip_addresses)
+          end
+        end
+
+        context 'with invalid blacklisted mx ip addresses parameter type' do
+          let(:invalid_argument) { 'not_array' }
+
+          include_examples 'raises extended argument error'
+        end
+
+        context 'with invalid blacklisted mx ip addresses parameter context' do
+          context 'when includes not a String' do
+            let(:invalid_argument) { [42, random_ip_address] }
+
+            include_examples 'raises extended argument error'
+          end
+
+          context 'when includes wrong ip address' do
+            let(:invalid_argument) { ['not_ip_address', random_ip_address] }
 
             include_examples 'raises extended argument error'
           end

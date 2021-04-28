@@ -6,6 +6,14 @@ module Truemail
       class Base
         require 'json'
 
+        CONFIGURATION_ARRAY_ATTRS = %i[
+          validation_type_by_domain
+          whitelisted_domains
+          blacklisted_domains
+          blacklisted_mx_ip_addresses
+          dns
+        ].freeze
+        CONFIGURATION_REGEX_ATTRS = %i[email_pattern smtp_error_body_pattern].freeze
         DEFAULT_GEM_VALUE = 'default gem value'
 
         def self.call(executor_instance)
@@ -30,7 +38,7 @@ module Truemail
 
         alias warnings errors
 
-        %i[validation_type_by_domain whitelisted_domains blacklisted_domains dns].each do |method|
+        Truemail::Log::Serializer::Base::CONFIGURATION_ARRAY_ATTRS.each do |method|
           define_method(method) do
             value = executor_configuration.public_send(method)
             return if value.empty?
@@ -38,7 +46,7 @@ module Truemail
           end
         end
 
-        %i[email_pattern smtp_error_body_pattern].each do |method|
+        Truemail::Log::Serializer::Base::CONFIGURATION_REGEX_ATTRS.each do |method|
           define_method(method) do
             value = executor_configuration.public_send(method)
             default_pattern = Truemail::RegexConstant.const_get(
@@ -55,6 +63,7 @@ module Truemail
             whitelist_validation: executor_configuration.whitelist_validation,
             whitelisted_domains: whitelisted_domains,
             blacklisted_domains: blacklisted_domains,
+            blacklisted_mx_ip_addresses: blacklisted_mx_ip_addresses,
             dns: dns,
             not_rfc_mx_lookup_flow: executor_configuration.not_rfc_mx_lookup_flow,
             smtp_fail_fast: executor_configuration.smtp_fail_fast,

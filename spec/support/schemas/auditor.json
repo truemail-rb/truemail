@@ -17,6 +17,7 @@
               "whitelist_validation": false,
               "whitelisted_domains": null,
               "blacklisted_domains": null,
+              "blacklisted_mx_ip_addresses": null,
               "dns": null,
               "not_rfc_mx_lookup_flow": false,
               "smtp_fail_fast": false,
@@ -109,6 +110,7 @@
               "whitelist_validation",
               "whitelisted_domains",
               "blacklisted_domains",
+              "blacklisted_mx_ip_addresses",
               "dns",
               "not_rfc_mx_lookup_flow",
               "smtp_fail_fast",
@@ -156,6 +158,19 @@
                   "examples": [
                       null
                   ]
+              },
+              "blacklisted_mx_ip_addresses": {
+                "$id": "#/properties/configuration/properties/blacklisted_mx_ip_addresses",
+                "type": [
+                    "array",
+                    "null"
+                ],
+                "title": "The blacklisted mx ip addresses schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": null,
+                "examples": [
+                    null
+                ]
               },
               "dns": {
                 "$id": "#/properties/configuration/properties/dns",

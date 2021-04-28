@@ -13,7 +13,7 @@ module Truemail
       end
 
       def run
-        return false unless Truemail::Validate::Mx.check(result)
+        return false unless Truemail::Validate::MxBlacklist.check(result)
         establish_smtp_connection
         return true if success(success_response?)
         result.smtp_debug = smtp_results

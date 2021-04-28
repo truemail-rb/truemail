@@ -34,18 +34,19 @@ detectors:
 
   UtilityFunction:
     exclude:
-      - Truemail::Validate::Smtp::Request#compose_from
+      - Truemail::Audit::Base#verifier_domain
+      - Truemail::Configuration#logger_options
+      - Truemail::Configuration#match_regex?
+      - Truemail::Configuration#regex_by_method
+      - Truemail::Dns::Worker#nameserver_port
+      - Truemail::Log::Serializer::Base#errors
+      - Truemail::Log::Serializer::ValidatorBase#replace_invalid_chars
       - Truemail::Validator#select_validation_type
+      - Truemail::Validator#constantize
       - Truemail::Validate::Base#configuration
       - Truemail::Validate::Mx#null_mx?
       - Truemail::Validate::Mx#a_record
-      - Truemail::Audit::Base#verifier_domain
-      - Truemail::Configuration#domain_matcher
-      - Truemail::Configuration#logger_options
-      - Truemail::Log::Serializer::Base#errors
-      - Truemail::Log::Serializer::ValidatorBase#replace_invalid_chars
-      - Truemail::Dns::Worker#nameserver_port
-      - Truemail::Configuration#check_dns_settings
+      - Truemail::Validate::Smtp::Request#compose_from
 
   ControlParameter:
     exclude:
