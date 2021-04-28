@@ -19,6 +19,10 @@ RSpec.describe Truemail::RegexConstant do
     specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_PATTERN) }
     specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_FROM_EMAIL) }
     specify { expect(described_class).to be_const_defined(:REGEX_SMTP_ERROR_BODY_PATTERN) }
+    specify { expect(described_class).to be_const_defined(:REGEX_IP_ADDRESS) }
+    specify { expect(described_class).to be_const_defined(:REGEX_IP_ADDRESS_PATTERN) }
+    specify { expect(described_class).to be_const_defined(:REGEX_PORT_NUMBER) }
+    specify { expect(described_class).to be_const_defined(:REGEX_DNS_SERVER_ADDRESS_PATTERN) }
   end
 
   describe 'Truemail::RegexConstant::REGEX_EMAIL_PATTERN' do
@@ -144,6 +148,20 @@ RSpec.describe Truemail::RegexConstant do
 
     %w[user account customer mailbox].flat_map { |item| [item, item.upcase] }.each do |account_name_type|
       specify { expect(regex_pattern.match?("#{smtp_error_context} #{account_name_type}")).to be(true) }
+    end
+  end
+
+  describe 'Truemail::RegexConstant::REGEX_IP_ADDRESS_PATTERN' do
+    subject(:regex_pattern) { described_class::REGEX_IP_ADDRESS_PATTERN }
+
+    describe 'Success' do
+      specify { expect(regex_pattern.match?(random_ip_address)).to be(true) }
+    end
+
+    describe 'Failure' do
+      %w[10.300.0.256 11.287.0.1 172.1600.0.0 -0.1.1.1 8.08.8.8 192.168.0.255a 0.00.0.42].each do |invalid_ip_address|
+        specify { expect(regex_pattern.match?(invalid_ip_address)).to be(false) }
+      end
     end
   end
 
@@ -291,6 +309,7 @@ RSpec.describe Truemail::Validate do
     specify { expect(described_class).to be_const_defined(:DomainListMatch) }
     specify { expect(described_class).to be_const_defined(:Regex) }
     specify { expect(described_class).to be_const_defined(:Mx) }
+    specify { expect(described_class).to be_const_defined(:MxBlacklist) }
     specify { expect(described_class).to be_const_defined(:Smtp) }
   end
 end

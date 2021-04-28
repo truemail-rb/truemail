@@ -14,7 +14,10 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
 
     let(:email) { random_email }
     let(:mx_servers) { create_servers_list }
-    let(:validator_instance) { create_validator(validation_type, email, mx_servers, success: success_status) }
+    let(:configuration_instance) { create_configuration }
+    let(:validator_instance) do
+      create_validator(validation_type, email, mx_servers, success: success_status, configuration: configuration_instance)
+    end
 
     shared_examples 'formatted text output' do
       it 'returns formatted text output' do
@@ -66,6 +69,12 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
 
       describe 'mx validation' do
         let(:validation_type) { :mx }
+
+        include_examples 'formatted text output'
+      end
+
+      describe 'ip list match validation' do
+        let(:validation_type) { :mx_blacklist }
 
         include_examples 'formatted text output'
       end
@@ -123,6 +132,28 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
       describe 'mx validation' do
         let(:validation_type) { :mx }
         let(:error) { 'mx: target host(s) not found' }
+
+        include_examples 'formatted text output'
+      end
+
+      describe 'ip list match validation' do
+        let(:configuration_instance) { create_configuration(blacklisted_mx_ip_addresses: mx_servers) }
+        let(:validation_type) { :mx_blacklist }
+        let(:error) { 'mx blacklist: blacklisted mx server ip address' }
+        let(:expected_output) do
+          <<~EXPECTED_OUTPUT
+            Truemail #{validation_type} validation for #{email} failed (#{error})
+
+            CONFIGURATION SETTINGS:
+            whitelist validation: false
+            blacklisted mx ip addresses: #{mx_servers.join(', ')}
+            not rfc mx lookup flow: false
+            smtp fail fast: false
+            smtp safe check: false
+            email pattern: default gem value
+            smtp error body pattern: default gem value
+          EXPECTED_OUTPUT
+        end
 
         include_examples 'formatted text output'
       end

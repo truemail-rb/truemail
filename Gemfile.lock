@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    truemail (2.3.4)
+    truemail (2.4.0)
       simpleidn (~> 0.2.1)
 
 GEM
@@ -54,7 +54,7 @@ GEM
     public_suffix (4.0.6)
     rainbow (3.0.0)
     rake (13.0.3)
-    reek (6.0.3)
+    reek (6.0.4)
       kwalify (~> 0.7.0)
       parser (~> 3.0.0)
       psych (~> 3.1)
@@ -74,7 +74,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    rubocop (1.12.1)
+    rubocop (1.13.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -85,10 +85,10 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.4.1)
       parser (>= 2.7.1.5)
-    rubocop-performance (1.10.2)
-      rubocop (>= 0.90.0, < 2.0)
+    rubocop-performance (1.11.0)
+      rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    rubocop-rspec (2.2.0)
+    rubocop-rspec (2.3.0)
       rubocop (~> 1.0)
       rubocop-ast (>= 1.1.0)
     ruby-progressbar (1.11.0)
@@ -129,11 +129,11 @@ DEPENDENCIES
   overcommit (~> 0.57.0)
   pry-byebug (~> 3.9)
   rake (~> 13.0, >= 13.0.3)
-  reek (~> 6.0, >= 6.0.3)
+  reek (~> 6.0, >= 6.0.4)
   rspec (~> 3.10)
-  rubocop (~> 1.12, >= 1.12.1)
-  rubocop-performance (~> 1.10, >= 1.10.2)
-  rubocop-rspec (~> 2.2)
+  rubocop (~> 1.13)
+  rubocop-performance (~> 1.11)
+  rubocop-rspec (~> 2.3)
   simplecov (~> 0.17.1)
   truemail!
   truemail-rspec (~> 0.4)

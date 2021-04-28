@@ -2,6 +2,35 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2021.04.28
+
+### Added
+
+- Implemented `MxBlacklist` validation. This layer provides checking mail servers with predefined blacklisted IP addresses list and can be used as a part of DEA ([disposable email address](https://en.wikipedia.org/wiki/Disposable_email_address)) validations.
+
+```ruby
+Truemail.configure do |config|
+  # Optional parameter. With this option Truemail will filter out unwanted mx servers via
+  # predefined list of ip addresses. It can be used as a part of DEA (disposable email
+  # address) validations. It is equal to empty array by default.
+  config.blacklisted_mx_ip_addresses = ['1.1.1.1', '2.2.2.2']
+end
+
+```
+
+- Added `Truemail::Validate::MxBlacklist`, tests
+
+### Changed
+
+- Updated `Truemail::Core`, tests
+- Updated `Truemail::Configuration`, tests
+- Updated `Truemail::Validator`
+- Updated `Truemail::Validate::Smtp`, tests
+- Updated `Truemail::Log::Serializer::Base`, dependent tests
+- Updated `Truemail::Log::Serializer::ValidatorText`, tests
+- Updated gem development dependencies
+- Updated gem documentation, changelog, version
+
 ## [2.3.4] - 2021.04.16
 
 ### Fixed
