@@ -15,10 +15,7 @@ Truemail.configure do |config|
   # address) validations. It is equal to empty array by default.
   config.blacklisted_mx_ip_addresses = ['1.1.1.1', '2.2.2.2']
 end
-
 ```
-
-- Added `Truemail::Validate::MxBlacklist`, tests
 
 ### Changed
 

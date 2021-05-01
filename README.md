@@ -10,7 +10,7 @@
 [![GitHub](https://img.shields.io/github/license/truemail-rb/truemail)](LICENSE.txt)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
-Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS and SMTP. Be sure that email address valid and exists.
+Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS, SMTP and even more. Be sure that email address valid and exists.
 
 > Actual and maintainable documentation :books: for developers is living [here](https://truemail-rb.org/truemail-gem).
 
@@ -81,10 +81,11 @@ Also Truemail gem allows performing an audit of the host in which runs.
 ## Features
 
 - Configurable validator, validate only what you need
-- Minimal runtime dependencies
+- Only one runtime dependency
 - Supporting of internationalized emails ([EAI](https://en.wikipedia.org/wiki/Email_address#Internationalization))
 - Whitelist/blacklist validation layers
 - Ability to configure different MX/SMTP validation flows
+- Ability to configure [DEA](https://en.wikipedia.org/wiki/Disposable_email_address) validation flow
 - Simple SMTP debugger
 - Event logger
 - Host auditor tools (helps to detect common host problems interfering to proper email verification)
@@ -477,7 +478,7 @@ Truemail.validate('email@domain.com', with: :regex)
 
 ##### Blacklist case
 
-When email in blacklist, validation type will be redefined too. Validation result returns `false`
+When email in blacklist, validation type will be redefined too. Validation result returns `false`.
 
 ```ruby
 Truemail.validate('email@black-domain.com')
@@ -575,7 +576,8 @@ Truemail.validate('email@example.com', with: :regex)
 => #<Truemail::Validator:0x000055590cc9bdb8
   @result=
     #<struct Truemail::Validator::Result
-      success=true, email="email@example.com",
+      success=true,
+      email="email@example.com",
       domain=nil,
       mail_servers=[],
       errors={},
