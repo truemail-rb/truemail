@@ -457,7 +457,7 @@ RSpec.describe Truemail::Configuration do
         let(:setter) { :blacklisted_mx_ip_addresses= }
 
         context 'with valid blacklisted mx ip addresses parameter type and context' do
-          let(:blacklisted_mx_ip_addresses) { Array.new(2) { random_ip_address } }
+          let(:blacklisted_mx_ip_addresses) { create_servers_list }
 
           it 'sets blacklisted mx ip addresses list' do
             expect { configuration_instance.public_send(setter, blacklisted_mx_ip_addresses) }

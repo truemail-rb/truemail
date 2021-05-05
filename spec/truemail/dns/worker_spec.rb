@@ -59,7 +59,7 @@ RSpec.describe Truemail::Dns::Worker do
     subject(:resolve_a_records) { dns_resolver_worker_instance.a_records(host_name) }
 
     let(:host_name) { random_domain_name }
-    let(:a_records) { ::Array.new(2) { random_ip_address } }
+    let(:a_records) { create_servers_list }
 
     before { dns_mock_server.assign_mocks(host_name => { a: a_records }) }
 
