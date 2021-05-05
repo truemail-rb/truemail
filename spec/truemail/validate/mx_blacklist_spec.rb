@@ -27,7 +27,7 @@ RSpec.describe Truemail::Validate::MxBlacklist do
     subject(:mx_blacklist_validator) { mx_blacklist_validator_instance.run }
 
     let(:mx_blacklist_validator_instance) { described_class.new(result_instance) }
-    let(:mail_servers) { Array.new(2) { random_ip_address } }
+    let(:mail_servers) { create_servers_list }
     let(:blacklisted_mx_ip_addresses) { [] }
     let(:configuration_instance) { create_configuration(blacklisted_mx_ip_addresses: blacklisted_mx_ip_addresses) }
     let(:mx_result_status) { true }
