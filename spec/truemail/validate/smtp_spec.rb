@@ -20,7 +20,7 @@ RSpec.describe Truemail::Validate::Smtp do
       described_class.new(
         Truemail::Validator::Result.new(
           email: email,
-          mail_servers: create_servers_list,
+          mail_servers: create_servers_list(2),
           configuration: configuration_instance
         )
       )
