@@ -7,7 +7,7 @@ module Truemail
 
       def run
         return false unless Truemail::Validate::Mx.check(result)
-        return true if success(mail_servers.none?(&blacklisted_ip?))
+        return true if success(not_blacklisted_mail_servers?)
         add_error(Truemail::Validate::MxBlacklist::ERROR)
         false
       end
@@ -16,6 +16,10 @@ module Truemail
 
       def blacklisted_ip?
         ->(mail_server) { configuration.blacklisted_mx_ip_addresses.include?(mail_server) }
+      end
+
+      def not_blacklisted_mail_servers?
+        mail_servers.none?(&blacklisted_ip?)
       end
     end
   end
