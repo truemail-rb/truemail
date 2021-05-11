@@ -73,7 +73,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
         include_examples 'formatted text output'
       end
 
-      describe 'ip list match validation' do
+      describe 'mx blacklist validation' do
         let(:validation_type) { :mx_blacklist }
 
         include_examples 'formatted text output'
@@ -136,7 +136,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
         include_examples 'formatted text output'
       end
 
-      describe 'ip list match validation' do
+      describe 'mx blacklist validation' do
         let(:configuration_instance) { create_configuration(blacklisted_mx_ip_addresses: mx_servers) }
         let(:validation_type) { :mx_blacklist }
         let(:error) { 'mx blacklist: blacklisted mx server ip address' }

@@ -3,7 +3,8 @@
 RSpec.describe Truemail::Audit::Dns do
   let(:configuration_instance) { create_configuration(dns: ["127.0.0.1:#{dns_mock_server.port}"]) }
   let(:verifier_domain) { configuration_instance.verifier_domain }
-  let(:result_instance) { Truemail::Auditor::Result.new(configuration: configuration_instance) }
+  let(:current_host_ip) { random_ip_address }
+  let(:result_instance) { create_auditor(current_host_ip: current_host_ip, configuration: configuration_instance).result }
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:VERIFIER_DOMAIN_NOT_REFER) }
@@ -30,12 +31,8 @@ RSpec.describe Truemail::Audit::Dns do
 
     let(:dns_auditor_instance) { described_class.new(result_instance) }
 
-    before { allow(dns_auditor_instance).to receive(:current_host_ip).and_return(current_host_ip) }
-
     describe 'Success' do
       context 'when a record found and refers to current host ip' do
-        let(:current_host_ip) { random_ip_address }
-
         before { dns_mock_server.assign_mocks(verifier_domain => { a: [current_host_ip] }) }
 
         it 'not changes warnings' do
@@ -46,8 +43,6 @@ RSpec.describe Truemail::Audit::Dns do
     end
 
     describe 'Fails' do
-      let(:current_host_ip) { random_ip_address }
-
       shared_examples 'addes verifier domain not refer warning to result instance' do
         it 'addes verifier domain not refer warning to result instance' do
           expect { dns_auditor }

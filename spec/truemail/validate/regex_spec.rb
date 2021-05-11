@@ -18,23 +18,14 @@ RSpec.describe Truemail::Validate::Regex do
     end
 
     context 'when validation pass' do
-      before do
-        allow(configuration_instance).to receive_message_chain(:email_pattern, :match?).and_return(true)
-      end
+      before { allow(configuration_instance).to receive_message_chain(:email_pattern, :match?).and_return(true) }
 
-      specify do
-        expect { regex_validator }.to change(result_instance, :success).from(nil).to(true)
-      end
-
-      it 'returns true' do
-        expect(regex_validator).to be(true)
-      end
+      specify { expect { regex_validator }.to change(result_instance, :success).from(nil).to(true) }
+      specify { expect(regex_validator).to be(true) }
     end
 
     context 'when validation fails' do
-      before do
-        allow(configuration_instance).to receive_message_chain(:email_pattern, :match?).and_return(false)
-      end
+      before { allow(configuration_instance).to receive_message_chain(:email_pattern, :match?).and_return(false) }
 
       specify do
         expect { regex_validator }
@@ -44,9 +35,7 @@ RSpec.describe Truemail::Validate::Regex do
           .from({}).to(regex: Truemail::Validate::Regex::ERROR)
       end
 
-      it 'returns false' do
-        expect(regex_validator).to be(false)
-      end
+      specify { expect(regex_validator).to be(false) }
     end
   end
 end

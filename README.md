@@ -178,11 +178,12 @@ Truemail.configure do |config|
 
   # Optional parameter. You can predefine default validation type for
   # Truemail.validate('email@email.com') call without with-parameter
-  # Available validation types: :regex, :mx, :smtp
+  # Available validation types: :regex, :mx, :mx_blacklist, :smtp
   config.default_validation_type = :mx
 
   # Optional parameter. You can predefine which type of validation will be used for domains.
-  # Also you can skip validation by domain. Available validation types: :regex, :mx, :smtp
+  # Also you can skip validation by domain.
+  # Available validation types: :regex, :mx, :mx_blacklist, :smtp
   # This configuration will be used over current or default validation type parameter
   # All of validations for 'somedomain.com' will be processed with regex validation only.
   # And all of validations for 'otherdomain.com' will be processed with mx validation only.
@@ -222,7 +223,7 @@ Truemail.configure do |config|
   config.not_rfc_mx_lookup_flow = true
 
   # Optional parameter. This option will provide to use smtp fail fast behaviour. When
-  # smtp_fail_fast = true it means that truemail ends smtp validation session after first
+  # smtp_fail_fast = true it means that Truemail ends smtp validation session after first
   # attempt on the first mx server in any fail cases (network connection/timeout error,
   # smtp validation error). This feature helps to reduce total time of SMTP validation
   # session up to 1 second. By default this option is disabled.
