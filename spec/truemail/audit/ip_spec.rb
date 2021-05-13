@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Audit::Ip do
-  let(:configuration_instance) { create_configuration }
-  let(:result_instance) { Truemail::Auditor::Result.new(configuration: configuration_instance) }
+  let(:result_instance) { create_auditor(success: nil, warnings: {}).result }
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:GET_MY_IP_URL) }
@@ -79,7 +78,7 @@ RSpec.describe Truemail::Audit::Ip do
       end
 
       context 'if network error' do
-        let(:expectation) { expect(ip_auditor_instance).to receive(:detect_ip_via_ipify).and_raise(IPAddr::InvalidAddressError) }
+        let(:expectation) { expect(ip_auditor_instance).to receive(:detect_ip_via_ipify).and_raise(::IPAddr::InvalidAddressError) }
 
         include_examples 'addes ipify warning to result instance'
       end

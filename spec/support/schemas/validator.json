@@ -109,6 +109,16 @@
                       "target host(s) not found"
                   ]
               },
+              "mx_blacklist": {
+                "$id": "#/properties/errors/properties/mx_blacklist",
+                "type": "string",
+                "title": "The mx_blacklist schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                    "blacklisted mx server ip address"
+                ]
+              },
               "smtp": {
                   "$id": "#/properties/errors/properties/smtp",
                   "type": "string",

@@ -38,21 +38,21 @@ RSpec.describe Truemail::Wrapper do
     context 'when raises exception' do
       context 'with Resolv::ResolvError exception' do
         specify do
-          allow(mx_instance).to receive(method).and_raise(Resolv::ResolvError)
+          allow(mx_instance).to receive(method).and_raise(::Resolv::ResolvError)
           expect(resolver_execution_wrapper).to be(false)
         end
       end
 
       context 'with IPAddr::InvalidAddressError exception' do
         specify do
-          allow(mx_instance).to receive(method).and_raise(IPAddr::InvalidAddressError)
+          allow(mx_instance).to receive(method).and_raise(::IPAddr::InvalidAddressError)
           expect(resolver_execution_wrapper).to be(false)
         end
       end
 
       context 'with Timeout::Error exception' do
         specify do
-          allow(mx_instance).to receive(method).and_raise(Timeout::Error)
+          allow(mx_instance).to receive(method).and_raise(::Timeout::Error)
 
           expect { resolver_execution_wrapper }
             .to change(resolver_execution_wrapper_instance, :attempts).from(2).to(0)

@@ -3,7 +3,8 @@
 RSpec.describe Truemail::Audit::Ptr do
   let(:configuration_instance) { create_configuration(dns: ["127.0.0.1:#{dns_mock_server.port}"]) }
   let(:verifier_domain) { configuration_instance.verifier_domain }
-  let(:result_instance) { Truemail::Auditor::Result.new(configuration: configuration_instance) }
+  let(:current_host_ip) { random_ip_address }
+  let(:result_instance) { create_auditor(current_host_ip: current_host_ip, configuration: configuration_instance).result }
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:PTR_NOT_FOUND) }
@@ -30,9 +31,6 @@ RSpec.describe Truemail::Audit::Ptr do
     subject(:ptr_auditor) { ptr_auditor_instance.run }
 
     let(:ptr_auditor_instance) { described_class.new(result_instance) }
-    let(:current_host_ip) { random_ip_address }
-
-    before { allow(ptr_auditor_instance).to receive(:current_host_ip).and_return(current_host_ip) }
 
     describe 'Success' do
       context 'when ptr record exists and refereces to verifier domain' do

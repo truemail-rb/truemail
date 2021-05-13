@@ -8,21 +8,45 @@ RSpec.describe Truemail::Log::Serializer::ValidatorJson do
   describe '.call' do
     subject(:json_serializer) { described_class.call(validator_instance) }
 
+    let(:default_configuration_instance) { create_configuration }
+    let(:custom_configuration_instance) do
+      create_configuration(
+        email_pattern: /\A.+@.+\z/,
+        validation_type_for: { random_uniq_domain_name => :regex },
+        whitelisted_domains: [random_uniq_domain_name],
+        blacklisted_domains: [random_uniq_domain_name],
+        blacklisted_mx_ip_addresses: create_servers_list,
+        dns: create_servers_list
+      )
+    end
+
     let(:validator_instance) do
       create_validator(
         validation_type,
         success: success_status,
-        configuration: create_configuration(validation_type_for: { 'somedomain.com' => :regex })
+        configuration: configuration_instance
       )
     end
 
     shared_context 'serialized json' do
-      %i[whitelist regex mx smtp].each do |validation_layer_name|
+      %i[whitelist regex mx mx_blacklist smtp].each do |validation_layer_name|
         describe "#{validation_layer_name} validation" do
           let(:validation_type) { validation_layer_name }
 
-          it 'returns serialized json' do
-            expect(json_serializer).to match_json_schema('validator')
+          context 'with default configuration' do
+            let(:configuration_instance) { default_configuration_instance }
+
+            it 'returns serialized json' do
+              expect(json_serializer).to match_json_schema('validator')
+            end
+          end
+
+          context 'with custom configuration' do
+            let(:configuration_instance) { custom_configuration_instance }
+
+            it 'returns serialized json' do
+              expect(json_serializer).to match_json_schema('validator')
+            end
           end
         end
       end
@@ -53,7 +77,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorJson do
         end
 
         it 'replaces all invalid chars' do
-          encoded_utf8_string = JSON.parse(json_serializer)['smtp_debug'].first.dig('errors', 'rcptto')
+          encoded_utf8_string = ::JSON.parse(json_serializer)['smtp_debug'].first.dig('errors', 'rcptto')
           expect(encoded_utf8_string.size).to eq(3)
           expect(encoded_utf8_string).to eq("\uFFFD䲻\uFFFD")
         end
