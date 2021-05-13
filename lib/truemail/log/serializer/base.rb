@@ -40,20 +40,20 @@ module Truemail
 
         Truemail::Log::Serializer::Base::CONFIGURATION_ARRAY_ATTRS.each do |method|
           define_method(method) do
-            value = executor_configuration.public_send(method)
-            return if value.empty?
-            value
+            executor_configuration_attr = executor_configuration.public_send(method)
+            return if executor_configuration_attr.empty?
+            executor_configuration_attr
           end
         end
 
         Truemail::Log::Serializer::Base::CONFIGURATION_REGEX_ATTRS.each do |method|
           define_method(method) do
-            value = executor_configuration.public_send(method)
+            executor_configuration_attr = executor_configuration.public_send(method)
             default_pattern = Truemail::RegexConstant.const_get(
               (method.eql?(:email_pattern) ? :regex_email_pattern : :regex_smtp_error_body_pattern).upcase
             )
-            return Truemail::Log::Serializer::Base::DEFAULT_GEM_VALUE if value.eql?(default_pattern)
-            value
+            return Truemail::Log::Serializer::Base::DEFAULT_GEM_VALUE if executor_configuration_attr.eql?(default_pattern)
+            executor_configuration_attr
           end
         end
 

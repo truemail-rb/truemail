@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
+require_relative 'support/config/simplecov'
 require_relative '../lib/truemail'
 
 rspec_custom = ::File.join(::File.dirname(__FILE__), 'support/**/*.rb')

@@ -2,6 +2,19 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.2] - 2021.05.13
+
+### Fixed
+
+- Fixed security vulnerability for bundler ([CVE-2019-3881](https://github.com/advisories/GHSA-g98m-96g9-wfjq))
+- Fixed test coverage issues
+
+### Updated
+
+- Updated gem development dependencies
+- Updated simplecov/CircleCi config
+- Updated gem documentation, version
+
 ## [2.4.1] - 2021.05.05
 
 ### Updated
