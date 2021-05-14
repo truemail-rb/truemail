@@ -72,7 +72,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorJson do
             validation_type,
             success: success_status,
             rcptto_error: error_context_with_ascii_8bit,
-            configuration: create_configuration(validation_type_for: { 'somedomain.com' => :regex })
+            configuration: custom_configuration_instance
           )
         end
 
