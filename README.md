@@ -193,7 +193,7 @@ Truemail.configure do |config|
   # Optional parameter. Validation of email which contains whitelisted domain always will
   # return true. Other validations will not processed even if it was defined in validation_type_for
   # It is equal to empty array by default.
-  config.whitelisted_domains = ['somedomain1.com', 'somedomain2.com']
+  config.whitelisted_domains = %w[somedomain1.com somedomain2.com]
 
   # Optional parameter. With this option Truemail will validate email which contains whitelisted
   # domain only, i.e. if domain whitelisted, validation will passed to Regex, MX or SMTP validators.
@@ -204,18 +204,18 @@ Truemail.configure do |config|
   # Optional parameter. Validation of email which contains blacklisted domain always will
   # return false. Other validations will not processed even if it was defined in validation_type_for
   # It is equal to empty array by default.
-  config.blacklisted_domains = ['somedomain3.com', 'somedomain4.com']
+  config.blacklisted_domains = %w[somedomain3.com somedomain4.com]
 
   # Optional parameter. With this option Truemail will filter out unwanted mx servers via
   # predefined list of ip addresses. It can be used as a part of DEA (disposable email
   # address) validations. It is equal to empty array by default.
-  config.blacklisted_mx_ip_addresses = ['1.1.1.1', '2.2.2.2']
+  config.blacklisted_mx_ip_addresses = %w[1.1.1.1 2.2.2.2]
 
   # Optional parameter. This option will provide to use custom DNS gateway when Truemail
   # interacts with DNS. Valid port numbers are in the range 1-65535. If you won't specify
   # nameserver's ports Truemail will use default DNS TCP/UDP port 53. By default Truemail
   # uses DNS gateway from system settings and this option is equal to empty array.
-  config.dns = ['10.0.0.1', '10.0.0.2:54']
+  config.dns = %w[10.0.0.1 10.0.0.2:54]
 
   # Optional parameter. This option will provide to use not RFC MX lookup flow.
   # It means that MX and Null MX records will be cheked on the DNS validation layer only.
@@ -351,8 +351,8 @@ require 'truemail'
 
 Truemail.configure do |config|
   config.verifier_email = 'verifier@example.com'
-  config.whitelisted_domains = ['white-domain.com', 'somedomain.com']
-  config.blacklisted_domains = ['black-domain.com', 'somedomain.com']
+  config.whitelisted_domains = %w[white-domain.com somedomain.com]
+  config.blacklisted_domains = %w[black-domain.com somedomain.com]
   config.validation_type_for = { 'somedomain.com' => :mx }
 end
 ```
@@ -400,7 +400,7 @@ require 'truemail'
 
 Truemail.configure do |config|
   config.verifier_email = 'verifier@example.com'
-  config.whitelisted_domains = ['white-domain.com']
+  config.whitelisted_domains = %w[white-domain.com]
   config.whitelist_validation = true
 end
 ```
@@ -768,7 +768,7 @@ require 'truemail'
 
 Truemail.configure do |config|
   config.verifier_email = 'verifier@example.com'
-  config.blacklisted_mx_ip_addresses = ['127.0.1.2']
+  config.blacklisted_mx_ip_addresses = %w[127.0.1.2]
 end
 
 Truemail.validate('email@example.com', with: :mx_blacklist)
