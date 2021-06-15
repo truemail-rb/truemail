@@ -12,7 +12,7 @@ RSpec.describe Truemail::Dns::Resolver do
       end
 
       let(:argument) { 'some_argument' }
-      let(:configuration_instance) { instance_double('TruemailConfiguration', dns: []) } # TODO: change to create_configuration
+      let(:configuration_instance) { create_configuration }
       let(:dns_resolver_worker_instance) { instance_double('DnsResolverWorker') }
 
       specify "creates Truemail::DnsResolver::Worker##{method}" do
