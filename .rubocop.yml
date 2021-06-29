@@ -28,6 +28,9 @@ Naming/VariableNumber:
 Naming/RescuedExceptionsVariableName:
   Enabled: false
 
+Naming/InclusiveLanguage:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
@@ -195,6 +198,9 @@ Layout/BeginEndAlignment:
   Enabled: true
 
 Layout/SpaceBeforeBrackets:
+  Enabled: true
+
+Layout/LineEndStringConcatenationIndentation:
   Enabled: true
 
 Lint/NonDeterministicRequireOrder:

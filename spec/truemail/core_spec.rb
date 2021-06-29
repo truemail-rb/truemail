@@ -65,20 +65,28 @@ RSpec.describe Truemail::RegexConstant do
       end
     end
 
-    it 'not allows special chars' do
+    it 'allows special chars' do
       expect(
-        regex_pattern.match?(Truemail::GenerateEmailHelper.call(invalid_email_with: %w[! ~ , ' & %]))
-      ).to be(false)
+        regex_pattern.match?(Truemail::GenerateEmailHelper.call(symbols: %w[- _ . + ! ~ , ' & % # $ * / = ? ^ ` { | }]))
+      ).to be(true)
     end
 
-    it "not allows '-', '_', '.', '+' for one char username" do
+    it 'not allows special chars for one char username' do
       expect(
-        regex_pattern.match?(Truemail::GenerateEmailHelper.call(size: :min, invalid_email_with: %w[- _ . +]))
+        regex_pattern.match?(
+          Truemail::GenerateEmailHelper.call(size: :min, invalid_email_with: %w[- _ . + ! ~ , ' & % # $ * / = ? ^ ` { | }])
+        )
       ).to be(false)
     end
 
     it 'allows not ascii chars in user and domain' do
       %w[niña@mañana.cØm квіточка@пошта.укр user@納豆.jp].each do |email_example|
+        expect(regex_pattern.match?(email_example)).to be(true)
+      end
+    end
+
+    it 'allows not ascii chars in user and domain with special characters in user name' do
+      %w[niña+mañana@mañana.cØm квіточка!@пошта.укр user~Admin@納豆.jp].each do |email_example|
         expect(regex_pattern.match?(email_example)).to be(true)
       end
     end
