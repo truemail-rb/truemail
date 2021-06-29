@@ -2,6 +2,17 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.4] - 2021.06.29
+
+### Updated
+
+Allowed using special characters in email user names (following [RFC 3696](https://datatracker.ietf.org/doc/html/rfc3696#page-6)) for default regex email pattern.
+
+- Updated `Truemail::RegexConstant::REGEX_EMAIL_PATTERN`, tests
+- Updated gem development dependencies
+- Updated Rubocop/Codeclimate config
+- Updated gem documentation, version
+
 ## [2.4.3] - 2021.06.15
 
 ### Updated
