@@ -8,7 +8,6 @@ module Truemail
 
       def run
         return false unless Truemail::Validate::Regex.check(result)
-        result.domain = result.punycode_email[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1]
         return true if success(mx_lookup && domain_not_include_null_mx)
         mail_servers.clear && add_error(Truemail::Validate::Mx::ERROR)
         false
@@ -53,7 +52,10 @@ module Truemail
       end
 
       def domain
-        result.domain
+        @domain ||= begin
+          result.domain = result.email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
+          result.punycode_email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
+        end
       end
 
       def hosts_from_mx_records?

@@ -30,4 +30,10 @@ RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec
       expect(random_ip_address).to match(Truemail::RegexConstant::REGEX_DNS_SERVER_ADDRESS_PATTERN)
     end
   end
+
+  describe '#rdns_lookup_host_address' do
+    specify do
+      expect(rdns_lookup_host_address('10.20.30.40')).to eq('40.30.20.10.in-addr.arpa')
+    end
+  end
 end

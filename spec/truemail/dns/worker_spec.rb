@@ -89,12 +89,9 @@ RSpec.describe Truemail::Dns::Worker do
   end
 
   describe '#ptr_records' do
-    subject(:resolve_ptr_records) { dns_resolver_worker_instance.ptr_records(host_address) }
+    subject(:resolve_ptr_records) { dns_resolver_worker_instance.ptr_records(rdns_lookup_host_address(host_address)) }
 
-    # TODO: change it after update dns_mock
-    # let(:host_address) { random_ip_address }
-    # should works with 42.42.42.42 or 42.42.42.42.in-addr.arpa; request for 42.42.42.42
-    let(:host_address) { '42.42.42.42.in-addr.arpa' }
+    let(:host_address) { random_ip_address }
     let(:ptr_records) { ::Array.new(2) { random_domain_name } }
 
     before { dns_mock_server.assign_mocks(host_address => { ptr: ptr_records }) }
