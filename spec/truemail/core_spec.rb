@@ -17,7 +17,6 @@ RSpec.describe Truemail::RegexConstant do
     specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN) }
     specify { expect(described_class).to be_const_defined(:REGEX_EMAIL_PATTERN) }
     specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_PATTERN) }
-    specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_FROM_EMAIL) }
     specify { expect(described_class).to be_const_defined(:REGEX_SMTP_ERROR_BODY_PATTERN) }
     specify { expect(described_class).to be_const_defined(:REGEX_IP_ADDRESS) }
     specify { expect(described_class).to be_const_defined(:REGEX_IP_ADDRESS_PATTERN) }
@@ -138,15 +137,6 @@ RSpec.describe Truemail::RegexConstant do
         expect(regex_pattern.match?(domain)).to be(true)
       end
     end
-  end
-
-  describe 'Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL' do
-    subject(:regex_pattern) { described_class::REGEX_DOMAIN_FROM_EMAIL }
-
-    let(:email) { 'i@domain' }
-
-    specify { expect(regex_pattern.match?(email)).to be(true) }
-    specify { expect(email[regex_pattern, 1]).to eq('domain') }
   end
 
   describe 'Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN' do
