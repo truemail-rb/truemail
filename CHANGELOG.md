@@ -2,6 +2,18 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.5] - 2021.07.09
+
+### Removed
+
+- `Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL`
+
+### Updated
+
+- `Truemail::Validate::Mx`
+- Updated gem development dependencies
+- Updated gem version
+
 ## [2.4.4] - 2021.06.29
 
 ### Updated

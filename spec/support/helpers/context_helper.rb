@@ -18,6 +18,10 @@ module Truemail
       faker.unique.domain_name
     end
 
+    def rdns_lookup_host_address(host_address)
+      host_address.gsub(/(\d+).(\d+).(\d+).(\d+)/, '\4.\3.\2.\1.in-addr.arpa')
+    end
+
     private
 
     def faker

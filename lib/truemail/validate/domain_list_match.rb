@@ -15,7 +15,7 @@ module Truemail
       private
 
       def email_domain
-        @email_domain ||= result.email[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1]
+        @email_domain ||= result.email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
       end
 
       def whitelisted_domain?
