@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec/FilePath
+  describe 'defined constants' do
+    specify { expect(described_class).to be_const_defined(:ASCII_WORDS) }
+  end
+
   describe '#random_email' do
     specify do
       expect(Faker::Internet).to receive(:email).and_call_original
@@ -34,6 +38,36 @@ RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec
   describe '#rdns_lookup_host_address' do
     specify do
       expect(rdns_lookup_host_address('10.20.30.40')).to eq('40.30.20.10.in-addr.arpa')
+    end
+  end
+
+  describe '#domain_from_email' do
+    let(:domain) { 'domain' }
+    let(:email) { "user@#{domain}" }
+
+    specify { expect(domain_from_email(email)).to eq(domain) }
+  end
+
+  describe '#email_punycode_domain' do
+    let(:domain) { 'mañana.cøm' }
+    let(:email) { "user@#{domain}" }
+
+    specify do
+      expect(Truemail::Dns::PunycodeRepresenter).to receive(:call).with(email).and_call_original
+      expect(email_punycode_domain(email)).to eq('xn--maana-pta.xn--cm-lka')
+    end
+  end
+
+  describe '#random_internationalized_email' do
+    let(:user) { 'user' }
+    let(:domain_zone) { 'com' }
+    let(:ascii_word) { 'mañana' }
+
+    specify do
+      stub_const("#{described_class}::ASCII_WORDS", [ascii_word])
+      expect(Faker::Internet).to receive(:username).and_return(user)
+      expect(Faker::Internet).to receive(:domain_suffix).and_return(domain_zone)
+      expect(random_internationalized_email).to eq("#{user}@#{ascii_word}.#{domain_zone}")
     end
   end
 end
