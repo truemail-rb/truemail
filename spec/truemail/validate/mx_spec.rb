@@ -32,10 +32,25 @@ RSpec.describe Truemail::Validate::Mx do
 
     let(:mx_validator_instance) { described_class.new(result_instance) }
 
-    shared_examples 'calls email punycode representer' do
+    shared_examples 'calls email punycode representer, returns memoized result' do
       specify do
         expect(result_instance).to receive(:punycode_email).and_call_original
         mx_validator
+        expect(mx_validator_instance.send(:domain)).to eq(email_punycode_domain(email))
+      end
+    end
+
+    shared_context 'when internationalized email' do
+      context 'when internationalized email' do
+        let(:email) { random_internationalized_email }
+
+        specify do
+          expect { mx_validator }
+            .to change(result_instance, :domain)
+            .from(nil).to(domain_from_email(email))
+        end
+
+        include_examples 'calls email punycode representer, returns memoized result'
       end
     end
 
@@ -52,9 +67,7 @@ RSpec.describe Truemail::Validate::Mx do
         let(:a_records) { ::Array.new(total_records) { [random_ip_address, a_record] } }
         let(:uniq_mail_servers_by_ip) { a_records.flatten.uniq }
         let(:mx_records_dns_mock) { mx_records.zip(a_records).to_h.transform_values { |value| { a: value } } }
-        let(:dns_mock_records) do
-          { email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3] => { mx: mx_records } }.merge(mx_records_dns_mock)
-        end
+        let(:dns_mock_records) { { email_punycode_domain(email) => { mx: mx_records } }.merge(mx_records_dns_mock) }
 
         before { dns_mock_server.assign_mocks(dns_mock_records) }
 
@@ -68,15 +81,17 @@ RSpec.describe Truemail::Validate::Mx do
 
             expect { mx_validator }
               .to change(result_instance, :domain)
-              .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
+              .from(nil).to(domain_from_email(email))
               .and change(result_instance, :mail_servers)
               .from([]).to(uniq_mail_servers_by_ip)
               .and not_change(result_instance, :success)
           end
 
-          include_examples 'calls email punycode representer'
+          include_examples 'calls email punycode representer, returns memoized result'
 
           specify { expect(mx_validator).to be(true) }
+
+          include_context 'when internationalized email'
         end
       end
 
@@ -93,7 +108,7 @@ RSpec.describe Truemail::Validate::Mx do
         let(:mx_records_dns_mock) { mx_records.zip(mx_a_records).to_h.transform_values { |value| { a: value } } }
         let(:dns_mock_records) do
           {
-            email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3] => { cname: cname_records.first }
+            email_punycode_domain(email) => { cname: cname_records.first }
           }.merge(cname_records_dns_mock).merge(ptr_records_dns_mock).merge(mx_records_dns_mock)
         end
 
@@ -107,15 +122,17 @@ RSpec.describe Truemail::Validate::Mx do
 
             expect { mx_validator }
               .to change(result_instance, :domain)
-              .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
+              .from(nil).to(domain_from_email(email))
               .and change(result_instance, :mail_servers)
               .from([]).to(uniq_mail_servers_by_ip)
               .and not_change(result_instance, :success)
           end
 
-          include_examples 'calls email punycode representer'
+          include_examples 'calls email punycode representer, returns memoized result'
 
           specify { expect(mx_validator).to be(true) }
+
+          include_context 'when internationalized email'
         end
 
         context 'when mx records not found' do
@@ -127,21 +144,23 @@ RSpec.describe Truemail::Validate::Mx do
             expect(mx_validator_instance).not_to receive(:host_from_a_record?)
             expect { mx_validator }
               .to change(result_instance, :domain)
-              .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
+              .from(nil).to(domain_from_email(email))
               .and change(result_instance, :mail_servers)
               .from([]).to([a_records.first]) # one cname record is equal to one a record
               .and not_change(result_instance, :success)
           end
 
-          include_examples 'calls email punycode representer'
+          include_examples 'calls email punycode representer, returns memoized result'
 
           specify { expect(mx_validator).to be(true) }
+
+          include_context 'when internationalized email'
         end
       end
 
       context 'when a record found' do
         let(:a_record) { random_ip_address }
-        let(:dns_mock_records) { { email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3] => { a: [a_record] } } }
+        let(:dns_mock_records) { { email_punycode_domain(email) => { a: [a_record] } } }
 
         before { dns_mock_server.assign_mocks(dns_mock_records) }
 
@@ -151,15 +170,17 @@ RSpec.describe Truemail::Validate::Mx do
           expect(mx_validator_instance).to receive(:host_from_a_record?).and_call_original
           expect { mx_validator }
             .to change(result_instance, :domain)
-            .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
+            .from(nil).to(domain_from_email(email))
             .and change(result_instance, :mail_servers)
             .from([]).to([a_record])
             .and not_change(result_instance, :success)
         end
 
-        include_examples 'calls email punycode representer'
+        include_examples 'calls email punycode representer, returns memoized result'
 
         specify { expect(mx_validator).to be(true) }
+
+        include_context 'when internationalized email'
       end
     end
 
@@ -169,18 +190,18 @@ RSpec.describe Truemail::Validate::Mx do
           mx_lookup_chain_expectations
           expect { mx_validator }
             .to change(result_instance, :domain)
-            .from(nil).to(email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3])
+            .from(nil).to(domain_from_email(email))
             .and not_change(result_instance, :mail_servers)
             .and change(result_instance, :success).from(true).to(false)
         end
 
-        include_examples 'calls email punycode representer'
+        include_examples 'calls email punycode representer, returns memoized result'
 
         specify { is_expected.to be(false) }
       end
 
       context 'when mx records found with null mx' do
-        let(:dns_mock_records) { { email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3] => { mx: %w[.:0] } } }
+        let(:dns_mock_records) { { email_punycode_domain(email) => { mx: %w[.:0] } } }
         let(:mx_lookup_chain_expectations) do
           expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
           expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)
@@ -194,6 +215,7 @@ RSpec.describe Truemail::Validate::Mx do
         end
 
         include_examples 'validation fails'
+        include_context 'when internationalized email'
       end
 
       context 'when not RFC MX lookup flow enabled' do
@@ -215,6 +237,7 @@ RSpec.describe Truemail::Validate::Mx do
         end
 
         include_examples 'validation fails'
+        include_context 'when internationalized email'
       end
 
       context 'when any of mx lookup methods fail' do
@@ -230,6 +253,7 @@ RSpec.describe Truemail::Validate::Mx do
         end
 
         include_examples 'validation fails'
+        include_context 'when internationalized email'
       end
 
       context 'when regex fails' do
