@@ -13,7 +13,7 @@ RSpec.describe Truemail::Validate::DomainListMatch do
     subject(:domain_list_match_validator) { described_class.check(result_instance) }
 
     let(:email) { random_email }
-    let(:domain) { email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3] }
+    let(:domain) { domain_from_email(email) }
     let(:configuration_instance) { create_configuration }
     let(:result_instance) { Truemail::Validator::Result.new(email: email, configuration: configuration_instance) }
 

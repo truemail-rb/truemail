@@ -49,7 +49,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
 
             CONFIGURATION SETTINGS:
             whitelist validation: false
-            whitelisted domains: #{email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]}
+            whitelisted domains: #{domain_from_email(email)}
             not rfc mx lookup flow: false
             smtp fail fast: false
             smtp safe check: false
@@ -110,7 +110,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
 
             CONFIGURATION SETTINGS:
             whitelist validation: false
-            blacklisted domains: #{email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]}
+            blacklisted domains: #{domain_from_email(email)}
             not rfc mx lookup flow: false
             smtp fail fast: false
             smtp safe check: false

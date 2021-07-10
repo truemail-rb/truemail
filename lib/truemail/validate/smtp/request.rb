@@ -50,7 +50,7 @@ module Truemail
           REQUEST_PARAMS = %i[connection_timeout response_timeout verifier_domain verifier_email].freeze
 
           def initialize(configuration)
-            REQUEST_PARAMS.each do |attribute|
+            Truemail::Validate::Smtp::Request::Configuration::REQUEST_PARAMS.each do |attribute|
               self.class.class_eval { attr_reader attribute }
               instance_variable_set(:"@#{attribute}", configuration.public_send(attribute))
             end

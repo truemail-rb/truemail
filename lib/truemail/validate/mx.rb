@@ -53,8 +53,8 @@ module Truemail
 
       def domain
         @domain ||= begin
-          result.domain = result.email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
-          result.punycode_email[Truemail::RegexConstant::REGEX_EMAIL_PATTERN, 3]
+          result.domain = result.email[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1]
+          result.punycode_email[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1]
         end
       end
 
