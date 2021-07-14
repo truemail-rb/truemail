@@ -35,7 +35,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 2.2', '>= 2.2.23'
   spec.add_development_dependency 'bundler-audit', '~> 0.8.0'
-  spec.add_development_dependency 'dns_mock', '~> 1.3', '>= 1.3.1'
+  spec.add_development_dependency 'dns_mock', '~> 1.4'
   spec.add_development_dependency 'faker', '~> 2.18'
   spec.add_development_dependency 'fasterer', '~> 0.9.0'
   spec.add_development_dependency 'json_matchers', '~> 0.11.1'
