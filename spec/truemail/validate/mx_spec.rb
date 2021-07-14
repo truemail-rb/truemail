@@ -67,7 +67,7 @@ RSpec.describe Truemail::Validate::Mx do
         let(:a_records) { ::Array.new(total_records) { [random_ip_address, a_record] } }
         let(:uniq_mail_servers_by_ip) { a_records.flatten.uniq }
         let(:mx_records_dns_mock) { mx_records.zip(a_records).to_h.transform_values { |value| { a: value } } }
-        let(:dns_mock_records) { { email_punycode_domain(email) => { mx: mx_records } }.merge(mx_records_dns_mock) }
+        let(:dns_mock_records) { { domain_from_email(email) => { mx: mx_records } }.merge(mx_records_dns_mock) }
 
         before { dns_mock_server.assign_mocks(dns_mock_records) }
 
@@ -108,7 +108,7 @@ RSpec.describe Truemail::Validate::Mx do
         let(:mx_records_dns_mock) { mx_records.zip(mx_a_records).to_h.transform_values { |value| { a: value } } }
         let(:dns_mock_records) do
           {
-            email_punycode_domain(email) => { cname: cname_records.first }
+            domain_from_email(email) => { cname: cname_records.first }
           }.merge(cname_records_dns_mock).merge(ptr_records_dns_mock).merge(mx_records_dns_mock)
         end
 
@@ -160,7 +160,7 @@ RSpec.describe Truemail::Validate::Mx do
 
       context 'when a record found' do
         let(:a_record) { random_ip_address }
-        let(:dns_mock_records) { { email_punycode_domain(email) => { a: [a_record] } } }
+        let(:dns_mock_records) { { domain_from_email(email) => { a: [a_record] } } }
 
         before { dns_mock_server.assign_mocks(dns_mock_records) }
 
@@ -201,7 +201,7 @@ RSpec.describe Truemail::Validate::Mx do
       end
 
       context 'when mx records found with null mx' do
-        let(:dns_mock_records) { { email_punycode_domain(email) => { mx: %w[.:0] } } }
+        let(:dns_mock_records) { { domain_from_email(email) => { mx: %w[.:0] } } }
         let(:mx_lookup_chain_expectations) do
           expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
           expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)

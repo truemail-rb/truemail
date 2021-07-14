@@ -2,14 +2,14 @@
 
 module Truemail
   module ContextHelper
-    ASCII_WORDS = %w[mañana ĉapelo dấu παράδειγμα 買@屋企].freeze
+    NON_ASCII_WORDS = %w[mañana ĉapelo dấu παράδειγμα 屋企].freeze
 
     def random_email
       faker.email
     end
 
     def random_internationalized_email
-      "#{faker.username}@#{Truemail::ContextHelper::ASCII_WORDS.sample}.#{faker.domain_suffix}"
+      "#{faker.username}@#{Truemail::ContextHelper::NON_ASCII_WORDS.sample}.#{faker.domain_suffix}"
     end
 
     def random_ip_address
@@ -25,7 +25,7 @@ module Truemail
     end
 
     def rdns_lookup_host_address(host_address)
-      host_address.gsub(/(\d+).(\d+).(\d+).(\d+)/, '\4.\3.\2.\1.in-addr.arpa')
+      DnsMock::Representer::RdnsLookup.call(host_address)
     end
 
     def domain_from_email(email)
@@ -33,7 +33,7 @@ module Truemail
     end
 
     def email_punycode_domain(email)
-      Truemail::Dns::PunycodeRepresenter.call(email)[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1]
+      DnsMock::Representer::Punycode.call(domain_from_email(email))
     end
 
     private
