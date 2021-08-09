@@ -2,7 +2,7 @@
 
 RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec/FilePath
   describe 'defined constants' do
-    specify { expect(described_class).to be_const_defined(:ASCII_WORDS) }
+    specify { expect(described_class).to be_const_defined(:NON_ASCII_WORDS) }
   end
 
   describe '#random_email' do
@@ -52,10 +52,7 @@ RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec
     let(:domain) { 'mañana.cøm' }
     let(:email) { "user@#{domain}" }
 
-    specify do
-      expect(Truemail::Dns::PunycodeRepresenter).to receive(:call).with(email).and_call_original
-      expect(email_punycode_domain(email)).to eq('xn--maana-pta.xn--cm-lka')
-    end
+    specify { expect(email_punycode_domain(email)).to eq('xn--maana-pta.xn--cm-lka') }
   end
 
   describe '#random_internationalized_email' do
@@ -64,7 +61,7 @@ RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec
     let(:ascii_word) { 'mañana' }
 
     specify do
-      stub_const("#{described_class}::ASCII_WORDS", [ascii_word])
+      stub_const("#{described_class}::NON_ASCII_WORDS", [ascii_word])
       expect(Faker::Internet).to receive(:username).and_return(user)
       expect(Faker::Internet).to receive(:domain_suffix).and_return(domain_zone)
       expect(random_internationalized_email).to eq("#{user}@#{ascii_word}.#{domain_zone}")
