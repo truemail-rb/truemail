@@ -7,21 +7,21 @@ RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec
 
   describe '#random_email' do
     specify do
-      expect(Faker::Internet).to receive(:email).and_call_original
+      expect(FFaker::Internet).to receive(:email).and_call_original
       expect(random_email).to match(Truemail::RegexConstant::REGEX_EMAIL_PATTERN)
     end
   end
 
   describe '#random_domain_name' do
     specify do
-      expect(Faker::Internet).to receive(:domain_name).and_call_original
+      expect(FFaker::Internet).to receive(:domain_name).and_call_original
       expect(random_domain_name).to match(Truemail::RegexConstant::REGEX_DOMAIN_PATTERN)
     end
   end
 
   describe '#random_uniq_domain_name' do
     specify do
-      expect(Faker::Internet).to receive_message_chain(:unique, :domain_name)
+      expect(FFaker::Internet).to receive_message_chain(:unique, :domain_name)
       random_uniq_domain_name
     end
 
@@ -30,7 +30,7 @@ RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec
 
   describe '#random_ip_address' do
     specify do
-      expect(Faker::Internet).to receive(:ip_v4_address).and_call_original
+      expect(FFaker::Internet).to receive(:ip_v4_address).and_call_original
       expect(random_ip_address).to match(Truemail::RegexConstant::REGEX_DNS_SERVER_ADDRESS_PATTERN)
     end
   end
@@ -62,8 +62,8 @@ RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec
 
     specify do
       stub_const("#{described_class}::NON_ASCII_WORDS", [ascii_word])
-      expect(Faker::Internet).to receive(:username).and_return(user)
-      expect(Faker::Internet).to receive(:domain_suffix).and_return(domain_zone)
+      expect(FFaker::Internet).to receive(:user_name).and_return(user)
+      expect(FFaker::Internet).to receive(:domain_suffix).and_return(domain_zone)
       expect(random_internationalized_email).to eq("#{user}@#{ascii_word}.#{domain_zone}")
     end
   end
