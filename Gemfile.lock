@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    truemail (2.4.7)
+    truemail (2.4.8)
       simpleidn (~> 0.2.1)
 
 GEM
@@ -17,21 +17,17 @@ GEM
     childprocess (4.1.0)
     coderay (1.1.3)
     colorize (0.8.1)
-    concurrent-ruby (1.1.9)
     crack (0.4.5)
       rexml
     diff-lcs (1.4.4)
     dns_mock (1.4.0)
       simpleidn (~> 0.2.1)
     docile (1.4.0)
-    faker (2.18.0)
-      i18n (>= 1.6, < 2)
     fasterer (0.9.0)
       colorize (~> 0.7)
       ruby_parser (>= 3.14.1)
+    ffaker (2.18.0)
     hashdiff (1.0.1)
-    i18n (1.8.10)
-      concurrent-ruby (~> 1.0)
     iniparse (1.5.0)
     json (2.5.1)
     json_matchers (0.11.1)
@@ -52,7 +48,7 @@ GEM
     pry-byebug (3.9.0)
       byebug (~> 11.0)
       pry (~> 0.13.0)
-    psych (3.3.2)
+    psych (4.0.1)
     public_suffix (4.0.6)
     rainbow (3.0.0)
     rake (13.0.6)
@@ -85,7 +81,7 @@ GEM
       rubocop-ast (>= 1.8.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.9.0)
+    rubocop-ast (1.9.1)
       parser (>= 3.0.1.1)
     rubocop-performance (1.11.4)
       rubocop (>= 1.7.0, < 2.0)
@@ -105,8 +101,8 @@ GEM
     simpleidn (0.2.1)
       unf (~> 0.1.4)
     thor (1.1.0)
-    truemail-rspec (0.6.0)
-      faker (~> 2.17)
+    truemail-rspec (0.7.0)
+      ffaker (~> 2.18)
       rspec (~> 3.10)
       truemail (>= 2.4)
     unf (0.1.4)
@@ -125,8 +121,8 @@ DEPENDENCIES
   bundler (~> 2.2, >= 2.2.25)
   bundler-audit (~> 0.8.0)
   dns_mock (~> 1.4)
-  faker (~> 2.18)
   fasterer (~> 0.9.0)
+  ffaker (~> 2.18)
   json_matchers (~> 0.11.1)
   overcommit (~> 0.58.0)
   pry-byebug (~> 3.9)
@@ -138,7 +134,7 @@ DEPENDENCIES
   rubocop-rspec (~> 2.4)
   simplecov (~> 0.17.1)
   truemail!
-  truemail-rspec (~> 0.6)
+  truemail-rspec (~> 0.7.0)
   webmock (~> 3.14)
 
 BUNDLED WITH
