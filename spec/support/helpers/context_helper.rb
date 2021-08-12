@@ -5,23 +5,23 @@ module Truemail
     NON_ASCII_WORDS = %w[mañana ĉapelo dấu παράδειγμα 屋企].freeze
 
     def random_email
-      faker.email
+      ffaker.email
     end
 
     def random_internationalized_email
-      "#{faker.username}@#{Truemail::ContextHelper::NON_ASCII_WORDS.sample}.#{faker.domain_suffix}"
+      "#{ffaker.user_name}@#{Truemail::ContextHelper::NON_ASCII_WORDS.sample}.#{ffaker.domain_suffix}"
     end
 
     def random_ip_address
-      faker.ip_v4_address
+      ffaker.ip_v4_address
     end
 
     def random_domain_name
-      faker.domain_name
+      ffaker.domain_name
     end
 
     def random_uniq_domain_name
-      faker.unique.domain_name
+      ffaker.unique.domain_name
     end
 
     def rdns_lookup_host_address(host_address)
@@ -38,8 +38,8 @@ module Truemail
 
     private
 
-    def faker
-      Faker::Internet
+    def ffaker
+      FFaker::Internet
     end
   end
 end
