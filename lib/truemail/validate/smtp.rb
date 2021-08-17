@@ -35,7 +35,7 @@ module Truemail
       def attempts
         @attempts ||= begin
           return {} if fail_fast? || !mail_servers.one?
-          { attempts: configuration.connection_attempts }
+          { attempts: configuration.connection_attempts } # attempts should used for case with one mail server only
         end
       end
 

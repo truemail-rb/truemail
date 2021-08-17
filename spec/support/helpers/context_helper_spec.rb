@@ -67,4 +67,14 @@ RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec
       expect(random_internationalized_email).to eq("#{user}@#{ascii_word}.#{domain_zone}")
     end
   end
+
+  describe '#attempts_getter' do
+    let(:smtp_request_instance) { instance_double('SmtpRequestInstance') }
+
+    specify do
+      expect(attempts_getter).to be_an_instance_of(::Proc)
+      expect(smtp_request_instance).to receive(:attempts)
+      attempts_getter.call(smtp_request_instance)
+    end
+  end
 end
