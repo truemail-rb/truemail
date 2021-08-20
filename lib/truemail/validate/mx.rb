@@ -52,10 +52,7 @@ module Truemail
       end
 
       def domain
-        @domain ||= begin
-          result.domain = result.email[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1]
-          result.punycode_email[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1]
-        end
+        @domain ||= result.punycode_email[Truemail::RegexConstant::REGEX_DOMAIN_FROM_EMAIL, 1]
       end
 
       def hosts_from_mx_records?

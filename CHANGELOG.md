@@ -2,6 +2,15 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.9] - 2021.08.20
+
+### Updated
+
+- Updated `Truemail::Validate::DomainListMatch#email_domain`, tests
+- Updated `Truemail::Validate::Mx#domain`, tests
+- Updated gem development dependencies
+- Updated gem version
+
 ## [2.4.8] - 2021.08.12
 
 ### Updated
@@ -18,7 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Updated
 
 - Updated gem codebase, refactored `Truemail::ContextHelper`
-- Updated tests
+- Updated tests with `Truemail::DnsHelper#dns_mock_gateway`
 - Updated gem development dependencies
 - Updated gem version
 
