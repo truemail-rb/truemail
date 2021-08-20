@@ -166,6 +166,9 @@ Style/MultilineInPatternThen:
 Style/QuotedSymbols:
   Enabled: true
 
+Style/RedundantSelfAssignmentBranch:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -324,6 +327,9 @@ Lint/TripleQuotes:
   Enabled: true
 
 Lint/EmptyInPattern:
+  Enabled: true
+
+Lint/AmbiguousRange:
   Enabled: true
 
 Gemspec/DateAssignment:

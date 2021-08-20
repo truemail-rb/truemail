@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Audit::Ptr do
-  let(:configuration_instance) { create_configuration(dns: ["127.0.0.1:#{dns_mock_server.port}"]) }
+  let(:configuration_instance) { create_configuration(dns: dns_mock_gateway) }
   let(:verifier_domain) { configuration_instance.verifier_domain }
   let(:current_host_ip) { random_ip_address }
   let(:result_instance) { create_auditor(current_host_ip: current_host_ip, configuration: configuration_instance).result }

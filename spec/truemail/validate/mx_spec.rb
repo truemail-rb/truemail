@@ -2,7 +2,7 @@
 
 RSpec.describe Truemail::Validate::Mx do
   let(:email) { random_email }
-  let(:configuration) { create_configuration(dns: ["127.0.0.1:#{dns_mock_server.port}"]) }
+  let(:configuration) { create_configuration(dns: dns_mock_gateway) }
   let(:result_instance) { Truemail::Validator::Result.new(email: email, configuration: configuration) }
 
   describe 'defined constants' do
@@ -44,12 +44,6 @@ RSpec.describe Truemail::Validate::Mx do
       context 'when internationalized email' do
         let(:email) { random_internationalized_email }
 
-        specify do
-          expect { mx_validator }
-            .to change(result_instance, :domain)
-            .from(nil).to(domain_from_email(email))
-        end
-
         include_examples 'calls email punycode representer, returns memoized result'
       end
     end
@@ -80,9 +74,7 @@ RSpec.describe Truemail::Validate::Mx do
             expect(mx_validator_instance).not_to receive(:host_from_a_record?)
 
             expect { mx_validator }
-              .to change(result_instance, :domain)
-              .from(nil).to(domain_from_email(email))
-              .and change(result_instance, :mail_servers)
+              .to change(result_instance, :mail_servers)
               .from([]).to(uniq_mail_servers_by_ip)
               .and not_change(result_instance, :success)
           end
@@ -121,9 +113,7 @@ RSpec.describe Truemail::Validate::Mx do
             expect(mx_validator_instance).not_to receive(:host_from_a_record?)
 
             expect { mx_validator }
-              .to change(result_instance, :domain)
-              .from(nil).to(domain_from_email(email))
-              .and change(result_instance, :mail_servers)
+              .to change(result_instance, :mail_servers)
               .from([]).to(uniq_mail_servers_by_ip)
               .and not_change(result_instance, :success)
           end
@@ -143,9 +133,7 @@ RSpec.describe Truemail::Validate::Mx do
             expect(mx_validator_instance).to receive(:hosts_from_cname_records?).and_call_original
             expect(mx_validator_instance).not_to receive(:host_from_a_record?)
             expect { mx_validator }
-              .to change(result_instance, :domain)
-              .from(nil).to(domain_from_email(email))
-              .and change(result_instance, :mail_servers)
+              .to change(result_instance, :mail_servers)
               .from([]).to([a_records.first]) # one cname record is equal to one a record
               .and not_change(result_instance, :success)
           end
@@ -169,9 +157,7 @@ RSpec.describe Truemail::Validate::Mx do
           expect(mx_validator_instance).to receive(:hosts_from_cname_records?).and_call_original
           expect(mx_validator_instance).to receive(:host_from_a_record?).and_call_original
           expect { mx_validator }
-            .to change(result_instance, :domain)
-            .from(nil).to(domain_from_email(email))
-            .and change(result_instance, :mail_servers)
+            .to change(result_instance, :mail_servers)
             .from([]).to([a_record])
             .and not_change(result_instance, :success)
         end
@@ -189,10 +175,9 @@ RSpec.describe Truemail::Validate::Mx do
         specify do
           mx_lookup_chain_expectations
           expect { mx_validator }
-            .to change(result_instance, :domain)
-            .from(nil).to(domain_from_email(email))
+            .to change(result_instance, :success)
+            .from(true).to(false)
             .and not_change(result_instance, :mail_servers)
-            .and change(result_instance, :success).from(true).to(false)
         end
 
         include_examples 'calls email punycode representer, returns memoized result'
@@ -222,7 +207,7 @@ RSpec.describe Truemail::Validate::Mx do
         let(:configuration) do
           create_configuration(
             not_rfc_mx_lookup_flow: true,
-            dns: ["127.0.0.1:#{dns_mock_server.port}"]
+            dns: dns_mock_gateway
           )
         end
         let(:mx_lookup_chain_expectations) do
