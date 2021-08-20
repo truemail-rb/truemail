@@ -36,6 +36,10 @@ module Truemail
       DnsMock::Representer::Punycode.call(domain_from_email(email))
     end
 
+    def attempts_getter
+      ->(smtp_request_instance) { smtp_request_instance.send(:attempts) }
+    end
+
     private
 
     def ffaker

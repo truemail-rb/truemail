@@ -20,12 +20,13 @@ RSpec.describe Truemail::Validate::Smtp do
       described_class.new(
         Truemail::Validator::Result.new(
           email: email,
-          mail_servers: create_servers_list(2),
+          mail_servers: mail_servers,
           configuration: configuration_instance
         )
       )
     end
 
+    let(:mail_servers) { create_servers_list(2) }
     let(:result_instance) { smtp_validator_instance.result }
     let(:smtp_results) { smtp_validator_instance.smtp_results }
 
@@ -86,19 +87,41 @@ RSpec.describe Truemail::Validate::Smtp do
                 .from(0).to(result_instance.mail_servers.size)
 
               expect(smtp_results.map(&:host)).to eq(result_instance.mail_servers)
+              expect(smtp_results.map(&attempts_getter).none?).to be(true)
             end
           end
 
-          context 'until request run fails' do
+          context 'until request run fails, more then one mail server' do
             it 'creates smtp request instances' do
               allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
               allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
 
+              expect(result_instance)
+                .to receive(:punycode_email).exactly(result_instance.mail_servers.size).and_call_original
               expect { smtp_validator_instance.send(:establish_smtp_connection) }
                 .to change(smtp_results, :size)
                 .from(0).to(result_instance.mail_servers.size)
 
               expect(smtp_results.map(&:host)).to eq(result_instance.mail_servers)
+              expect(smtp_results.map(&attempts_getter).none?).to be(true)
+            end
+          end
+
+          context 'until request run fails, one mail server' do
+            let(:mail_servers) { create_servers_list(1) }
+
+            it 'creates smtp request instances' do
+              allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
+              allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
+
+              expect(result_instance)
+                .to receive(:punycode_email).exactly(result_instance.mail_servers.size).and_call_original
+              expect { smtp_validator_instance.send(:establish_smtp_connection) }
+                .to change(smtp_results, :size)
+                .from(0).to(result_instance.mail_servers.size)
+
+              expect(smtp_results.map(&:host)).to eq(result_instance.mail_servers)
+              expect(smtp_results.map(&attempts_getter).none?).to be(false)
             end
           end
 
@@ -108,11 +131,13 @@ RSpec.describe Truemail::Validate::Smtp do
               allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
               allow_any_instance_of(Truemail::Validate::Smtp::Response).to receive(:errors).and_return(rcptto: 'error')
 
+              expect(result_instance).to receive(:punycode_email).and_call_original
               expect { smtp_validator_instance.send(:establish_smtp_connection) }
                 .to change(smtp_results, :size)
                 .from(0).to(1)
 
               expect(smtp_results.last.send(:host)).to eq(result_instance.mail_servers.first)
+              expect(smtp_results.map(&attempts_getter).none?).to be(true)
             end
           end
         end
@@ -125,12 +150,13 @@ RSpec.describe Truemail::Validate::Smtp do
               allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(false)
               allow(Truemail::Validate::Smtp::Request).to receive(:new).and_call_original
 
-              expect(result_instance).to receive(:punycode_email).exactly(1).and_call_original
+              expect(result_instance).to receive(:punycode_email).and_call_original
               expect { smtp_validator_instance.send(:establish_smtp_connection) }
                 .to change(smtp_results, :size)
                 .from(0).to(1)
 
               expect(smtp_results.last.send(:host)).to eq(result_instance.mail_servers.first)
+              expect(smtp_results.map(&attempts_getter).none?).to be(true)
             end
           end
 
@@ -139,11 +165,13 @@ RSpec.describe Truemail::Validate::Smtp do
               allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
               allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
 
+              expect(result_instance).to receive(:punycode_email).and_call_original
               expect { smtp_validator_instance.send(:establish_smtp_connection) }
                 .to change(smtp_results, :size)
                 .from(0).to(1)
 
               expect(smtp_results.last.send(:host)).to eq(result_instance.mail_servers.first)
+              expect(smtp_results.map(&attempts_getter).none?).to be(true)
             end
           end
         end
@@ -160,6 +188,7 @@ RSpec.describe Truemail::Validate::Smtp do
               .to change(smtp_results, :size).from(0).to(1)
 
             expect(smtp_results.last.send(:host)).to eq(result_instance.mail_servers.first)
+            expect(smtp_results.map(&attempts_getter).none?).to be(true)
           end
         end
       end
@@ -185,16 +214,15 @@ RSpec.describe Truemail::Validate::Smtp do
         end
 
         specify do
-          allow(result_instance.mail_servers).to receive(:each)
+          allow(smtp_validator_instance.send(:filtered_mail_servers_by_fail_fast_scenario))
+            .to receive(:each)
 
           expect { smtp_validator_instance.run }
             .to not_change(result_instance, :success)
             .and not_change(result_instance, :errors)
         end
 
-        it 'returns true' do
-          expect(smtp_validator_instance.run).to be(true)
-        end
+        specify { expect(smtp_validator_instance.run).to be(true) }
       end
 
       context 'when smtp validation has only failed attempts' do
@@ -241,7 +269,8 @@ RSpec.describe Truemail::Validate::Smtp do
 
         context 'wihout smtp safe check' do
           specify do
-            allow(result_instance.mail_servers).to receive(:each)
+            allow(smtp_validator_instance.send(:filtered_mail_servers_by_fail_fast_scenario))
+              .to receive(:each)
 
             expect { smtp_validator_instance.run }
               .to change(result_instance, :success)
@@ -252,9 +281,7 @@ RSpec.describe Truemail::Validate::Smtp do
               .from(nil).to(smtp_results)
           end
 
-          it 'returns false' do
-            expect(smtp_validator_instance.run).to be(false)
-          end
+          specify { expect(smtp_validator_instance.run).to be(false) }
         end
 
         context 'with smtp safe check' do
@@ -262,7 +289,8 @@ RSpec.describe Truemail::Validate::Smtp do
 
           context 'when smtp user error has been not detected' do
             specify do
-              allow(result_instance.mail_servers).to receive(:each)
+              allow(smtp_validator_instance.send(:filtered_mail_servers_by_fail_fast_scenario))
+                .to receive(:each)
 
               expect { smtp_validator_instance.run }
                 .to not_change(result_instance, :success)
@@ -270,9 +298,7 @@ RSpec.describe Truemail::Validate::Smtp do
                 .and change(result_instance, :smtp_debug).from(nil).to(smtp_results)
             end
 
-            it 'returns false' do
-              expect(smtp_validator_instance.run).to be(true)
-            end
+            specify { expect(smtp_validator_instance.run).to be(true) }
           end
 
           context 'when smtp user error has been detected' do
@@ -282,7 +308,8 @@ RSpec.describe Truemail::Validate::Smtp do
               let(:smtp_error_context_2) { smtp_error_context }
 
               specify do
-                allow(result_instance.mail_servers).to receive(:each)
+                allow(smtp_validator_instance.send(:filtered_mail_servers_by_fail_fast_scenario))
+                  .to receive(:each)
 
                 expect { smtp_validator_instance.run }
                   .to change(result_instance, :success)
@@ -293,9 +320,7 @@ RSpec.describe Truemail::Validate::Smtp do
                   .from(nil).to(smtp_results)
               end
 
-              it 'returns false' do
-                expect(smtp_validator_instance.run).to be(false)
-              end
+              specify { expect(smtp_validator_instance.run).to be(false) }
             end
 
             context 'with error in others smtp responses' do
@@ -303,7 +328,8 @@ RSpec.describe Truemail::Validate::Smtp do
                 let(:smtp_error_context_1) { smtp_error_context }
 
                 specify do
-                  allow(result_instance.mail_servers).to receive(:each)
+                  allow(smtp_validator_instance.send(:filtered_mail_servers_by_fail_fast_scenario))
+                    .to receive(:each)
 
                   expect { smtp_validator_instance.run }
                     .to not_change(result_instance, :success)
@@ -311,9 +337,7 @@ RSpec.describe Truemail::Validate::Smtp do
                     .and change(result_instance, :smtp_debug).from(nil).to(smtp_results)
                 end
 
-                it 'returns false' do
-                  expect(smtp_validator_instance.run).to be(true)
-                end
+                specify { expect(smtp_validator_instance.run).to be(true) }
               end
             end
           end
