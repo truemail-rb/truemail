@@ -2,8 +2,15 @@
 
 RSpec.describe Truemail::Validate::Mx do
   let(:email) { random_email }
+  let(:domain) { domain_from_email(email) }
   let(:configuration) { create_configuration(dns: dns_mock_gateway) }
-  let(:result_instance) { Truemail::Validator::Result.new(email: email, configuration: configuration) }
+  let(:result_instance) do
+    Truemail::Validator::Result.new(
+      email: email,
+      domain: domain,
+      configuration: configuration
+    )
+  end
 
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:ERROR) }
@@ -177,6 +184,8 @@ RSpec.describe Truemail::Validate::Mx do
           expect { mx_validator }
             .to change(result_instance, :success)
             .from(true).to(false)
+            .and change(result_instance, :errors)
+            .from({}).to(mx: Truemail::Validate::Mx::ERROR)
             .and not_change(result_instance, :mail_servers)
         end
 
@@ -250,6 +259,28 @@ RSpec.describe Truemail::Validate::Mx do
         specify do
           expect(result_instance).not_to receive(:punycode_email)
           expect { mx_validator }.to not_change(result_instance, :success)
+        end
+
+        specify { is_expected.to be(false) }
+      end
+
+      context 'when invalid email domain' do
+        let(:email) { 'username@invalid_domain' }
+        let(:configuration) { create_configuration(email_pattern: /(.+)@(.+)/) }
+
+        before do
+          allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
+          result_instance.success = true
+        end
+
+        specify do
+          expect(result_instance).not_to receive(:punycode_email)
+          expect { mx_validator }
+            .to change(result_instance, :success)
+            .from(true).to(false)
+            .and change(result_instance, :errors)
+            .from({}).to(mx: Truemail::Validate::Mx::ERROR)
+            .and not_change(result_instance, :mail_servers)
         end
 
         specify { is_expected.to be(false) }
