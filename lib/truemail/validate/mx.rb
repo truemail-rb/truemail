@@ -8,12 +8,16 @@ module Truemail
 
       def run
         return false unless Truemail::Validate::Regex.check(result)
-        return true if success(mx_lookup && domain_not_include_null_mx)
+        return true if success(email_domain_valid? && mx_lookup && domain_not_include_null_mx)
         mail_servers.clear && add_error(Truemail::Validate::Mx::ERROR)
         false
       end
 
       private
+
+      def email_domain_valid?
+        Truemail::RegexConstant::REGEX_DOMAIN_PATTERN.match?(result.domain)
+      end
 
       def host_extractor_methods
         return %i[hosts_from_mx_records?] if configuration.not_rfc_mx_lookup_flow
