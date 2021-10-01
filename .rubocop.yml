@@ -169,6 +169,15 @@ Style/QuotedSymbols:
 Style/RedundantSelfAssignmentBranch:
   Enabled: true
 
+Style/NumberedParameters:
+  Enabled: true
+
+Style/NumberedParametersLimit:
+  Enabled: true
+
+Style/SelectByRegexp:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -332,7 +341,19 @@ Lint/EmptyInPattern:
 Lint/AmbiguousRange:
   Enabled: true
 
+Lint/AmbiguousOperatorPrecedence:
+  Enabled: true
+
+Lint/IncompatibleIoSelectWithFiberScheduler:
+  Enabled: true
+
+Lint/RequireRelativeSelfPath:
+  Enabled: true
+
 Gemspec/DateAssignment:
+  Enabled: true
+
+Security/IoMethods:
   Enabled: true
 
 Performance/AncestorsInclude:
@@ -417,4 +438,10 @@ RSpec/IdenticalEqualityAssertion:
   Enabled: true
 
 RSpec/Rails/AvoidSetupHook:
+  Enabled: true
+
+RSpec/ExcessiveDocstringSpacing:
+  Enabled: true
+
+RSpec/SubjectDeclaration:
   Enabled: true

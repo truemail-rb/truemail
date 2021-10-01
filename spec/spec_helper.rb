@@ -5,7 +5,7 @@ require_relative 'support/config/simplecov'
 require_relative '../lib/truemail'
 
 rspec_custom = ::File.join(::File.dirname(__FILE__), 'support/**/*.rb')
-::Dir[File.expand_path(rspec_custom)].each { |file| require file unless file[/\A.+_spec\.rb\z/] }
+::Dir[::File.expand_path(rspec_custom)].each { |file| require file unless file[/\A.+_spec\.rb\z/] }
 
 RSpec::Mocks.configuration.allow_message_expectations_on_nil = true
 RSpec.configure do |config|
