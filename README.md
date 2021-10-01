@@ -368,7 +368,7 @@ Truemail.validate('email@white-domain.com')
   @result=#<struct Truemail::Validator::Result
     success=true,
     email="email@white-domain.com",
-    domain=nil,
+    domain="white-domain.com",
     mail_servers=[],
     errors={},
     smtp_debug=nil>,
@@ -416,7 +416,7 @@ Truemail.validate('email@white-domain.com', with: :regex)
   @result=#<struct Truemail::Validator::Result
     success=true,
     email="email@white-domain.com",
-    domain=nil,
+    domain="white-domain.com",
     mail_servers=[],
     errors={},
     smtp_debug=nil>,
@@ -451,7 +451,7 @@ Truemail.validate('email@domain.com', with: :regex)
   @result=#<struct Truemail::Validator::Result
     success=false,
     email="email@domain.com",
-    domain=nil,
+    domain="domain.com",
     mail_servers=[],
     errors={},
     smtp_debug=nil>,
@@ -488,7 +488,7 @@ Truemail.validate('email@black-domain.com')
   @result=#<struct Truemail::Validator::Result
     success=false,
     email="email@black-domain.com",
-    domain=nil,
+    domain="black-domain.com",
     mail_servers=[],
     errors={},
     smtp_debug=nil>,
@@ -525,7 +525,7 @@ Truemail.validate('email@somedomain.com')
   @result=#<struct Truemail::Validator::Result
     success=true,
     email="email@somedomain.com",
-    domain=nil,
+    domain="somedomain.com",
     mail_servers=[],
     errors={},
     smtp_debug=nil>,
@@ -579,7 +579,7 @@ Truemail.validate('email@example.com', with: :regex)
     #<struct Truemail::Validator::Result
       success=true,
       email="email@example.com",
-      domain=nil,
+      domain="example.com",
       mail_servers=[],
       errors={},
       smtp_debug=nil>,
@@ -624,7 +624,7 @@ Truemail.validate('email@example.com', with: :regex)
     #<struct Truemail::Validator::Result
       success=true,
       email="email@example.com",
-      domain=nil,
+      domain="example.com",
       mail_servers=[],
       errors={},
       smtp_debug=nil>,

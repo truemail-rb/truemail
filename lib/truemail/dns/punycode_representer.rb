@@ -2,7 +2,7 @@
 
 module Truemail
   module Dns
-    PunycodeRepresenter = Class.new do
+    PunycodeRepresenter = ::Class.new do
       require 'simpleidn'
 
       def self.call(email)
