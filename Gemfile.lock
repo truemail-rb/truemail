@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    truemail (2.5.1)
+    truemail (2.5.2)
       simpleidn (~> 0.2.1)
 
 GEM
@@ -26,7 +26,7 @@ GEM
     fasterer (0.9.0)
       colorize (~> 0.7)
       ruby_parser (>= 3.14.1)
-    ffaker (2.19.0)
+    ffaker (2.20.0)
     hashdiff (1.0.1)
     iniparse (1.5.0)
     json (2.5.1)
@@ -70,7 +70,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    rubocop (1.22.0)
+    rubocop (1.22.1)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -119,14 +119,14 @@ DEPENDENCIES
   bundler-audit (~> 0.9.0.1)
   dns_mock (~> 1.4, >= 1.4.2)
   fasterer (~> 0.9.0)
-  ffaker (~> 2.19)
+  ffaker (~> 2.20)
   json_matchers (~> 0.11.1)
   overcommit (~> 0.58.0)
   pry-byebug (~> 3.9)
   rake (~> 13.0, >= 13.0.6)
   reek (~> 6.0, >= 6.0.6)
   rspec (~> 3.10)
-  rubocop (~> 1.22)
+  rubocop (~> 1.22, >= 1.22.1)
   rubocop-performance (~> 1.11, >= 1.11.5)
   rubocop-rspec (~> 2.5)
   simplecov (~> 0.17.1)

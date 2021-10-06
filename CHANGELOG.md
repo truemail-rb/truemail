@@ -2,6 +2,18 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.2] - 2021.10.06
+
+### Fixed
+
+- `Truemail::RegexConstant::REGEX_EMAIL_PATTERN` behaviour with double `@` in email. Thanks [@your-favorite-dev](https://github.com/your-favorite-dev) for bug report.
+
+### Updated
+
+- Updated tests
+- Updated gem development dependencies
+- Updated gem version
+
 ## [2.5.1] - 2021.10.01
 
 ### Updated

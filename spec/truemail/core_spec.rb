@@ -28,6 +28,8 @@ RSpec.describe Truemail::RegexConstant do
   describe 'Truemail::RegexConstant::REGEX_EMAIL_PATTERN' do
     subject(:regex_pattern) { described_class::REGEX_EMAIL_PATTERN }
 
+    let(:special_chars) { %w[- _ . + ! ~ , ' & % # $ * / = ? ^ ` { | }] }
+
     it 'allows from 6 to 255 chars' do
       expect(
         regex_pattern.match?(Truemail::GenerateEmailHelper.call(size: :min))
@@ -67,14 +69,24 @@ RSpec.describe Truemail::RegexConstant do
 
     it 'allows special chars' do
       expect(
-        regex_pattern.match?(Truemail::GenerateEmailHelper.call(symbols: %w[- _ . + ! ~ , ' & % # $ * / = ? ^ ` { | }]))
+        regex_pattern.match?(
+          Truemail::GenerateEmailHelper.call(symbols: special_chars)
+        )
       ).to be(true)
     end
 
     it 'not allows special chars for one char username' do
       expect(
         regex_pattern.match?(
-          Truemail::GenerateEmailHelper.call(size: :min, invalid_email_with: %w[- _ . + ! ~ , ' & % # $ * / = ? ^ ` { | }])
+          Truemail::GenerateEmailHelper.call(size: :min, invalid_email_with: special_chars)
+        )
+      ).to be(false)
+    end
+
+    it 'not allows double @ char in email' do
+      expect(
+        regex_pattern.match?(
+          Truemail::GenerateEmailHelper.call(invalid_email_with: %w[@])
         )
       ).to be(false)
     end
