@@ -20,7 +20,7 @@ module Truemail
 
   module RegexConstant
     REGEX_DOMAIN = /[\p{L}0-9]+([\-.]{1}[\p{L}0-9]+)*\.\p{L}{2,63}/i.freeze
-    REGEX_EMAIL_PATTERN = /(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\W\w]*)@(#{REGEX_DOMAIN})\z)/.freeze
+    REGEX_EMAIL_PATTERN = %r{(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w\p{L}.+!~,'&%#*^`{}|\-/?=$]*)@(#{REGEX_DOMAIN})\z)}.freeze
     REGEX_DOMAIN_PATTERN = /(?=\A.{4,255}\z)(\A#{REGEX_DOMAIN}\z)/.freeze
     REGEX_DOMAIN_FROM_EMAIL = /\A.+@(.+)\z/.freeze
     REGEX_SMTP_ERROR_BODY_PATTERN = /(?=.*550)(?=.*(user|account|customer|mailbox)).*/i.freeze
