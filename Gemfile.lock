@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    truemail (2.5.2)
+    truemail (2.5.3)
       simpleidn (~> 0.2.1)
 
 GEM
@@ -20,7 +20,7 @@ GEM
     crack (0.4.5)
       rexml
     diff-lcs (1.4.4)
-    dns_mock (1.4.2)
+    dns_mock (1.4.3)
       simpleidn (~> 0.2.1)
     docile (1.4.0)
     fasterer (0.9.0)
@@ -29,7 +29,7 @@ GEM
     ffaker (2.20.0)
     hashdiff (1.0.1)
     iniparse (1.5.0)
-    json (2.5.1)
+    json (2.6.1)
     json_matchers (0.11.1)
       json_schema
     json_schema (0.21.0)
@@ -69,8 +69,8 @@ GEM
     rspec-mocks (3.10.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
-    rspec-support (3.10.2)
-    rubocop (1.22.1)
+    rspec-support (3.10.3)
+    rubocop (1.22.3)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -79,17 +79,17 @@ GEM
       rubocop-ast (>= 1.12.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.12.0)
+    rubocop-ast (1.13.0)
       parser (>= 3.0.1.1)
-    rubocop-performance (1.11.5)
+    rubocop-performance (1.12.0)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    rubocop-rspec (2.5.0)
+    rubocop-rspec (2.6.0)
       rubocop (~> 1.19)
     ruby-progressbar (1.11.0)
-    ruby_parser (3.17.0)
-      sexp_processor (~> 4.15, >= 4.15.1)
-    sexp_processor (4.15.3)
+    ruby_parser (3.18.0)
+      sexp_processor (~> 4.16)
+    sexp_processor (4.16.0)
     simplecov (0.17.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -115,9 +115,9 @@ PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
-  bundler (~> 2.2, >= 2.2.28)
+  bundler (~> 2.2, >= 2.2.31)
   bundler-audit (~> 0.9.0.1)
-  dns_mock (~> 1.4, >= 1.4.2)
+  dns_mock (~> 1.4, >= 1.4.3)
   fasterer (~> 0.9.0)
   ffaker (~> 2.20)
   json_matchers (~> 0.11.1)
@@ -126,13 +126,13 @@ DEPENDENCIES
   rake (~> 13.0, >= 13.0.6)
   reek (~> 6.0, >= 6.0.6)
   rspec (~> 3.10)
-  rubocop (~> 1.22, >= 1.22.1)
-  rubocop-performance (~> 1.11, >= 1.11.5)
-  rubocop-rspec (~> 2.5)
+  rubocop (~> 1.22, >= 1.22.3)
+  rubocop-performance (~> 1.12)
+  rubocop-rspec (~> 2.6)
   simplecov (~> 0.17.1)
   truemail!
   truemail-rspec (~> 0.7.0)
   webmock (~> 3.14)
 
 BUNDLED WITH
-   2.2.28
+   2.2.31
