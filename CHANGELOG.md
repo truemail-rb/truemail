@@ -2,6 +2,18 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.3] - 2021.11.08
+
+### Fixed
+
+- Ruby 3.0 stdlib SMTP client SSL certificate verification issues for cases when IP address uses as MX host. Thanks [@esb](https://github.com/esb) for bug report.
+
+### Updated
+
+- Updated `Truemail::Validate::Smtp::Request#run`
+- Updated gem development dependencies
+- Updated gem version
+
 ## [2.5.2] - 2021.10.06
 
 ### Fixed

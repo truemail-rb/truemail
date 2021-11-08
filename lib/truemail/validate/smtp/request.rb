@@ -35,7 +35,7 @@ module Truemail
         end
 
         def run
-          session.start(configuration.verifier_domain) do |smtp_request|
+          session.start(configuration.verifier_domain, **(::RUBY_VERSION[/\A3\..+\z/] ? { tls_verify: false } : {})) do |smtp_request|
             response.connection = response.helo = true
             smtp_handshakes(smtp_request, response)
           end
