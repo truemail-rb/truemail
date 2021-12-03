@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    truemail (2.5.3)
+    truemail (2.5.4)
       simpleidn (~> 0.2.1)
 
 GEM
@@ -20,7 +20,7 @@ GEM
     crack (0.4.5)
       rexml
     diff-lcs (1.4.4)
-    dns_mock (1.4.3)
+    dns_mock (1.4.4)
       simpleidn (~> 0.2.1)
     docile (1.4.0)
     fasterer (0.9.0)
@@ -40,7 +40,7 @@ GEM
       iniparse (~> 1.4)
       rexml (~> 3.2)
     parallel (1.21.0)
-    parser (3.0.2.0)
+    parser (3.0.3.1)
       ast (~> 2.4.1)
     pry (0.13.1)
       coderay (~> 1.1)
@@ -70,7 +70,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.3)
-    rubocop (1.22.3)
+    rubocop (1.23.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -79,7 +79,7 @@ GEM
       rubocop-ast (>= 1.12.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.13.0)
+    rubocop-ast (1.14.0)
       parser (>= 3.0.1.1)
     rubocop-performance (1.12.0)
       rubocop (>= 1.7.0, < 2.0)
@@ -87,7 +87,7 @@ GEM
     rubocop-rspec (2.6.0)
       rubocop (~> 1.19)
     ruby-progressbar (1.11.0)
-    ruby_parser (3.18.0)
+    ruby_parser (3.18.1)
       sexp_processor (~> 4.16)
     sexp_processor (4.16.0)
     simplecov (0.17.1)
@@ -115,9 +115,9 @@ PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
-  bundler (~> 2.2, >= 2.2.31)
+  bundler (~> 2.2, >= 2.2.32)
   bundler-audit (~> 0.9.0.1)
-  dns_mock (~> 1.4, >= 1.4.3)
+  dns_mock (~> 1.4, >= 1.4.4)
   fasterer (~> 0.9.0)
   ffaker (~> 2.20)
   json_matchers (~> 0.11.1)
@@ -126,7 +126,7 @@ DEPENDENCIES
   rake (~> 13.0, >= 13.0.6)
   reek (~> 6.0, >= 6.0.6)
   rspec (~> 3.10)
-  rubocop (~> 1.22, >= 1.22.3)
+  rubocop (~> 1.23)
   rubocop-performance (~> 1.12)
   rubocop-rspec (~> 2.6)
   simplecov (~> 0.17.1)
@@ -135,4 +135,4 @@ DEPENDENCIES
   webmock (~> 3.14)
 
 BUNDLED WITH
-   2.2.31
+   2.2.32
