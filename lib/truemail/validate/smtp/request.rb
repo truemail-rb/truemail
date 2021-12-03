@@ -35,10 +35,8 @@ module Truemail
         end
 
         def run
-          session.start(configuration.verifier_domain, **(::RUBY_VERSION[/\A3\..+\z/] ? { tls_verify: false } : {})) do |smtp_request|
-            response.connection = response.helo = true
-            smtp_handshakes(smtp_request, response)
-          end
+          return session.start(verifier_domain, tls_verify: false, &session_actions) if ::RUBY_VERSION[/\A3\..+\z/]
+          session.start(verifier_domain, &session_actions)
         rescue => error
           retry if attempts_exist?
           assign_error(attribute: :connection, message: compose_from(error))
@@ -96,6 +94,17 @@ module Truemail
           smtp_request.public_send(method, value)
         rescue => error
           assign_error(attribute: method, message: compose_from(error))
+        end
+
+        def verifier_domain
+          configuration.verifier_domain
+        end
+
+        def session_actions
+          lambda { |smtp_request|
+            response.connection = response.helo = true
+            smtp_handshakes(smtp_request, response)
+          }
         end
 
         def smtp_handshakes(smtp_request, smtp_response)

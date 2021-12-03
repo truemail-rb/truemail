@@ -2,6 +2,19 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.4] - 2021.12.03
+
+### Fixed
+
+- `Net::SMTP#start` Ruby 2.x compatibility. Thanks [@evserykh](https://github.com/evserykh) for bug report.
+
+### Updated
+
+- Updated `Truemail::Validate::Smtp::Request#run`
+- Updated rubocop/codeclimate configs
+- Updated gem development dependencies
+- Updated gem docs, version
+
 ## [2.5.3] - 2021.11.08
 
 ### Fixed
