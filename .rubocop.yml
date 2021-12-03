@@ -178,6 +178,9 @@ Style/NumberedParametersLimit:
 Style/SelectByRegexp:
   Enabled: true
 
+Style/OpenStructUse:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -350,8 +353,14 @@ Lint/IncompatibleIoSelectWithFiberScheduler:
 Lint/RequireRelativeSelfPath:
   Enabled: true
 
+Lint/UselessRuby2Keywords:
+  Enabled: true
+
 Gemspec/DateAssignment:
   Enabled: true
+
+Gemspec/RequireMFA:
+  Enabled: false
 
 Security/IoMethods:
   Enabled: true
