@@ -31,6 +31,9 @@ Naming/RescuedExceptionsVariableName:
 Naming/InclusiveLanguage:
   Enabled: false
 
+Naming/BlockForwarding:
+  Enabled: true
+
 Style/Documentation:
   Enabled: false
 
@@ -179,6 +182,15 @@ Style/SelectByRegexp:
   Enabled: true
 
 Style/OpenStructUse:
+  Enabled: true
+
+Style/FileRead:
+  Enabled: true
+
+Style/FileWrite:
+  Enabled: true
+
+Style/MapToHash:
   Enabled: true
 
 Layout/LineLength:
@@ -416,6 +428,9 @@ Performance/MapCompact:
 Performance/ConcurrentMonotonicTime:
   Enabled: true
 
+Performance/StringIdentifierArgument:
+  Enabled: true
+
 RSpec/ExampleLength:
   Enabled: false
 
@@ -456,4 +471,7 @@ RSpec/ExcessiveDocstringSpacing:
   Enabled: true
 
 RSpec/SubjectDeclaration:
+  Enabled: true
+
+RSpec/FactoryBot/SyntaxMethods:
   Enabled: true

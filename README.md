@@ -81,7 +81,6 @@ Also Truemail gem allows performing an audit of the host in which runs.
 ## Features
 
 - Configurable validator, validate only what you need
-- Only one runtime dependency
 - Supporting of internationalized emails ([EAI](https://en.wikipedia.org/wiki/Email_address#Internationalization))
 - Whitelist/blacklist validation layers
 - Ability to configure different MX/SMTP validation flows

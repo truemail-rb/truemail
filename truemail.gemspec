@@ -31,9 +31,9 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| ::File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.add_runtime_dependency 'net-smtp', '~> 0.3'
   spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
 
-  spec.add_development_dependency 'bundler', '~> 2.2', '>= 2.2.32'
   spec.add_development_dependency 'bundler-audit', '~> 0.9.0.1'
   spec.add_development_dependency 'dns_mock', '~> 1.4', '>= 1.4.4'
   spec.add_development_dependency 'fasterer', '~> 0.9.0'
@@ -44,9 +44,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   spec.add_development_dependency 'reek', '~> 6.0', '>= 6.0.6'
   spec.add_development_dependency 'rspec', '~> 3.10'
-  spec.add_development_dependency 'rubocop', '~> 1.23'
-  spec.add_development_dependency 'rubocop-performance', '~> 1.12'
-  spec.add_development_dependency 'rubocop-rspec', '~> 2.6'
+  spec.add_development_dependency 'rubocop', '~> 1.24'
+  spec.add_development_dependency 'rubocop-performance', '~> 1.13'
+  spec.add_development_dependency 'rubocop-rspec', '~> 2.7'
   spec.add_development_dependency 'simplecov', '~> 0.17.1'
   spec.add_development_dependency 'truemail-rspec', '~> 0.7.0'
   spec.add_development_dependency 'webmock', '~> 3.14'
