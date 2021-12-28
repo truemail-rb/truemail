@@ -18,6 +18,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
   let(:configuration_instance) { create_configuration }
   let(:connection_timeout)     { configuration_instance.connection_timeout }
   let(:response_timeout)       { configuration_instance.response_timeout }
+  let(:verifier_domain)        { configuration_instance.verifier_domain }
   let(:attempts)               { {} }
   let(:port_open_status)       { proc { true } }
 
@@ -46,7 +47,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       specify do
         allow(::Socket).to receive(:tcp)
           .with(
-            mail_server,
+            request_instance_host,
             Truemail::Validate::Smtp::Request::SMTP_PORT,
             connect_timeout: connection_timeout
           ) { |&block| expect(block).to eq(port_open_status) }
@@ -60,7 +61,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       let(:error_stubs) do
         allow(::Socket).to receive(:tcp)
           .with(
-            mail_server,
+            request_instance_host,
             Truemail::Validate::Smtp::Request::SMTP_PORT,
             connect_timeout: connection_timeout
           )
@@ -78,21 +79,21 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
   describe '#session' do
     context 'when session creates' do
-      let(:session) { request_instance.send(:session) }
+      let(:session_net_smtp) { request_instance.send(:session).send(:net_smtp) }
 
       before do
-        allow(::Net::SMTP)
+        allow(Truemail::Validate::Smtp::Request::Session)
           .to receive(:new)
-          .with(request_instance_host, Truemail::Validate::Smtp::Request::SMTP_PORT)
+          .with(request_instance_host, Truemail::Validate::Smtp::Request::SMTP_PORT, connection_timeout, response_timeout)
           .and_call_original
       end
 
       it 'sets connection timeout with value from global configuration' do
-        expect(session.open_timeout).to eq(connection_timeout)
+        expect(session_net_smtp.open_timeout).to eq(connection_timeout)
       end
 
       it 'sets response timeout with value from global configuration' do
-        expect(session.read_timeout).to eq(response_timeout)
+        expect(session_net_smtp.read_timeout).to eq(response_timeout)
       end
     end
   end
@@ -101,11 +102,9 @@ RSpec.describe Truemail::Validate::Smtp::Request do
     let(:response_instance_target_method) { request_instance.run }
 
     before do
-      allow(session).to receive(:open_timeout=).with(connection_timeout)
-      allow(session).to receive(:read_timeout=).with(response_timeout)
-      allow(::Net::SMTP)
+      allow(Truemail::Validate::Smtp::Request::Session)
         .to receive(:new)
-        .with(request_instance_host, Truemail::Validate::Smtp::Request::SMTP_PORT)
+        .with(request_instance_host, Truemail::Validate::Smtp::Request::SMTP_PORT, connection_timeout, response_timeout)
         .and_return(session)
     end
 
@@ -122,7 +121,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       end
 
       specify do
-        allow(session).to receive(:start).and_yield(session)
+        allow(session).to receive(:start).with(verifier_domain).and_yield(session)
 
         expect { response_instance_target_method }
           .to change(response_instance, :connection)
@@ -151,7 +150,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
       context 'when open connection timeout error' do
         let(:error_stubs) do
-          allow(session).to receive(:start).and_raise(::Net::OpenTimeout)
+          allow(session).to receive(:start).with(verifier_domain).and_raise(::Net::OpenTimeout)
         end
 
         specify do
@@ -174,7 +173,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
       context 'when read connection timeout error' do
         let(:error_stubs) do
-          allow(session).to receive(:start).and_raise(::Net::ReadTimeout)
+          allow(session).to receive(:start).with(verifier_domain).and_raise(::Net::ReadTimeout)
         end
 
         specify do
@@ -197,7 +196,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
       context 'when remote server has dropped connection during session' do
         let(:error_stubs) do
-          allow(session).to receive(:start).and_yield(session).and_raise(::EOFError)
+          allow(session).to receive(:start).with(verifier_domain).and_yield(session).and_raise(::EOFError)
           allow(session).to receive(:mailfrom).and_raise(::StandardError)
         end
 
@@ -223,7 +222,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
       context 'when connection other errors' do
         let(:error_stubs) do
-          allow(session).to receive(:start).and_raise(::StandardError, error_message)
+          allow(session).to receive(:start).with(verifier_domain).and_raise(::StandardError, error_message)
         end
 
         specify do
@@ -246,7 +245,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
       context 'when smtp response errors' do
         it 'mailfrom smtp server error' do
-          allow(session).to receive(:start).and_yield(session)
+          allow(session).to receive(:start).with(verifier_domain).and_yield(session)
           allow(session).to receive(:helo).and_return(true)
           allow(session).to receive(:mailfrom).and_raise(::StandardError, error_message)
           allow(session).to receive(:rcptto)
@@ -268,7 +267,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
         end
 
         it 'rcptto smtp server error' do
-          allow(session).to receive(:start).and_yield(session)
+          allow(session).to receive(:start).with(verifier_domain).and_yield(session)
           allow(session).to receive(:helo).and_return(true)
           allow(session).to receive(:mailfrom).and_return(true)
           allow(session).to receive(:rcptto).and_raise(::StandardError, error_message)
@@ -311,6 +310,97 @@ RSpec.describe Truemail::Validate::Smtp::Request::Configuration do
     Truemail::Validate::Smtp::Request::Configuration::REQUEST_PARAMS.each do |method|
       specify do
         expect(request_configuration_instance.public_send(method)).to eq(configuration_instance.public_send(method))
+      end
+    end
+  end
+end
+
+RSpec.describe Truemail::Validate::Smtp::Request::Session do
+  subject(:request_session_instance) { described_class.new(host, port, connection_timeout, response_timeout) }
+
+  let(:const_state) { ::Net::SMTP::VERSION if ::Net::SMTP.const_defined?(:VERSION) }
+
+  let(:host) { random_domain_name }
+  let(:port) { 42 }
+  let(:connection_timeout) { 13 }
+  let(:response_timeout) { 14 }
+  let(:net_smtp_instance) { ::Struct.new(:open_timeout, :read_timeout, :tls_verify).new }
+
+  describe '.new' do
+    subject(:request_net_smtp_instance) { request_session_instance.send(:net_smtp) }
+
+    context 'when out of the box Net::SMTP version' do
+      before { ::Net::SMTP.send(:remove_const, :VERSION) if ::Net::SMTP.const_defined?(:VERSION) }
+
+      after { ::Net::SMTP.send(:const_set, :VERSION, const_state) if const_state }
+
+      it 'creates session instance with net smtp instance inside' do
+        expect(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
+        expect(request_net_smtp_instance.open_timeout).to eq(connection_timeout)
+        expect(request_net_smtp_instance.read_timeout).to eq(response_timeout)
+      end
+    end
+
+    context 'when Net::SMTP version < 0.3.0' do
+      it 'creates session instance with net smtp instance inside' do
+        stub_const('Net::SMTP::VERSION', '0.2.128506')
+        expect(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
+        expect(request_net_smtp_instance.open_timeout).to eq(connection_timeout)
+        expect(request_net_smtp_instance.read_timeout).to eq(response_timeout)
+      end
+    end
+
+    context 'when Net::SMTP version >= 0.3.0' do
+      it 'creates session instance with net smtp instance inside' do
+        stub_const('Net::SMTP::VERSION', '0.3.0')
+        expect(::Net::SMTP).to receive(:new).with(host, port, tls_verify: false).and_return(net_smtp_instance)
+        expect(request_net_smtp_instance.open_timeout).to eq(connection_timeout)
+        expect(request_net_smtp_instance.read_timeout).to eq(response_timeout)
+      end
+    end
+  end
+
+  describe '#start' do
+    subject(:session_start) { request_session_instance.start(helo_domain, &session_actions) }
+
+    let(:helo_domain) { random_domain_name }
+    let(:session_actions) { ->(_) {} }
+
+    context 'when out of the box Net::SMTP version' do
+      before do
+        ::Net::SMTP.send(:remove_const, :VERSION) if ::Net::SMTP.const_defined?(:VERSION)
+        allow(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
+      end
+
+      after { ::Net::SMTP.send(:const_set, :VERSION, const_state) if const_state }
+
+      it 'passes helo domain as position argument' do
+        expect(net_smtp_instance).to receive(:start).with(helo_domain, &session_actions)
+        session_start
+      end
+    end
+
+    context 'when Net::SMTP version < 0.3.0' do
+      before do
+        stub_const('Net::SMTP::VERSION', '0.2.128506')
+        allow(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
+      end
+
+      it 'passes helo domain as position argument' do
+        expect(net_smtp_instance).to receive(:start).with(helo_domain, &session_actions)
+        session_start
+      end
+    end
+
+    context 'when Net::SMTP version >= 0.3.0' do
+      before do
+        stub_const('Net::SMTP::VERSION', '0.3.0')
+        allow(::Net::SMTP).to receive(:new).with(host, port, tls_verify: false).and_return(net_smtp_instance)
+      end
+
+      it 'passes helo domain as keyword argument' do
+        expect(net_smtp_instance).to receive(:start).with(helo: helo_domain, &session_actions)
+        session_start
       end
     end
   end

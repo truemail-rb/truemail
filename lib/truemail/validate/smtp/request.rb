@@ -4,8 +4,6 @@ module Truemail
   module Validate
     class Smtp
       class Request
-        require 'net/smtp'
-
         SMTP_PORT = 25
         CONNECTION_TIMEOUT_ERROR = 'connection timed out'
         RESPONSE_TIMEOUT_ERROR = 'server response timeout'
@@ -35,7 +33,6 @@ module Truemail
         end
 
         def run
-          return session.start(verifier_domain, tls_verify: false, &session_actions) if ::RUBY_VERSION[/\A3\..+\z/]
           session.start(verifier_domain, &session_actions)
         rescue => error
           retry if attempts_exist?
@@ -55,6 +52,30 @@ module Truemail
           end
         end
 
+        class Session
+          require 'net/smtp'
+
+          def initialize(host, port, connection_timeout, response_timeout)
+            @net_smtp = (old_net_smtp? ? ::Net::SMTP.new(host, port) : ::Net::SMTP.new(host, port, tls_verify: false)).tap do |settings|
+              settings.open_timeout = connection_timeout
+              settings.read_timeout = response_timeout
+            end
+          end
+
+          def start(helo_domain, &block)
+            return net_smtp.start(helo_domain, &block) if old_net_smtp?
+            net_smtp.start(helo: helo_domain, &block)
+          end
+
+          private
+
+          attr_reader :net_smtp
+
+          def old_net_smtp?
+            !::Net::SMTP.const_defined?(:VERSION) || ::Net::SMTP::VERSION < '0.3.0'
+          end
+        end
+
         attr_reader :attempts, :port_open_status
 
         def attempts_exist?
@@ -63,10 +84,12 @@ module Truemail
         end
 
         def session
-          ::Net::SMTP.new(host, Truemail::Validate::Smtp::Request::SMTP_PORT).tap do |settings|
-            settings.open_timeout = configuration.connection_timeout
-            settings.read_timeout = configuration.response_timeout
-          end
+          Truemail::Validate::Smtp::Request::Session.new(
+            host,
+            Truemail::Validate::Smtp::Request::SMTP_PORT,
+            configuration.connection_timeout,
+            configuration.response_timeout
+          )
         end
 
         def compose_from(error)
@@ -84,10 +107,7 @@ module Truemail
         end
 
         def session_data
-          {
-            mailfrom: configuration.verifier_email,
-            rcptto: email
-          }
+          { mailfrom: configuration.verifier_email, rcptto: email }
         end
 
         def smtp_resolver(smtp_request, method, value)

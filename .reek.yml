@@ -47,6 +47,7 @@ detectors:
       - Truemail::Validate::Mx#null_mx?
       - Truemail::Validate::Mx#a_record
       - Truemail::Validate::Smtp::Request#compose_from
+      - Truemail::Validate::Smtp::Request::Session#old_net_smtp?
 
   ControlParameter:
     exclude:
