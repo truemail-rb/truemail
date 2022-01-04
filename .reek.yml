@@ -14,6 +14,7 @@ detectors:
       - Truemail::Validate::Mx#hosts_from_cname_records
       - Truemail::Configuration#logger=
       - Truemail::Validate::Smtp::Request#initialize
+      - Truemail::Validate::Smtp::Request::Session#initialize
 
   TooManyInstanceVariables:
     exclude:

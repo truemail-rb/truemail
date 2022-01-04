@@ -2,6 +2,18 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.1] - 2022.01.04
+
+### Fixed
+
+- Fixed redefining builtin implementations caused using stdlib as external dependencies. Thanks [@allard](https://github.com/allard) for report.
+
+### Updated
+
+- Updated `Truemail::Validate::Smtp::Request::Session#initialize`, `Truemail::Validate::Smtp::Request::Session#start`, tests
+- Updated rubocop/reek configs
+- Updated gem docs, version
+
 ## [2.6.0] - 2021.12.28
 
 ### Added
@@ -33,7 +45,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
-- Ruby 3.0 stdlib SMTP client SSL certificate verification issues for cases when IP address uses as MX host. Thanks [@esb](https://github.com/esb) for bug report.
+- Fixed Ruby 3.0 stdlib SMTP client SSL certificate verification issues for cases when IP address uses as MX host. Thanks [@esb](https://github.com/esb) for bug report.
 
 ### Updated
 

@@ -364,7 +364,7 @@ RSpec.describe Truemail::Validate::Smtp::Request::Session do
     subject(:session_start) { request_session_instance.start(helo_domain, &session_actions) }
 
     let(:helo_domain) { random_domain_name }
-    let(:session_actions) { ->(_) {} }
+    let(:session_actions) { proc {} }
 
     context 'when out of the box Net::SMTP version' do
       before do
@@ -380,14 +380,26 @@ RSpec.describe Truemail::Validate::Smtp::Request::Session do
       end
     end
 
-    context 'when Net::SMTP version < 0.3.0' do
+    context 'when Net::SMTP version in range 0.1.0...0.2.0' do
+      before do
+        stub_const('Net::SMTP::VERSION', '0.1.314')
+        allow(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
+      end
+
+      it 'passes helo domain as position argument' do
+        expect(net_smtp_instance).to receive(:start).with(helo_domain, &session_actions)
+        session_start
+      end
+    end
+
+    context 'when Net::SMTP version in range 0.2.0...0.3.0' do
       before do
         stub_const('Net::SMTP::VERSION', '0.2.128506')
         allow(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
       end
 
       it 'passes helo domain as position argument' do
-        expect(net_smtp_instance).to receive(:start).with(helo_domain, &session_actions)
+        expect(net_smtp_instance).to receive(:start).with(helo_domain, tls_verify: false, &session_actions)
         session_start
       end
     end
