@@ -55,24 +55,34 @@ module Truemail
         class Session
           require 'net/smtp'
 
-          def initialize(host, port, connection_timeout, response_timeout)
-            @net_smtp = (old_net_smtp? ? ::Net::SMTP.new(host, port) : ::Net::SMTP.new(host, port, tls_verify: false)).tap do |settings|
+          UNDEFINED_VERSION = '0.0.0'
+
+          def initialize(host, port, connection_timeout, response_timeout, net_class = ::Net::SMTP)
+            @net_class = net_class
+            @net_smtp_version = resolve_net_smtp_version
+            @net_smtp = (old_net_smtp? ? net_class.new(host, port) : net_class.new(host, port, tls_verify: false)).tap do |settings|
               settings.open_timeout = connection_timeout
               settings.read_timeout = response_timeout
             end
           end
 
           def start(helo_domain, &block)
-            return net_smtp.start(helo_domain, &block) if old_net_smtp?
+            return net_smtp.start(helo_domain, &block) if net_smtp_version < '0.2.0'
+            return net_smtp.start(helo_domain, tls_verify: false, &block) if old_net_smtp?
             net_smtp.start(helo: helo_domain, &block)
           end
 
           private
 
-          attr_reader :net_smtp
+          attr_reader :net_class, :net_smtp_version, :net_smtp
+
+          def resolve_net_smtp_version
+            return net_class::VERSION if net_class.const_defined?(:VERSION)
+            Truemail::Validate::Smtp::Request::Session::UNDEFINED_VERSION
+          end
 
           def old_net_smtp?
-            !::Net::SMTP.const_defined?(:VERSION) || ::Net::SMTP::VERSION < '0.3.0'
+            net_smtp_version < '0.3.0'
           end
         end
 
