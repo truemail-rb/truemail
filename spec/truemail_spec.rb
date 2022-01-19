@@ -146,27 +146,39 @@ RSpec.describe Truemail do
         before do
           described_class.configure do |config|
             config.verifier_email = 'admin@bestweb.com.ua'
-            config.connection_timeout = 1
-            config.response_timeout = 1
+            config.dns = dns_mock_gateway
+            # config.smtp_port = smtp_mock_server.port # TODO: should be refactored with smtp-mock server in next release
           end
         end
 
         include_examples 'returns validator instance'
 
-        # TODO: should be refactored with smtp-mock server in next release
-        # describe 'integration tests' do
-        #   context 'when checks real email' do
-        #     specify do
-        #       expect(described_class.validate('admin@bestweb.com.ua').result.valid?).to be(true)
-        #     end
-        #   end
+        describe 'integration tests' do
+          let(:target_email) { random_email }
+          let(:dns_mock_records) { dns_mock_records_by_email(target_email, dimension: 2) }
 
-        #   context 'when checks fake email' do
-        #     specify do
-        #       expect(described_class.validate('nonexistent_email@bestweb.com.ua').result.valid?).to be(false)
-        #     end
-        #   end
-        # end
+          before do
+            dns_mock_server.assign_mocks(dns_mock_records)
+            smtp_mock_server(**smtp_mock_server_options)
+            stub_const('Truemail::Validate::Smtp::Request::SMTP_PORT', smtp_mock_server.port)
+          end
+
+          context 'when checks real email' do
+            let(:smtp_mock_server_options) { {} }
+
+            specify do
+              expect(described_class.validate(target_email).result).to be_valid
+            end
+          end
+
+          context 'when checks fake email' do
+            let(:smtp_mock_server_options) { { not_registered_emails: [target_email] } }
+
+            specify do
+              expect(described_class.validate(target_email).result).not_to be_valid
+            end
+          end
+        end
       end
 
       context 'when custom configuration passed' do
