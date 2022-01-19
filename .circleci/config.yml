@@ -27,6 +27,12 @@ references:
       paths:
         - vendor/bundle
 
+  system_dependencies: &system_dependencies
+    run:
+      name: Installing system requirements
+      command: |
+            bundle exec smtp_mock -s -i ~
+
   install_codeclimate_reporter: &install_codeclimate_reporter
     run:
       name: Installing CodeClimate test reporter
@@ -68,6 +74,7 @@ jobs:
       - <<: *restore_bundle_cache
       - <<: *bundle_install
       - <<: *save_bundle_cache
+      - <<: *system_dependencies
       - <<: *install_codeclimate_reporter
 
       - run:
@@ -100,9 +107,10 @@ jobs:
     steps:
       - checkout
       - ruby/install-deps:
-          bundler-version: "2.3.3"
+          bundler-version: "2.3.5"
           with-cache: false
           path: './vendor/custom_bundle'
+      - <<: *system_dependencies
       - run:
           name: Running compatibility tests
           command: bundle exec rspec
