@@ -478,3 +478,6 @@ RSpec/SubjectDeclaration:
 
 RSpec/FactoryBot/SyntaxMethods:
   Enabled: true
+
+RSpec/SubjectStub:
+  Enabled: false
