@@ -318,8 +318,6 @@ end
 RSpec.describe Truemail::Validate::Smtp::Request::Session do
   subject(:request_session_instance) { described_class.new(host, port, connection_timeout, response_timeout) }
 
-  let(:const_state) { ::Net::SMTP::VERSION if ::Net::SMTP.const_defined?(:VERSION) }
-
   let(:host) { random_domain_name }
   let(:port) { 42 }
   let(:connection_timeout) { 13 }
@@ -329,12 +327,9 @@ RSpec.describe Truemail::Validate::Smtp::Request::Session do
   describe '.new' do
     subject(:request_net_smtp_instance) { request_session_instance.send(:net_smtp) }
 
-    context 'when out of the box Net::SMTP version' do
-      before { ::Net::SMTP.send(:remove_const, :VERSION) if ::Net::SMTP.const_defined?(:VERSION) }
-
-      after { ::Net::SMTP.send(:const_set, :VERSION, const_state) if const_state }
-
+    context 'when undefined Net::SMTP version' do
       it 'creates session instance with net smtp instance inside' do
+        expect(::Net::SMTP).to receive(:const_defined?).with(:VERSION).and_return(false)
         expect(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
         expect(request_net_smtp_instance.open_timeout).to eq(connection_timeout)
         expect(request_net_smtp_instance.read_timeout).to eq(response_timeout)
@@ -366,13 +361,11 @@ RSpec.describe Truemail::Validate::Smtp::Request::Session do
     let(:helo_domain) { random_domain_name }
     let(:session_actions) { proc {} }
 
-    context 'when out of the box Net::SMTP version' do
+    context 'when undefined Net::SMTP version' do
       before do
-        ::Net::SMTP.send(:remove_const, :VERSION) if ::Net::SMTP.const_defined?(:VERSION)
+        allow(::Net::SMTP).to receive(:const_defined?).with(:VERSION).and_return(false)
         allow(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
       end
-
-      after { ::Net::SMTP.send(:const_set, :VERSION, const_state) if const_state }
 
       it 'passes helo domain as position argument' do
         expect(net_smtp_instance).to receive(:start).with(helo_domain, &session_actions)
