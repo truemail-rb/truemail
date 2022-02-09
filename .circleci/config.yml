@@ -27,9 +27,9 @@ references:
       paths:
         - vendor/bundle
 
-  system_dependencies: &system_dependencies
+  install_system_dependencies: &install_system_dependencies
     run:
-      name: Installing system requirements
+      name: Installing system dependencies
       command: |
             bundle exec smtp_mock -s -i ~
 
@@ -40,9 +40,15 @@ references:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
 
+  use_latest_gemspec: &use_latest_gemspec
+    run:
+      name: Using latest gemspec
+      command: |
+            cp .circleci/gemspec_latest truemail.gemspec
+
   use_compatible_gemspec: &use_compatible_gemspec
     run:
-      name: Use compatible gemspec
+      name: Using compatible gemspec
       command: |
             cp .circleci/gemspec_compatible truemail.gemspec
 
@@ -57,6 +63,7 @@ jobs:
     steps:
       - checkout
 
+      - <<: *use_latest_gemspec
       - <<: *restore_bundle_cache
       - <<: *bundle_install
       - <<: *save_bundle_cache
@@ -77,10 +84,11 @@ jobs:
     steps:
       - checkout
 
+      - <<: *use_latest_gemspec
       - <<: *restore_bundle_cache
       - <<: *bundle_install
       - <<: *save_bundle_cache
-      - <<: *system_dependencies
+      - <<: *install_system_dependencies
       - <<: *install_codeclimate_reporter
 
       - run:
@@ -114,10 +122,10 @@ jobs:
       - checkout
       - <<: *use_compatible_gemspec
       - ruby/install-deps:
-          bundler-version: "2.3.5"
+          bundler-version: "2.3.6"
           with-cache: false
           path: './vendor/custom_bundle'
-      - <<: *system_dependencies
+      - <<: *install_system_dependencies
       - run:
           name: Running compatibility tests
           command: bundle exec rspec
