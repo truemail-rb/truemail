@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Added gemspec with latest dependencies for lates Ruby env
+- Added gemspec with latest dependencies for latest Ruby env
 
 ### Updated
 
