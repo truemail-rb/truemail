@@ -31,23 +31,15 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| ::File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
   spec.add_runtime_dependency 'net-smtp', '~> 0.3.1' if ::RUBY_VERSION >= '3.1.0'
+  spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
 
-  spec.add_development_dependency 'bundler-audit'
-  spec.add_development_dependency 'dns_mock'
-  spec.add_development_dependency 'fasterer'
-  spec.add_development_dependency 'ffaker'
-  spec.add_development_dependency 'json_matchers'
-  spec.add_development_dependency 'overcommit'
-  spec.add_development_dependency 'pry-byebug'
-  spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'reek'
-  spec.add_development_dependency 'rspec'
-  spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'rubocop-performance'
-  spec.add_development_dependency 'rubocop-rspec'
-  spec.add_development_dependency 'smtp_mock'
-  spec.add_development_dependency 'truemail-rspec'
-  spec.add_development_dependency 'webmock'
+  spec.add_development_dependency 'dns_mock', '~> 1.5', '>= 1.5.1'
+  spec.add_development_dependency 'ffaker', '~> 2.20'
+  spec.add_development_dependency 'json_matchers', '~> 0.11.1'
+  spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
+  spec.add_development_dependency 'rspec', '~> 3.10'
+  spec.add_development_dependency 'smtp_mock', '~> 1.0'
+  spec.add_development_dependency 'truemail-rspec', '~> 0.7.0'
+  spec.add_development_dependency 'webmock', '~> 3.14'
 end

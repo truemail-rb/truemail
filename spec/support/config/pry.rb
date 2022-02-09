@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-require 'pry'
+require 'pry' if ::RUBY_VERSION[/\A3\.1.+\z/]
