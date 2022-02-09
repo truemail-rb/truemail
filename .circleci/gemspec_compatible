@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
     'bug_tracker_uri' => 'https://github.com/truemail-rb/truemail/issues'
   }
 
-  spec.required_ruby_version = '>= 2.5.0'
+  spec.required_ruby_version = ['>= 2.5.0', '< 3.1.0']
 
   spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = 'exe'
