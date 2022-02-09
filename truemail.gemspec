@@ -31,8 +31,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| ::File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
   spec.add_runtime_dependency 'net-smtp', '~> 0.3.1' if ::RUBY_VERSION >= '3.1.0'
+  spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
 
   spec.add_development_dependency 'bundler-audit'
   spec.add_development_dependency 'dns_mock'
