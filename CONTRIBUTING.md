@@ -42,5 +42,7 @@ Guidelines for pull requests:
 2. Fork the repo, checkout to `develop` branch
 3. Run the tests. This is to make sure your starting point works
 4. Read our [branch naming convention](.github/BRANCH_NAMING_CONVENTION.md)
-5. Create a new branch and make your changes. This includes tests for features!
-6. Push to your fork and submit a pull request to `develop` branch
+5. Create a new branch
+6. Read our [setup development environment guide](.github/DEVELOPMENT_ENVIRONMENT_GUIDE.md)
+7. Make your changes. Please note that your PR should include tests for the new codebase!
+9. Push to your fork and submit a pull request to `develop` branch
