@@ -16,6 +16,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
   let(:response_instance)      { request_instance.response }
   let(:request_instance_host)  { request_instance.host }
   let(:configuration_instance) { create_configuration }
+  let(:smtp_port)              { configuration_instance.smtp_port }
   let(:connection_timeout)     { configuration_instance.connection_timeout }
   let(:response_timeout)       { configuration_instance.response_timeout }
   let(:verifier_domain)        { configuration_instance.verifier_domain }
@@ -23,7 +24,6 @@ RSpec.describe Truemail::Validate::Smtp::Request do
   let(:port_open_status)       { proc { true } }
 
   describe 'defined constants' do
-    specify { expect(described_class).to be_const_defined(:SMTP_PORT) }
     specify { expect(described_class).to be_const_defined(:CONNECTION_TIMEOUT_ERROR) }
     specify { expect(described_class).to be_const_defined(:RESPONSE_TIMEOUT_ERROR) }
     specify { expect(described_class).to be_const_defined(:CONNECTION_DROPPED) }
@@ -48,7 +48,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
         allow(::Socket).to receive(:tcp)
           .with(
             request_instance_host,
-            Truemail::Validate::Smtp::Request::SMTP_PORT,
+            smtp_port,
             connect_timeout: connection_timeout
           ) { |&block| expect(block).to eq(port_open_status) }
           .and_return(true)
@@ -62,7 +62,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
         allow(::Socket).to receive(:tcp)
           .with(
             request_instance_host,
-            Truemail::Validate::Smtp::Request::SMTP_PORT,
+            smtp_port,
             connect_timeout: connection_timeout
           )
           .and_raise(::Errno::ETIMEDOUT)
@@ -84,8 +84,12 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       before do
         allow(Truemail::Validate::Smtp::Request::Session)
           .to receive(:new)
-          .with(request_instance_host, Truemail::Validate::Smtp::Request::SMTP_PORT, connection_timeout, response_timeout)
+          .with(request_instance_host, smtp_port, connection_timeout, response_timeout)
           .and_call_original
+      end
+
+      it 'sets SMTP port number with value from global configuration' do
+        expect(session_net_smtp.port).to eq(smtp_port)
       end
 
       it 'sets connection timeout with value from global configuration' do
@@ -104,7 +108,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
     before do
       allow(Truemail::Validate::Smtp::Request::Session)
         .to receive(:new)
-        .with(request_instance_host, Truemail::Validate::Smtp::Request::SMTP_PORT, connection_timeout, response_timeout)
+        .with(request_instance_host, smtp_port, connection_timeout, response_timeout)
         .and_return(session)
     end
 
@@ -301,7 +305,7 @@ RSpec.describe Truemail::Validate::Smtp::Request::Configuration do
   end
 
   describe 'attribute readers' do
-    let(:attribute_readers) { %i[connection_timeout response_timeout verifier_domain verifier_email] }
+    let(:attribute_readers) { %i[smtp_port connection_timeout response_timeout verifier_domain verifier_email] }
 
     specify { expect(request_configuration_instance.public_methods).to include(*attribute_readers) }
   end

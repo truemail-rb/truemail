@@ -4,7 +4,6 @@ module Truemail
   module Validate
     class Smtp
       class Request
-        SMTP_PORT = 25
         CONNECTION_TIMEOUT_ERROR = 'connection timed out'
         RESPONSE_TIMEOUT_ERROR = 'server response timeout'
         CONNECTION_DROPPED = 'server dropped connection after response'
@@ -23,7 +22,7 @@ module Truemail
         def check_port
           response.port_opened = ::Socket.tcp(
             host,
-            Truemail::Validate::Smtp::Request::SMTP_PORT,
+            configuration.smtp_port,
             connect_timeout: configuration.connection_timeout,
             &port_open_status
           )
@@ -42,7 +41,7 @@ module Truemail
         private
 
         class Configuration
-          REQUEST_PARAMS = %i[connection_timeout response_timeout verifier_domain verifier_email].freeze
+          REQUEST_PARAMS = %i[smtp_port connection_timeout response_timeout verifier_domain verifier_email].freeze
 
           def initialize(configuration)
             Truemail::Validate::Smtp::Request::Configuration::REQUEST_PARAMS.each do |attribute|
@@ -96,7 +95,7 @@ module Truemail
         def session
           Truemail::Validate::Smtp::Request::Session.new(
             host,
-            Truemail::Validate::Smtp::Request::SMTP_PORT,
+            configuration.smtp_port,
             configuration.connection_timeout,
             configuration.response_timeout
           )
