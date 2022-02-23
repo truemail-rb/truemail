@@ -143,13 +143,7 @@ RSpec.describe Truemail do
 
     context 'when passed email is a String' do
       context 'when global configuration successfully set' do
-        before do
-          described_class.configure do |config|
-            config.verifier_email = 'admin@bestweb.com.ua'
-            config.dns = dns_mock_gateway
-            # config.smtp_port = smtp_mock_server.port # TODO: should be refactored with smtp-mock server in next release
-          end
-        end
+        before { described_class.configure { |config| config.verifier_email = random_email } }
 
         include_examples 'returns validator instance'
 
@@ -160,7 +154,11 @@ RSpec.describe Truemail do
           before do
             dns_mock_server.assign_mocks(dns_mock_records)
             smtp_mock_server(**smtp_mock_server_options)
-            stub_const('Truemail::Validate::Smtp::Request::SMTP_PORT', smtp_mock_server.port)
+
+            described_class.configuration.tap do |config|
+              config.dns = dns_mock_gateway
+              config.smtp_port = smtp_mock_server.port
+            end
           end
 
           context 'when checks real email' do
