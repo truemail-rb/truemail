@@ -40,6 +40,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   spec.add_development_dependency 'rspec', '~> 3.10'
   spec.add_development_dependency 'smtp_mock', '~> 1.0'
-  spec.add_development_dependency 'truemail-rspec', '~> 0.7.0'
+  spec.add_development_dependency 'truemail-rspec', '~> 0.9.0'
   spec.add_development_dependency 'webmock', '~> 3.14'
 end

@@ -6,6 +6,7 @@ module Truemail
     DEFAULT_RESPONSE_TIMEOUT = 2
     DEFAULT_CONNECTION_ATTEMPTS = 2
     DEFAULT_VALIDATION_TYPE = :smtp
+    DEFAULT_SMTP_PORT = 25
     DEFAULT_LOGGER_OPTIONS = { tracking_event: :error, stdout: false, log_absolute_path: nil }.freeze
     SETTERS = %i[
       email_pattern
@@ -17,6 +18,7 @@ module Truemail
       blacklisted_domains
       blacklisted_mx_ip_addresses
       dns
+      smtp_port
     ].freeze
 
     attr_reader :verifier_email,
@@ -96,6 +98,7 @@ module Truemail
         response_timeout: Truemail::Configuration::DEFAULT_RESPONSE_TIMEOUT,
         connection_attempts: Truemail::Configuration::DEFAULT_CONNECTION_ATTEMPTS,
         default_validation_type: Truemail::Configuration::DEFAULT_VALIDATION_TYPE,
+        smtp_port: Truemail::Configuration::DEFAULT_SMTP_PORT,
         validation_type_by_domain: {},
         whitelisted_domains: [],
         whitelist_validation: false,

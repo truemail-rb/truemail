@@ -26,6 +26,11 @@ RSpec.describe Truemail::Configuration do
       specify { expect(described_class::DEFAULT_VALIDATION_TYPE).to eq(:smtp) }
     end
 
+    context 'DEFAULT_SMTP_PORT' do
+      specify { expect(described_class).to be_const_defined(:DEFAULT_SMTP_PORT) }
+      specify { expect(described_class::DEFAULT_SMTP_PORT).to eq(25) }
+    end
+
     context 'DEFAULT_LOGGER_OPTIONS' do
       specify { expect(described_class).to be_const_defined(:DEFAULT_LOGGER_OPTIONS) }
       specify { expect(described_class::DEFAULT_LOGGER_OPTIONS).to eq(tracking_event: :error, stdout: false, log_absolute_path: nil) }
@@ -44,7 +49,8 @@ RSpec.describe Truemail::Configuration do
           :whitelisted_domains,
           :blacklisted_domains,
           :blacklisted_mx_ip_addresses,
-          :dns
+          :dns,
+          :smtp_port
         )
       end
     end
@@ -66,6 +72,7 @@ RSpec.describe Truemail::Configuration do
       blacklisted_mx_ip_addresses
       dns
       not_rfc_mx_lookup_flow
+      smtp_port
       smtp_fail_fast
       smtp_safe_check
       logger
@@ -104,6 +111,7 @@ RSpec.describe Truemail::Configuration do
       expect(configuration_instance.blacklisted_mx_ip_addresses).to eq([])
       expect(configuration_instance.dns).to eq([])
       expect(configuration_instance.not_rfc_mx_lookup_flow).to be(false)
+      expect(configuration_instance.smtp_port).to eq(Truemail::Configuration::DEFAULT_SMTP_PORT)
       expect(configuration_instance.smtp_fail_fast).to be(false)
       expect(configuration_instance.smtp_safe_check).to be(false)
       expect(configuration_instance.logger).to be_nil
@@ -128,6 +136,7 @@ RSpec.describe Truemail::Configuration do
         expect(configuration_instance.blacklisted_mx_ip_addresses).to eq([])
         expect(configuration_instance.dns).to eq([])
         expect(configuration_instance.not_rfc_mx_lookup_flow).to be(false)
+        expect(configuration_instance.smtp_port).to eq(25)
         expect(configuration_instance.smtp_fail_fast).to be(false)
         expect(configuration_instance.smtp_safe_check).to be(false)
         expect(configuration_instance.logger).to be_nil
@@ -153,6 +162,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :blacklisted_mx_ip_addresses)
           .and not_change(configuration_instance, :dns)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
+          .and not_change(configuration_instance, :smtp_port)
           .and not_change(configuration_instance, :smtp_fail_fast)
           .and not_change(configuration_instance, :smtp_safe_check)
           .and not_change(configuration_instance, :logger)
@@ -180,6 +190,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :blacklisted_mx_ip_addresses)
           .and not_change(configuration_instance, :dns)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
+          .and not_change(configuration_instance, :smtp_port)
           .and not_change(configuration_instance, :smtp_fail_fast)
           .and not_change(configuration_instance, :smtp_safe_check)
           .and not_change(configuration_instance, :logger)
@@ -207,6 +218,7 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :blacklisted_mx_ip_addresses)
           .and not_change(configuration_instance, :dns)
           .and not_change(configuration_instance, :not_rfc_mx_lookup_flow)
+          .and not_change(configuration_instance, :smtp_port)
           .and not_change(configuration_instance, :smtp_fail_fast)
           .and not_change(configuration_instance, :smtp_safe_check)
           .and not_change(configuration_instance, :logger)
@@ -537,6 +549,22 @@ RSpec.describe Truemail::Configuration do
           expect { configuration_instance.not_rfc_mx_lookup_flow = true }
             .to change(configuration_instance, :not_rfc_mx_lookup_flow)
             .from(false).to(true)
+        end
+      end
+
+      describe '#smtp_port=' do
+        context 'with valid SMTP port number' do
+          it 'sets custom SMTP port number' do
+            expect { configuration_instance.smtp_port = 26 }
+              .to change(configuration_instance, :smtp_port)
+              .from(25).to(26)
+          end
+        end
+
+        context 'with invalid SMTP port number' do
+          let(:setter) { :smtp_port= }
+
+          include_examples 'raises argument error'
         end
       end
 
