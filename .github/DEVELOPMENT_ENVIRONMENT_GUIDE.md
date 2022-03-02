@@ -12,7 +12,7 @@ cd  truemail
 Configure latest Ruby environment:
 
 ```bash
-echo 'ruby-3.1.0' > .ruby-version
+echo 'ruby-3.1.1' > .ruby-version
 cp .circleci/gemspec_latest truemail.gemspec
 ```
 
