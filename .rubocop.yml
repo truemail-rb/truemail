@@ -193,6 +193,18 @@ Style/FileWrite:
 Style/MapToHash:
   Enabled: true
 
+Style/FetchEnvVar:
+  Enabled: true
+
+Style/NestedFileDirname:
+  Enabled: true
+
+Style/ObjectThen:
+  Enabled: true
+
+Style/RedundantInitialize:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -368,6 +380,9 @@ Lint/RequireRelativeSelfPath:
 Lint/UselessRuby2Keywords:
   Enabled: true
 
+Lint/RefinementImportMethods:
+  Enabled: true
+
 Gemspec/DateAssignment:
   Enabled: true
 
@@ -378,6 +393,9 @@ Gemspec/RubyVersionGlobalsUsage:
   Enabled: false
 
 Security/IoMethods:
+  Enabled: true
+
+Security/CompoundHash:
   Enabled: true
 
 Performance/AncestorsInclude:
@@ -480,4 +498,13 @@ RSpec/FactoryBot/SyntaxMethods:
   Enabled: true
 
 RSpec/SubjectStub:
+  Enabled: false
+
+RSpec/BeEq:
+  Enabled: true
+
+RSpec/BeNil:
+  Enabled: true
+
+RSpec/VerifiedDoubleReference:
   Enabled: false
