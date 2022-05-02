@@ -6,7 +6,7 @@ defaults: &defaults
     - image: cimg/ruby:<< parameters.ruby-version >>
 
 orbs:
-  ruby: circleci/ruby@1.4.0
+  ruby: circleci/ruby@1.7.1
 
 references:
   restore_bundle_cache: &restore_bundle_cache
@@ -122,7 +122,7 @@ jobs:
       - checkout
       - <<: *use_compatible_gemspec
       - ruby/install-deps:
-          bundler-version: "2.3.8"
+          bundler-version: "2.3.12"
           with-cache: false
           path: './vendor/custom_bundle'
       - <<: *install_system_dependencies
