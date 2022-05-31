@@ -31,12 +31,12 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
 
-  spec.add_development_dependency 'dns_mock', '~> 1.5', '>= 1.5.2'
+  spec.add_development_dependency 'dns_mock', '~> 1.5', '>= 1.5.3'
   spec.add_development_dependency 'ffaker', '~> 2.21'
   spec.add_development_dependency 'json_matchers', '~> 0.11.1'
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   spec.add_development_dependency 'rspec', '~> 3.11'
-  spec.add_development_dependency 'smtp_mock', '~> 1.0', '>= 1.0.1'
+  spec.add_development_dependency 'smtp_mock', '~> 1.1'
   spec.add_development_dependency 'truemail-rspec', '~> 0.9.1'
   spec.add_development_dependency 'webmock', '~> 3.14'
 end

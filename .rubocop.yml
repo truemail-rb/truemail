@@ -205,6 +205,12 @@ Style/ObjectThen:
 Style/RedundantInitialize:
   Enabled: true
 
+Style/EnvHome:
+  Enabled: true
+
+Style/MapCompactWithConditionalBlock:
+  Enabled: true
+
 Layout/LineLength:
   Max: 140
 
@@ -392,6 +398,9 @@ Gemspec/RequireMFA:
 Gemspec/RubyVersionGlobalsUsage:
   Enabled: false
 
+Gemspec/DeprecatedAttributeAssignment:
+  Enabled: true
+
 Security/IoMethods:
   Enabled: true
 
@@ -508,3 +517,6 @@ RSpec/BeNil:
 
 RSpec/VerifiedDoubleReference:
   Enabled: false
+
+RSpec/ChangeByZero:
+  Enabled: true
