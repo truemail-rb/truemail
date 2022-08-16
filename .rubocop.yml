@@ -6,6 +6,9 @@ AllCops:
   DisplayCopNames:    true
   DisplayStyleGuide:  true
   TargetRubyVersion:  2.5
+  NewCops: enable
+
+# Metrics ---------------------------------------------------------------------
 
 Metrics/ClassLength:
   Max: 150
@@ -22,6 +25,8 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Enabled: false
 
+# Naming ----------------------------------------------------------------------
+
 Naming/VariableNumber:
   Enabled: false
 
@@ -31,8 +36,7 @@ Naming/RescuedExceptionsVariableName:
 Naming/InclusiveLanguage:
   Enabled: false
 
-Naming/BlockForwarding:
-  Enabled: true
+# Style -----------------------------------------------------------------------
 
 Style/Documentation:
   Enabled: false
@@ -46,170 +50,7 @@ Style/EmptyCaseCondition:
 Style/RescueStandardError:
   Enabled: false
 
-Style/AccessorGrouping:
-  Enabled: true
-
-Style/ArrayCoercion:
-  Enabled: true
-
-Style/BisectedAttrAccessor:
-  Enabled: true
-
-Style/CaseLikeIf:
-  Enabled: true
-
-Style/ExplicitBlockArgument:
-  Enabled: true
-
-Style/ExponentialNotation:
-  Enabled: true
-
-Style/GlobalStdStream:
-  Enabled: true
-
-Style/HashAsLastArrayItem:
-  Enabled: true
-
-Style/HashEachMethods:
-  Enabled: true
-
-Style/HashLikeCase:
-  Enabled: true
-
-Style/HashTransformKeys:
-  Enabled: true
-
-Style/HashTransformValues:
-  Enabled: true
-
-Style/OptionalBooleanParameter:
-  Enabled: true
-
-Style/RedundantAssignment:
-  Enabled: true
-
-Style/RedundantFetchBlock:
-  Enabled: true
-
-Style/RedundantFileExtensionInRequire:
-  Enabled: true
-
-Style/RedundantRegexpCharacterClass:
-  Enabled: true
-
-Style/RedundantRegexpEscape:
-  Enabled: true
-
-Style/SingleArgumentDig:
-  Enabled: true
-
-Style/SlicingWithRange:
-  Enabled: true
-
-Style/StringConcatenation:
-  Enabled: true
-
-Style/CombinableLoops:
-  Enabled: true
-
-Style/KeywordParametersOrder:
-  Enabled: true
-
-Style/RedundantSelfAssignment:
-  Enabled: true
-
-Style/SoleNestedConditional:
-  Enabled: true
-
-Style/ClassEqualityComparison:
-  Enabled: true
-
-Style/ArgumentsForwarding:
-  Enabled: true
-
-Style/CollectionCompact:
-  Enabled: true
-
-Style/DocumentDynamicEvalDefinition:
-  Enabled: true
-
-Style/NegatedIfElseCondition:
-  Enabled: true
-
-Style/NilLambda:
-  Enabled: true
-
-Style/SwapValues:
-  Enabled: true
-
-Style/RedundantArgument:
-  Enabled: true
-
-Style/HashExcept:
-  Enabled: true
-
-Style/EndlessMethod:
-  Enabled: true
-
-Style/IfWithBooleanLiteralBranches:
-  Enabled: true
-
-Style/HashConversion:
-  Enabled: true
-
-Style/StringChars:
-  Enabled: true
-
-Style/InPatternThen:
-  Enabled: true
-
-Style/MultilineInPatternThen:
-  Enabled: true
-
-Style/QuotedSymbols:
-  Enabled: true
-
-Style/RedundantSelfAssignmentBranch:
-  Enabled: true
-
-Style/NumberedParameters:
-  Enabled: true
-
-Style/NumberedParametersLimit:
-  Enabled: true
-
-Style/SelectByRegexp:
-  Enabled: true
-
-Style/OpenStructUse:
-  Enabled: true
-
-Style/FileRead:
-  Enabled: true
-
-Style/FileWrite:
-  Enabled: true
-
-Style/MapToHash:
-  Enabled: true
-
-Style/FetchEnvVar:
-  Enabled: true
-
-Style/NestedFileDirname:
-  Enabled: true
-
-Style/ObjectThen:
-  Enabled: true
-
-Style/RedundantInitialize:
-  Enabled: true
-
-Style/EnvHome:
-  Enabled: true
-
-Style/MapCompactWithConditionalBlock:
-  Enabled: true
+# Layout ----------------------------------------------------------------------
 
 Layout/LineLength:
   Max: 140
@@ -233,164 +74,18 @@ Layout/ClassStructure:
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
-Layout/SpaceAroundMethodCallOperator:
-  Enabled: true
-
-Layout/EmptyLinesAroundAttributeAccessor:
-  Enabled: true
-
-Layout/BeginEndAlignment:
-  Enabled: true
-
-Layout/SpaceBeforeBrackets:
-  Enabled: true
-
-Layout/LineEndStringConcatenationIndentation:
-  Enabled: true
+# Lint ------------------------------------------------------------------------
 
 Lint/NonDeterministicRequireOrder:
   Enabled: false
 
-Lint/BinaryOperatorWithIdenticalOperands:
-  Enabled: true
-
-Lint/DeprecatedOpenSSLConstant:
-  Enabled: true
-
-Lint/DuplicateElsifCondition:
-  Enabled: true
-
-Lint/DuplicateRescueException:
-  Enabled: true
-
-Lint/EmptyConditionalBody:
-  Enabled: true
-
-Lint/FloatComparison:
-  Enabled: true
+Lint/NoReturnInBeginEndBlocks:
+  Enabled: false
 
 Lint/MissingSuper:
   Enabled: false
 
-Lint/MixedRegexpCaptureTypes:
-  Enabled: true
-
-Lint/OutOfRangeRegexpRef:
-  Enabled: true
-
-Lint/RaiseException:
-  Enabled: true
-
-Lint/SelfAssignment:
-  Enabled: true
-
-Lint/StructNewOverride:
-  Enabled: true
-
-Lint/TopLevelReturnWithArgument:
-  Enabled: true
-
-Lint/UnreachableLoop:
-  Enabled: true
-
-Lint/ConstantDefinitionInBlock:
-  Enabled: true
-
-Lint/DuplicateRequire:
-  Enabled: true
-
-Lint/EmptyFile:
-  Enabled: true
-
-Lint/IdentityComparison:
-  Enabled: true
-
-Lint/TrailingCommaInAttributeDeclaration:
-  Enabled: true
-
-Lint/UselessMethodDefinition:
-  Enabled: true
-
-Lint/UselessTimes:
-  Enabled: true
-
-Lint/HashCompareByIdentity:
-  Enabled: true
-
-Lint/RedundantSafeNavigation:
-  Enabled: true
-
-Lint/DuplicateBranch:
-  Enabled: true
-
-Lint/DuplicateRegexpCharacterClassElement:
-  Enabled: true
-
-Lint/EmptyBlock:
-  Enabled: true
-
-Lint/EmptyClass:
-  Enabled: true
-
-Lint/NoReturnInBeginEndBlocks:
-  Enabled: false
-
-Lint/ToEnumArguments:
-  Enabled: true
-
-Lint/UnmodifiedReduceAccumulator:
-  Enabled: true
-
-Lint/UnexpectedBlockArity:
-  Enabled: true
-
-Lint/AmbiguousAssignment:
-  Enabled: true
-
-Lint/DeprecatedConstants:
-  Enabled: true
-
-Lint/LambdaWithoutLiteralBlock:
-  Enabled: true
-
-Lint/RedundantDirGlobSort:
-  Enabled: true
-
-Lint/NumberedParameterAssignment:
-  Enabled: true
-
-Lint/OrAssignmentToConstant:
-  Enabled: true
-
-Lint/SymbolConversion:
-  Enabled: true
-
-Lint/TripleQuotes:
-  Enabled: true
-
-Lint/EmptyInPattern:
-  Enabled: true
-
-Lint/AmbiguousRange:
-  Enabled: true
-
-Lint/AmbiguousOperatorPrecedence:
-  Enabled: true
-
-Lint/IncompatibleIoSelectWithFiberScheduler:
-  Enabled: true
-
-Lint/RequireRelativeSelfPath:
-  Enabled: true
-
-Lint/UselessRuby2Keywords:
-  Enabled: true
-
-Lint/RefinementImportMethods:
-  Enabled: true
-
-Gemspec/DateAssignment:
-  Enabled: true
+# Gemspec ---------------------------------------------------------------------
 
 Gemspec/RequireMFA:
   Enabled: false
@@ -398,68 +93,7 @@ Gemspec/RequireMFA:
 Gemspec/RubyVersionGlobalsUsage:
   Enabled: false
 
-Gemspec/DeprecatedAttributeAssignment:
-  Enabled: true
-
-Security/IoMethods:
-  Enabled: true
-
-Security/CompoundHash:
-  Enabled: true
-
-Performance/AncestorsInclude:
-  Enabled: true
-
-Performance/BigDecimalWithNumericArgument:
-  Enabled: true
-
-Performance/RedundantSortBlock:
-  Enabled: true
-
-Performance/RedundantStringChars:
-  Enabled: true
-
-Performance/ReverseFirst:
-  Enabled: true
-
-Performance/SortReverse:
-  Enabled: true
-
-Performance/Squeeze:
-  Enabled: true
-
-Performance/StringInclude:
-  Enabled: true
-
-Performance/Sum:
-  Enabled: true
-
-Performance/BlockGivenWithExplicitBlock:
-  Enabled: true
-
-Performance/CollectionLiteralInLoop:
-  Enabled: true
-
-Performance/ConstantRegexp:
-  Enabled: true
-
-Performance/MethodObjectAsBlock:
-  Enabled: true
-
-Performance/RedundantEqualityComparisonBlock:
-  Enabled: true
-
-Performance/RedundantSplitRegexpArgument:
-  Enabled: true
-
-Performance/MapCompact:
-  Enabled: true
-
-Performance/ConcurrentMonotonicTime:
-  Enabled: true
-
-Performance/StringIdentifierArgument:
-  Enabled: true
+# RSpec -----------------------------------------------------------------------
 
 RSpec/ExampleLength:
   Enabled: false
@@ -491,32 +125,8 @@ RSpec/MultipleMemoizedHelpers:
 RSpec/StubbedMock:
   Enabled: false
 
-RSpec/IdenticalEqualityAssertion:
-  Enabled: true
-
-RSpec/Rails/AvoidSetupHook:
-  Enabled: true
-
-RSpec/ExcessiveDocstringSpacing:
-  Enabled: true
-
-RSpec/SubjectDeclaration:
-  Enabled: true
-
-RSpec/FactoryBot/SyntaxMethods:
-  Enabled: true
-
 RSpec/SubjectStub:
   Enabled: false
 
-RSpec/BeEq:
-  Enabled: true
-
-RSpec/BeNil:
-  Enabled: true
-
 RSpec/VerifiedDoubleReference:
   Enabled: false
-
-RSpec/ChangeByZero:
-  Enabled: true
