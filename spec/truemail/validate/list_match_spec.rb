@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Truemail::Validate::DomainListMatch do
+RSpec.describe Truemail::Validate::ListMatch do
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:ERROR) }
   end
@@ -24,10 +24,19 @@ RSpec.describe Truemail::Validate::DomainListMatch do
     context 'when whitelist validation not configured' do
       let(:whitelist_validation_condition) { false }
 
+      context 'when email in white list' do
+        specify do
+          allow(configuration_instance).to receive(:whitelisted_emails).and_return([email])
+          expect { domain_list_match_validator }
+            .to change(result_instance, :success)
+            .from(nil).to(true)
+            .and not_change(result_instance, :domain)
+        end
+      end
+
       context 'when email domain in white list' do
         specify do
           allow(configuration_instance).to receive(:whitelisted_domains).and_return([domain])
-          allow(configuration_instance).to receive(:blacklisted_domains).and_return([])
           expect { domain_list_match_validator }
             .to change(result_instance, :success)
             .from(nil).to(true)
@@ -36,17 +45,40 @@ RSpec.describe Truemail::Validate::DomainListMatch do
         end
       end
 
+      context 'when email in black list' do
+        specify do
+          allow(configuration_instance).to receive(:blacklisted_emails).and_return([email])
+          expect { domain_list_match_validator }
+            .to change(result_instance, :success)
+            .from(nil).to(false)
+            .and change(result_instance, :errors)
+            .from({}).to(list_match: Truemail::Validate::ListMatch::ERROR)
+            .and change(result_instance, :domain)
+            .from(nil).to(domain_from_email(email))
+        end
+      end
+
       context 'when email domain in black list' do
         specify do
-          allow(configuration_instance).to receive(:whitelisted_domains).and_return([])
           allow(configuration_instance).to receive(:blacklisted_domains).and_return([domain])
           expect { domain_list_match_validator }
             .to change(result_instance, :success)
             .from(nil).to(false)
             .and change(result_instance, :errors)
-            .from({}).to(domain_list_match: Truemail::Validate::DomainListMatch::ERROR)
+            .from({}).to(list_match: Truemail::Validate::ListMatch::ERROR)
             .and change(result_instance, :domain)
             .from(nil).to(domain_from_email(email))
+        end
+      end
+
+      context 'when email exists on both lists' do
+        specify do
+          allow(configuration_instance).to receive(:whitelisted_emails).and_return([email])
+          allow(configuration_instance).to receive(:blacklisted_emails).and_return([email])
+          expect { domain_list_match_validator }
+            .to change(result_instance, :success)
+            .from(nil).to(true)
+            .and not_change(result_instance, :domain)
         end
       end
 
@@ -77,6 +109,31 @@ RSpec.describe Truemail::Validate::DomainListMatch do
     context 'when whitelist validation configured' do
       let(:whitelist_validation_condition) { true }
 
+      context 'when email whitelisted in configuration' do
+        before { allow(configuration_instance).to receive(:whitelisted_emails).and_return([email]) }
+
+        context 'when email in white list' do
+          specify do
+            expect { domain_list_match_validator }
+              .to not_change(result_instance, :success)
+              .and change(result_instance, :domain)
+              .from(nil).to(domain_from_email(email))
+          end
+        end
+
+        context 'when email exists on both lists' do
+          specify do
+            allow(configuration_instance).to receive(:blacklisted_emails).and_return([email])
+            expect { domain_list_match_validator }
+              .to change(result_instance, :success)
+              .from(nil).to(false)
+              .and change(result_instance, :errors)
+              .from({}).to(list_match: Truemail::Validate::ListMatch::ERROR)
+              .and not_change(result_instance, :domain)
+          end
+        end
+      end
+
       context 'when email domain whitelisted in configuration' do
         before { allow(configuration_instance).to receive(:whitelisted_domains).and_return([domain]) }
 
@@ -96,7 +153,37 @@ RSpec.describe Truemail::Validate::DomainListMatch do
               .to change(result_instance, :success)
               .from(nil).to(false)
               .and change(result_instance, :errors)
-              .from({}).to(domain_list_match: Truemail::Validate::DomainListMatch::ERROR)
+              .from({}).to(list_match: Truemail::Validate::ListMatch::ERROR)
+              .and change(result_instance, :domain)
+              .from(nil).to(domain_from_email(email))
+          end
+        end
+      end
+
+      context 'when email not whitelisted in configuration' do
+        before { allow(configuration_instance).to receive(:whitelisted_emails).and_return([]) }
+
+        context 'when email in black list' do
+          specify do
+            allow(configuration_instance).to receive(:blacklisted_emails).and_return([email])
+            expect { domain_list_match_validator }
+              .to change(result_instance, :success)
+              .from(nil).to(false)
+              .and change(result_instance, :errors)
+              .from({}).to(list_match: Truemail::Validate::ListMatch::ERROR)
+              .and change(result_instance, :domain)
+              .from(nil).to(domain_from_email(email))
+          end
+        end
+
+        context 'when email not exists on both lists' do
+          specify do
+            allow(configuration_instance).to receive(:blacklisted_emails).and_return([])
+            expect { domain_list_match_validator }
+              .to change(result_instance, :success)
+              .from(nil).to(false)
+              .and change(result_instance, :errors)
+              .from({}).to(list_match: Truemail::Validate::ListMatch::ERROR)
               .and change(result_instance, :domain)
               .from(nil).to(domain_from_email(email))
           end
@@ -113,7 +200,7 @@ RSpec.describe Truemail::Validate::DomainListMatch do
               .to change(result_instance, :success)
               .from(nil).to(false)
               .and change(result_instance, :errors)
-              .from({}).to(domain_list_match: Truemail::Validate::DomainListMatch::ERROR)
+              .from({}).to(list_match: Truemail::Validate::ListMatch::ERROR)
               .and change(result_instance, :domain)
               .from(nil).to(domain_from_email(email))
           end
@@ -126,7 +213,7 @@ RSpec.describe Truemail::Validate::DomainListMatch do
               .to change(result_instance, :success)
               .from(nil).to(false)
               .and change(result_instance, :errors)
-              .from({}).to(domain_list_match: Truemail::Validate::DomainListMatch::ERROR)
+              .from({}).to(list_match: Truemail::Validate::ListMatch::ERROR)
               .and change(result_instance, :domain)
               .from(nil).to(domain_from_email(email))
           end

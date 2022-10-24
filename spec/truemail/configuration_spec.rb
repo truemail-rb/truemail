@@ -46,6 +46,8 @@ RSpec.describe Truemail::Configuration do
           :connection_timeout,
           :response_timeout,
           :connection_attempts,
+          :whitelisted_emails,
+          :blacklisted_emails,
           :whitelisted_domains,
           :blacklisted_domains,
           :blacklisted_mx_ip_addresses,
@@ -66,6 +68,8 @@ RSpec.describe Truemail::Configuration do
       response_timeout
       connection_attempts
       default_validation_type
+      whitelisted_emails
+      blacklisted_emails
       whitelisted_domains
       whitelist_validation
       blacklisted_domains
@@ -105,6 +109,8 @@ RSpec.describe Truemail::Configuration do
       expect(configuration_instance.connection_attempts).to eq(Truemail::Configuration::DEFAULT_CONNECTION_ATTEMPTS)
       expect(configuration_instance.default_validation_type).to eq(Truemail::Configuration::DEFAULT_VALIDATION_TYPE)
       expect(configuration_instance.validation_type_by_domain).to eq({})
+      expect(configuration_instance.whitelisted_emails).to eq([])
+      expect(configuration_instance.blacklisted_emails).to eq([])
       expect(configuration_instance.whitelisted_domains).to eq([])
       expect(configuration_instance.whitelist_validation).to be(false)
       expect(configuration_instance.blacklisted_domains).to eq([])
@@ -130,6 +136,8 @@ RSpec.describe Truemail::Configuration do
         expect(configuration_instance.connection_attempts).to eq(2)
         expect(configuration_instance.default_validation_type).to eq(Truemail::Configuration::DEFAULT_VALIDATION_TYPE)
         expect(configuration_instance.validation_type_by_domain).to eq({})
+        expect(configuration_instance.whitelisted_emails).to eq([])
+        expect(configuration_instance.blacklisted_emails).to eq([])
         expect(configuration_instance.whitelisted_domains).to eq([])
         expect(configuration_instance.whitelist_validation).to be(false)
         expect(configuration_instance.blacklisted_domains).to eq([])
@@ -156,6 +164,8 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :response_timeout)
           .and not_change(configuration_instance, :default_validation_type)
           .and not_change(configuration_instance, :validation_type_by_domain)
+          .and not_change(configuration_instance, :whitelisted_emails)
+          .and not_change(configuration_instance, :blacklisted_emails)
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
@@ -184,6 +194,8 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :response_timeout)
           .and not_change(configuration_instance, :default_validation_type)
           .and not_change(configuration_instance, :validation_type_by_domain)
+          .and not_change(configuration_instance, :whitelisted_emails)
+          .and not_change(configuration_instance, :blacklisted_emails)
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
@@ -212,6 +224,8 @@ RSpec.describe Truemail::Configuration do
           .and not_change(configuration_instance, :response_timeout)
           .and not_change(configuration_instance, :default_validation_type)
           .and not_change(configuration_instance, :validation_type_by_domain)
+          .and not_change(configuration_instance, :whitelisted_emails)
+          .and not_change(configuration_instance, :blacklisted_emails)
           .and not_change(configuration_instance, :whitelisted_domains)
           .and not_change(configuration_instance, :whitelist_validation)
           .and not_change(configuration_instance, :blacklisted_domains)
@@ -438,6 +452,33 @@ RSpec.describe Truemail::Configuration do
         end
       end
 
+      %i[whitelisted_emails= blacklisted_emails=].each do |email_list_type|
+        describe "##{email_list_type}" do
+          let(:setter) { email_list_type }
+          let(:emails_list) { ::Array.new(2) { random_uniq_email } }
+
+          context "with valid #{email_list_type} parameter type and context" do
+            it 'sets whitelisted emails list' do
+              expect { configuration_instance.public_send(setter, emails_list) }
+                .to change(configuration_instance, setter[0...-1].to_sym)
+                .from([]).to(emails_list)
+            end
+          end
+
+          context "with invalid #{email_list_type} parameter type" do
+            let(:invalid_argument) { 'not_array' }
+
+            include_examples 'raises extended argument error'
+          end
+
+          context "with invalid #{email_list_type} parameter context" do
+            let(:invalid_argument) { ['not_email', 123] }
+
+            include_examples 'raises extended argument error'
+          end
+        end
+      end
+
       %i[whitelisted_domains= blacklisted_domains=].each do |domain_list_type|
         describe "##{domain_list_type}" do
           let(:setter) { domain_list_type }
@@ -457,7 +498,7 @@ RSpec.describe Truemail::Configuration do
             include_examples 'raises extended argument error'
           end
 
-          context 'with invalid whitelisted_domains= parameter context' do
+          context "with invalid #{domain_list_type} parameter context" do
             let(:invalid_argument) { ['not_domain', 123] }
 
             include_examples 'raises extended argument error'

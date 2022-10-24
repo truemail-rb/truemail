@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Truemail
-  VERSION = '2.7.5'
+  VERSION = '3.0.0'
 end

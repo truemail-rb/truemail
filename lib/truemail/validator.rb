@@ -26,7 +26,7 @@ module Truemail
     end
 
     def run
-      Truemail::Validate::DomainListMatch.check(result)
+      Truemail::Validate::ListMatch.check(result)
       result_not_changed? ? Truemail::Validate.const_get(constantize(validation_type)).check(result) : update_validation_type
       logger&.push(self)
       self

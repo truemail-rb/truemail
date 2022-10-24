@@ -20,6 +20,7 @@ module Truemail
 
   module RegexConstant
     REGEX_DOMAIN = /[\p{L}0-9]+([\-.]{1}[\p{L}0-9]+)*\.\p{L}{2,63}/i.freeze
+    REGEX_SIMPLE_EMAIL_PATTERN = /\w+@\w+/.freeze
     REGEX_EMAIL_PATTERN = %r{(?=\A.{6,255}\z)(\A([\p{L}0-9]+[\w\p{L}.+!~,'&%#*^`{}|\-/?=$]*)@(#{REGEX_DOMAIN})\z)}.freeze
     REGEX_DOMAIN_PATTERN = /(?=\A.{4,255}\z)(\A#{REGEX_DOMAIN}\z)/.freeze
     REGEX_DOMAIN_FROM_EMAIL = /\A.+@(.+)\z/.freeze
@@ -45,7 +46,7 @@ module Truemail
 
   module Validate
     require_relative '../truemail/validate/base'
-    require_relative '../truemail/validate/domain_list_match'
+    require_relative '../truemail/validate/list_match'
     require_relative '../truemail/validate/regex'
     require_relative '../truemail/validate/mx'
     require_relative '../truemail/validate/mx_blacklist'
