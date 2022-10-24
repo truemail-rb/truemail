@@ -41,24 +41,46 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
         EXPECTED_OUTPUT
       end
 
-      describe 'whitelist validation' do
-        let(:validation_type) { :whitelist }
-        let(:expected_output) do
-          <<~EXPECTED_OUTPUT
-            Truemail #{validation_type} validation for #{email} was successful
+      describe 'list match validation' do
+        describe 'emails list validation' do
+          let(:validation_type) { :emails_list }
+          let(:expected_output) do
+            <<~EXPECTED_OUTPUT
+              Truemail whitelist validation for #{email} was successful
 
-            CONFIGURATION SETTINGS:
-            whitelist validation: false
-            whitelisted domains: #{domain_from_email(email)}
-            not rfc mx lookup flow: false
-            smtp fail fast: false
-            smtp safe check: false
-            email pattern: default gem value
-            smtp error body pattern: default gem value
-          EXPECTED_OUTPUT
+              CONFIGURATION SETTINGS:
+              whitelist validation: false
+              whitelisted emails: #{email}
+              not rfc mx lookup flow: false
+              smtp fail fast: false
+              smtp safe check: false
+              email pattern: default gem value
+              smtp error body pattern: default gem value
+            EXPECTED_OUTPUT
+          end
+
+          include_examples 'formatted text output'
         end
 
-        include_examples 'formatted text output'
+        describe 'domains list validation' do
+          let(:validation_type) { :domains_list }
+          let(:expected_output) do
+            <<~EXPECTED_OUTPUT
+              Truemail whitelist validation for #{email} was successful
+
+              CONFIGURATION SETTINGS:
+              whitelist validation: false
+              whitelisted domains: #{domain_from_email(email)}
+              not rfc mx lookup flow: false
+              smtp fail fast: false
+              smtp safe check: false
+              email pattern: default gem value
+              smtp error body pattern: default gem value
+            EXPECTED_OUTPUT
+          end
+
+          include_examples 'formatted text output'
+        end
       end
 
       describe 'regex validation' do
@@ -102,24 +124,46 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
         EXPECTED_OUTPUT
       end
 
-      describe 'whitelist validation' do
-        let(:validation_type) { :whitelist }
-        let(:expected_output) do
-          <<~EXPECTED_OUTPUT
-            Truemail blacklist validation for #{email} failed (domain list match: blacklisted email)
+      describe 'list match validation' do
+        describe 'emails list validation' do
+          let(:validation_type) { :emails_list }
+          let(:expected_output) do
+            <<~EXPECTED_OUTPUT
+              Truemail blacklist validation for #{email} failed (list match: blacklisted email)
 
-            CONFIGURATION SETTINGS:
-            whitelist validation: false
-            blacklisted domains: #{domain_from_email(email)}
-            not rfc mx lookup flow: false
-            smtp fail fast: false
-            smtp safe check: false
-            email pattern: default gem value
-            smtp error body pattern: default gem value
-          EXPECTED_OUTPUT
+              CONFIGURATION SETTINGS:
+              whitelist validation: false
+              blacklisted emails: #{email}
+              not rfc mx lookup flow: false
+              smtp fail fast: false
+              smtp safe check: false
+              email pattern: default gem value
+              smtp error body pattern: default gem value
+            EXPECTED_OUTPUT
+          end
+
+          include_examples 'formatted text output'
         end
 
-        include_examples 'formatted text output'
+        describe 'domains list validation' do
+          let(:validation_type) { :domains_list }
+          let(:expected_output) do
+            <<~EXPECTED_OUTPUT
+              Truemail blacklist validation for #{email} failed (list match: blacklisted email)
+
+              CONFIGURATION SETTINGS:
+              whitelist validation: false
+              blacklisted domains: #{domain_from_email(email)}
+              not rfc mx lookup flow: false
+              smtp fail fast: false
+              smtp safe check: false
+              email pattern: default gem value
+              smtp error body pattern: default gem value
+            EXPECTED_OUTPUT
+          end
+
+          include_examples 'formatted text output'
+        end
       end
 
       describe 'regex validation' do

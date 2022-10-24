@@ -8,6 +8,10 @@ module Truemail
       ffaker.email
     end
 
+    def random_uniq_email
+      ffaker.unique.email
+    end
+
     def random_internationalized_email
       "#{ffaker.user_name}@#{Truemail::ContextHelper::NON_ASCII_WORDS.sample}.#{ffaker.domain_suffix}"
     end

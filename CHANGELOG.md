@@ -2,6 +2,37 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2022.10.24
+
+### Added
+
+- Added ability to specify whitelisted/blacklisted emails by complete match
+
+```ruby
+Truemail.configure do |config|
+  # Optional parameter. Validation of email which contains whitelisted emails always will
+  # return true. Other validations will not processed even if it was defined in validation_type_for
+  # It is equal to empty array by default.
+  config.whitelisted_emails = %w[user@somedomain1.com user@somedomain2.com]
+
+  # Optional parameter. Validation of email which contains blacklisted emails always will
+  # return false. Other validations will not processed even if it was defined in validation_type_for
+  # It is equal to empty array by default.
+  config.blacklisted_emails = %w[user@somedomain3.com user@somedomain4.com]
+end
+```
+
+### Updated
+
+- Updated `Truemail::Configuration`, tests
+- Updated namespace from `Truemail::Validate::DomainListMatch` to `Truemail::Validate::ListMatch`
+- Updated `Truemail::Validator#run, tests
+- Updated `Truemail::Log::Serializer::ValidatorJson`, tests
+- Updated `Truemail::Log::Serializer::ValidatorText`, tests
+- Updated `Truemail::Log::Serializer::AuditorJson`, tests
+- Updated schemas, gemspecs, circleci/codeclimate config
+- Updated docs, gem version
+
 ## [2.7.5] - 2022.10.10
 
 ### Updated

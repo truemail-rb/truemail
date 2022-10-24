@@ -15,6 +15,7 @@ end
 RSpec.describe Truemail::RegexConstant do
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN) }
+    specify { expect(described_class).to be_const_defined(:REGEX_SIMPLE_EMAIL_PATTERN) }
     specify { expect(described_class).to be_const_defined(:REGEX_EMAIL_PATTERN) }
     specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_PATTERN) }
     specify { expect(described_class).to be_const_defined(:REGEX_DOMAIN_FROM_EMAIL) }
@@ -23,6 +24,14 @@ RSpec.describe Truemail::RegexConstant do
     specify { expect(described_class).to be_const_defined(:REGEX_IP_ADDRESS_PATTERN) }
     specify { expect(described_class).to be_const_defined(:REGEX_PORT_NUMBER) }
     specify { expect(described_class).to be_const_defined(:REGEX_DNS_SERVER_ADDRESS_PATTERN) }
+  end
+
+  describe 'Truemail::RegexConstant::REGEX_SIMPLE_EMAIL_PATTERN' do
+    subject(:regex_pattern) { described_class::REGEX_SIMPLE_EMAIL_PATTERN }
+
+    it 'allows any word characters (letter/number/underscore) separated by @' do
+      expect(regex_pattern.match?('olo@molo')).to be(true)
+    end
   end
 
   describe 'Truemail::RegexConstant::REGEX_EMAIL_PATTERN' do
@@ -326,7 +335,7 @@ end
 RSpec.describe Truemail::Validate do
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:Base) }
-    specify { expect(described_class).to be_const_defined(:DomainListMatch) }
+    specify { expect(described_class).to be_const_defined(:ListMatch) }
     specify { expect(described_class).to be_const_defined(:Regex) }
     specify { expect(described_class).to be_const_defined(:Mx) }
     specify { expect(described_class).to be_const_defined(:MxBlacklist) }

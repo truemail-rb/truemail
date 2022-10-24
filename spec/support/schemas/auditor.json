@@ -15,6 +15,8 @@
           "configuration": {
               "validation_type_by_domain": null,
               "whitelist_validation": false,
+              "whitelisted_emails": null,
+              "blacklisted_emails": null,
               "whitelisted_domains": null,
               "blacklisted_domains": null,
               "blacklisted_mx_ip_addresses": null,
@@ -95,6 +97,8 @@
               {
                   "validation_type_by_domain": null,
                   "whitelist_validation": false,
+                  "whitelisted_emails": null,
+                  "blacklisted_emails": null,
                   "whitelisted_domains": null,
                   "blacklisted_domains": null,
                   "dns": null,
@@ -108,6 +112,8 @@
           "required": [
               "validation_type_by_domain",
               "whitelist_validation",
+              "whitelisted_emails",
+              "blacklisted_emails",
               "whitelisted_domains",
               "blacklisted_domains",
               "blacklisted_mx_ip_addresses",
@@ -139,6 +145,26 @@
                       false
                   ]
               },
+              "whitelisted_emails": {
+                "$id": "#/properties/configuration/properties/whitelisted_emails",
+                "type": "null",
+                "title": "The whitelisted_emails schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": null,
+                "examples": [
+                    null
+                ]
+            },
+            "blacklisted_emails": {
+                "$id": "#/properties/configuration/properties/blacklisted_emails",
+                "type": "null",
+                "title": "The blacklisted_emails schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": null,
+                "examples": [
+                    null
+                ]
+            },
               "whitelisted_domains": {
                   "$id": "#/properties/configuration/properties/whitelisted_domains",
                   "type": "null",

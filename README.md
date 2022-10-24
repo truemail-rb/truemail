@@ -130,9 +130,11 @@ You can use global gem configuration or custom independent configuration. Availa
 - connection attempts
 - default validation type
 - validation type for domains
+- whitelisted emails
+- blacklisted emails
 - whitelisted domains
-- whitelist validation
 - blacklisted domains
+- whitelist validation
 - blacklisted mx ip-addresses
 - custom DNS gateway(s)
 - RFC MX lookup flow
@@ -190,21 +192,31 @@ Truemail.configure do |config|
   # It is equal to empty hash by default.
   config.validation_type_for = { 'somedomain.com' => :regex, 'otherdomain.com' => :mx }
 
+  # Optional parameter. Validation of email which contains whitelisted emails always will
+  # return true. Other validations will not processed even if it was defined in validation_type_for
+  # It is equal to empty array by default.
+  config.whitelisted_emails = %w[user@somedomain1.com user@somedomain2.com]
+
+  # Optional parameter. Validation of email which contains blacklisted emails always will
+  # return false. Other validations will not processed even if it was defined in validation_type_for
+  # It is equal to empty array by default.
+  config.blacklisted_emails = %w[user@somedomain3.com user@somedomain4.com]
+
   # Optional parameter. Validation of email which contains whitelisted domain always will
   # return true. Other validations will not processed even if it was defined in validation_type_for
   # It is equal to empty array by default.
   config.whitelisted_domains = %w[somedomain1.com somedomain2.com]
+
+  # Optional parameter. Validation of email which contains blacklisted domain always will
+  # return false. Other validations will not processed even if it was defined in validation_type_for
+  # It is equal to empty array by default.
+  config.blacklisted_domains = %w[somedomain3.com somedomain4.com]
 
   # Optional parameter. With this option Truemail will validate email which contains whitelisted
   # domain only, i.e. if domain whitelisted, validation will passed to Regex, MX or SMTP validators.
   # Validation of email which not contains whitelisted domain always will return false.
   # It is equal false by default.
   config.whitelist_validation = true
-
-  # Optional parameter. Validation of email which contains blacklisted domain always will
-  # return false. Other validations will not processed even if it was defined in validation_type_for
-  # It is equal to empty array by default.
-  config.blacklisted_domains = %w[somedomain3.com somedomain4.com]
 
   # Optional parameter. With this option Truemail will filter out unwanted mx servers via
   # predefined list of ip addresses. It can be used as a part of DEA (disposable email
@@ -259,9 +271,11 @@ Truemail.configuration
  @connection_attempts=3,
  @default_validation_type=:mx,
  @validation_type_by_domain={"somedomain.com" => :regex, "otherdomain.com" => :mx},
+ @whitelisted_emails=["user@somedomain1.com", "user@somedomain2.com"],
+ @blacklisted_emails=["user@somedomain3.com", "user@somedomain4.com"],
  @whitelisted_domains=["somedomain1.com", "somedomain2.com"],
- @whitelist_validation=true,
  @blacklisted_domains=["somedomain3.com", "somedomain4.com"],
+ @whitelist_validation=true,
  @blacklisted_mx_ip_addresses=["1.1.1.1", "2.2.2.2"],
  @dns=["10.0.0.1", "10.0.0.2:54"],
  @verifier_domain="somedomain.com",
@@ -293,9 +307,11 @@ Truemail.configuration
  @connection_attempts=1,
  @default_validation_type=:mx,
  @validation_type_by_domain={"somedomain.com" => :regex, "otherdomain.com" => :mx},
+ @whitelisted_emails=["user@somedomain1.com", "user@somedomain2.com"],
+ @blacklisted_emails=["user@somedomain3.com", "user@somedomain4.com"],
  @whitelisted_domains=["somedomain1.com", "somedomain2.com"],
- @whitelist_validation=true,
  @blacklisted_domains=["somedomain3.com", "somedomain4.com"],
+ @whitelist_validation=true,
  @blacklisted_mx_ip_addresses=["1.1.1.1", "2.2.2.2"],
  @dns=["10.0.0.1", "10.0.0.2:54"],
  @verifier_domain="somedomain.com",
@@ -339,7 +355,7 @@ Please note, you should have global or custom configuration for use Truemail gem
 
 #### Whitelist/Blacklist check
 
-Whitelist/Blacklist check is zero validation level. You can define white and black list domains. It means that validation of email which contains whitelisted domain always will return `true`, and for blacklisted domain will return `false`.
+Whitelist/Blacklist check is zero validation level. You can define white and black emails/domains lists. It means that validation of email which contains whitelisted email or domain always will return `true`, and for blacklisted email or domain will return `false`.
 
 Please note, other validations will not processed even if it was defined in `validation_type_for`.
 
@@ -356,6 +372,8 @@ require 'truemail'
 
 Truemail.configure do |config|
   config.verifier_email = 'verifier@example.com'
+  config.whitelisted_emails = %w[user@somedomain1.com user@somedomain2.com]
+  config.blacklisted_emails = %w[user@somedomain3.com user@somedomain4.com]
   config.whitelisted_domains = %w[white-domain.com somedomain.com]
   config.blacklisted_domains = %w[black-domain.com somedomain.com]
   config.validation_type_for = { 'somedomain.com' => :mx }
@@ -378,6 +396,8 @@ Truemail.validate('email@white-domain.com')
     errors={},
     smtp_debug=nil>,
     configuration=#<Truemail::Configuration:0x00005629f801bd28
+     @whitelisted_emails=["user@somedomain1.com", "user@somedomain2.com"],
+     @blacklisted_emails=["user@somedomain3.com", "user@somedomain4.com"],
      @blacklisted_domains=["black-domain.com", "somedomain.com"],
      @blacklisted_mx_ip_addresses=[],
      @dns=[],
@@ -428,6 +448,8 @@ Truemail.validate('email@white-domain.com', with: :regex)
     smtp_debug=nil>,
     configuration=
     #<Truemail::Configuration:0x0000563f0d2605c8
+     @whitelisted_emails=[],
+     @blacklisted_emails=[],
      @blacklisted_domains=[],
      @blacklisted_mx_ip_addresses=[],
      @dns=[],
@@ -464,6 +486,8 @@ Truemail.validate('email@domain.com', with: :regex)
     smtp_debug=nil>,
     configuration=
     #<Truemail::Configuration:0x0000563f0cd82ab0
+     @whitelisted_emails=[],
+     @blacklisted_emails=[],
      @blacklisted_domains=[],
      @blacklisted_mx_ip_addresses=[],
      @dns=[],
@@ -502,6 +526,8 @@ Truemail.validate('email@black-domain.com')
     smtp_debug=nil>,
     configuration=
     #<Truemail::Configuration:0x0000563f0d36f4f0
+     @whitelisted_emails=[],
+     @blacklisted_emails=[],
      @blacklisted_domains=[],
      @blacklisted_mx_ip_addresses=[],
      @dns=[],
@@ -540,6 +566,8 @@ Truemail.validate('email@somedomain.com')
     smtp_debug=nil>,
     configuration=
     #<Truemail::Configuration:0x0000563f0d3f8fc0
+     @whitelisted_emails=[],
+     @blacklisted_emails=[],
      @blacklisted_domains=[],
      @blacklisted_mx_ip_addresses=[],
      @dns=[],
@@ -595,6 +623,8 @@ Truemail.validate('email@example.com', with: :regex)
       smtp_debug=nil>,
       configuration=
       #<Truemail::Configuration:0x000055aa56a54d48
+       @whitelisted_emails=[],
+       @blacklisted_emails=[],
        @blacklisted_domains=[],
        @blacklisted_mx_ip_addresses=[],
        @dns=[],
@@ -641,6 +671,8 @@ Truemail.validate('email@example.com', with: :regex)
       smtp_debug=nil>,
       configuration=
       #<Truemail::Configuration:0x0000560e58d80830
+       @whitelisted_emails=[],
+       @blacklisted_emails=[],
        @blacklisted_domains=[],
        @blacklisted_mx_ip_addresses=[],
        @dns=[],
@@ -698,6 +730,8 @@ Truemail.validate('email@example.com', with: :mx)
       smtp_debug=nil>,
       configuration=
       #<Truemail::Configuration:0x0000559b6e44af70
+       @whitelisted_emails=[],
+       @blacklisted_emails=[],
        @blacklisted_domains=[],
        @blacklisted_mx_ip_addresses=[],
        @dns=[],
@@ -746,6 +780,8 @@ Truemail.validate('email@example.com', with: :mx)
       smtp_debug=nil>,
       configuration=
       #<Truemail::Configuration:0x0000559b6e44af70
+       @whitelisted_emails=[],
+       @blacklisted_emails=[],
        @blacklisted_domains=[],
        @blacklisted_mx_ip_addresses=[],
        @dns=[],
@@ -798,6 +834,8 @@ Truemail.validate('email@example.com', with: :mx_blacklist)
    smtp_debug=nil,
    configuration=
     #<Truemail::Configuration:0x00007fca0c8aeb38
+     @whitelisted_emails=[],
+     @blacklisted_emails=[],
      @blacklisted_domains=[],
      @blacklisted_mx_ip_addresses=["127.0.1.2"],
      @connection_attempts=2,
@@ -875,6 +913,8 @@ Truemail.validate('email@example.com')
                 errors={}>>],
         configuration=
           #<Truemail::Configuration:0x00007fdc4504f5c8
+            @whitelisted_emails=[],
+            @blacklisted_emails=[],
             @blacklisted_domains=[],
             @blacklisted_mx_ip_addresses=[],
             @dns=[],
@@ -921,6 +961,8 @@ Truemail.validate('email@example.com')
       smtp_debug=nil>,
       configuration=
       #<Truemail::Configuration:0x00005615e87b9298
+       @whitelisted_emails=[],
+       @blacklisted_emails=[],
        @blacklisted_domains=[],
        @blacklisted_mx_ip_addresses=[],
        @dns=[],
@@ -973,6 +1015,8 @@ Truemail.validate('email@example.com')
                 errors={:rcptto=>"550 User not found\n"}>>]>,
           configuration=
             #<Truemail::Configuration:0x00005615e87b9298
+             @whitelisted_emails=[],
+             @blacklisted_emails=[],
              @blacklisted_domains=[],
              @blacklisted_mx_ip_addresses=[],
              @dns=[],
@@ -1038,6 +1082,8 @@ Truemail.validate('email@example.com')
                 errors={:mailfrom=>"554 5.7.1 Client host blocked\n", :connection=>"server dropped connection after response"}>>,]>,
         configuration=
             #<Truemail::Configuration:0x00005615e87b9298
+             @whitelisted_emails=[],
+             @blacklisted_emails=[],
              @blacklisted_domains=[],
              @blacklisted_mx_ip_addresses=[],
              @dns=[],
@@ -1087,6 +1133,8 @@ Truemail.validate('email@example.com')
               errors={:rcptto=>"550 User not found\n"}>>]>,
       configuration=
             #<Truemail::Configuration:0x00005615e87b9298
+             @whitelisted_emails=[],
+             @blacklisted_emails=[],
              @blacklisted_domains=[],
              @blacklisted_mx_ip_addresses=[],
              @dns=[],
@@ -1138,6 +1186,8 @@ Truemail.host_audit
        warnings={}>,
        configuration=
         #<Truemail::Configuration:0x00005615e86327a8
+         @whitelisted_emails=[],
+         @blacklisted_emails=[],
          @blacklisted_domains=[],
          @blacklisted_mx_ip_addresses=[],
          @dns=[],
@@ -1168,6 +1218,8 @@ Truemail.host_audit
        },
        configuration=
         #<Truemail::Configuration:0x00005615e86327a8
+         @whitelisted_emails=[],
+         @blacklisted_emails=[],
          @blacklisted_domains=[],
          @blacklisted_mx_ip_addresses=[],
          @dns=[],
@@ -1223,6 +1275,8 @@ Truemail::Log::Serializer::AuditorJson.call(Truemail.host_audit)
     "dns": "A-record of verifier domain not refers to current host ip address", "ptr": "PTR-record does not reference to current verifier domain"
   },
  "configuration": {
+    "whitelisted_emails": null,
+    "blacklisted_emails": null,
     "blacklisted_domains": null,
     "blacklisted_mx_ip_addresses": null,
     "dns": null,
@@ -1264,6 +1318,8 @@ Truemail::Log::Serializer::ValidatorJson.call(Truemail.validate('nonexistent_ema
     }
   ],
   "configuration": {
+    "whitelisted_emails": null,
+    "blacklisted_emails": null,
     "blacklisted_domains": null,
     "blacklisted_mx_ip_addresses": null,
     "dns": null,
@@ -1307,6 +1363,8 @@ Truemail.host_audit.as_json
     "dns": "A-record of verifier domain not refers to current host ip address", "ptr": "PTR-record does not reference to current verifier domain"
   },
  "configuration": {
+    "whitelisted_emails": null,
+    "blacklisted_emails": null,
     "blacklisted_domains": null,
     "blacklisted_mx_ip_addresses": null,
     "dns": null,
@@ -1345,6 +1403,8 @@ Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
     }
   ],
   "configuration": {
+    "whitelisted_emails": null,
+    "blacklisted_emails": null,
     "blacklisted_domains": null,
     "blacklisted_mx_ip_addresses": null,
     "dns": null,

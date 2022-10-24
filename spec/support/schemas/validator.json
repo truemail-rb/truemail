@@ -70,19 +70,20 @@
           "default": {},
           "examples": [
               {
-                  "smtp": "smtp error",
-                  "mx": "target host(s) not found",
+                  "list_match": "blacklisted email",
                   "regex": "email does not match the regular expression",
-                  "domain_list_match": "blacklisted email"
+                  "mx": "target host(s) not found",
+                  "mx_blacklist": "blacklisted mx server ip address",
+                  "smtp": "smtp error"
               }
           ],
           "required": [],
           "additionalProperties": false,
           "properties": {
-              "domain_list_match": {
-                  "$id": "#/properties/errors/properties/domain_list_match",
+              "list_match": {
+                  "$id": "#/properties/errors/properties/list_match",
                   "type": "string",
-                  "title": "The domain_list_match schema",
+                  "title": "The list_match schema",
                   "description": "An explanation about the purpose of this instance.",
                   "default": "",
                   "examples": [
@@ -245,12 +246,14 @@
           "examples": [
               {
                   "whitelist_validation": false,
+                  "whitelisted_emails": null,
+                  "blacklisted_emails": null,
+                  "whitelisted_domains": null,
                   "blacklisted_domains": null,
                   "blacklisted_mx_ip_addresses": null,
                   "validation_type_by_domain": null,
                   "smtp_error_body_pattern": "default gem value",
                   "smtp_safe_check": false,
-                  "whitelisted_domains": null,
                   "dns": null,
                   "email_pattern": "default gem value",
                   "not_rfc_mx_lookup_flow": false,
@@ -260,6 +263,8 @@
           "required": [
               "validation_type_by_domain",
               "whitelist_validation",
+              "whitelisted_emails",
+              "blacklisted_emails",
               "whitelisted_domains",
               "blacklisted_domains",
               "blacklisted_mx_ip_addresses",
@@ -295,6 +300,32 @@
                       false
                   ]
               },
+              "whitelisted_emails": {
+                "$id": "#/properties/configuration/properties/whitelisted_emails",
+                "type": [
+                    "array",
+                    "null"
+                ],
+                "title": "The whitelisted_emails schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": null,
+                "examples": [
+                    null
+                ]
+            },
+            "blacklisted_emails": {
+                "$id": "#/properties/configuration/properties/blacklisted_emails",
+                "type": [
+                    "array",
+                    "null"
+                ],
+                "title": "The blacklisted_emails schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": null,
+                "examples": [
+                    null
+                ]
+            },
               "whitelisted_domains": {
                   "$id": "#/properties/configuration/properties/whitelisted_domains",
                   "type": [

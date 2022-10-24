@@ -12,6 +12,15 @@ RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec
     end
   end
 
+  describe '#random_uniq_email' do
+    specify do
+      expect(FFaker::Internet).to receive_message_chain(:unique, :email)
+      random_uniq_email
+    end
+
+    specify { expect(random_uniq_email).to match(Truemail::RegexConstant::REGEX_EMAIL_PATTERN) }
+  end
+
   describe '#random_domain_name' do
     specify do
       expect(FFaker::Internet).to receive(:domain_name).and_call_original
