@@ -56,7 +56,7 @@ RSpec.describe Truemail::Validator do
     let(:validator_instance) { described_class.new(email, with: validation_type, **configuration) }
     let(:validation_type) { :regex }
 
-    before { allow(Truemail::Validate::DomainListMatch).to receive(:check) }
+    before { allow(Truemail::Validate::ListMatch).to receive(:check) }
 
     describe 'validation detection layer' do
       before { allow(validator_instance).to receive(:result_not_changed?).and_return(condition) }

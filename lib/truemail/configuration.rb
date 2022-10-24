@@ -14,6 +14,8 @@ module Truemail
       connection_timeout
       response_timeout
       connection_attempts
+      whitelisted_emails
+      blacklisted_emails
       whitelisted_domains
       blacklisted_domains
       blacklisted_mx_ip_addresses
@@ -100,6 +102,8 @@ module Truemail
         default_validation_type: Truemail::Configuration::DEFAULT_VALIDATION_TYPE,
         smtp_port: Truemail::Configuration::DEFAULT_SMTP_PORT,
         validation_type_by_domain: {},
+        whitelisted_emails: [],
+        blacklisted_emails: [],
         whitelisted_domains: [],
         whitelist_validation: false,
         blacklisted_domains: [],
@@ -131,6 +135,7 @@ module Truemail
     def regex_by_method(method)
       return Truemail::RegexConstant::REGEX_IP_ADDRESS_PATTERN if method.eql?(:blacklisted_mx_ip_addresses)
       return Truemail::RegexConstant::REGEX_DNS_SERVER_ADDRESS_PATTERN if method.eql?(:dns)
+      return Truemail::RegexConstant::REGEX_SIMPLE_EMAIL_PATTERN if method[/email/]
       Truemail::RegexConstant::REGEX_DOMAIN_PATTERN
     end
 

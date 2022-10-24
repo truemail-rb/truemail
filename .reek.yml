@@ -15,6 +15,7 @@ detectors:
       - Truemail::Configuration#logger=
       - Truemail::Validate::Smtp::Request#initialize
       - Truemail::Validate::Smtp::Request::Session#initialize
+      - Truemail::RSpec::ValidatorHelper::ValidatorFactory#process_validator_params
 
   TooManyInstanceVariables:
     exclude:

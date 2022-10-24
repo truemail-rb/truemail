@@ -8,6 +8,8 @@ module Truemail
 
         CONFIGURATION_ARRAY_ATTRS = %i[
           validation_type_by_domain
+          whitelisted_emails
+          blacklisted_emails
           whitelisted_domains
           blacklisted_domains
           blacklisted_mx_ip_addresses
@@ -61,6 +63,8 @@ module Truemail
           {
             validation_type_by_domain: validation_type_by_domain,
             whitelist_validation: executor_configuration.whitelist_validation,
+            whitelisted_emails: whitelisted_emails,
+            blacklisted_emails: blacklisted_emails,
             whitelisted_domains: whitelisted_domains,
             blacklisted_domains: blacklisted_domains,
             blacklisted_mx_ip_addresses: blacklisted_mx_ip_addresses,

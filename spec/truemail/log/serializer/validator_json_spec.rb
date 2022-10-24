@@ -13,6 +13,8 @@ RSpec.describe Truemail::Log::Serializer::ValidatorJson do
       create_configuration(
         email_pattern: /\A.+@.+\z/,
         validation_type_for: { random_uniq_domain_name => :regex },
+        whitelisted_emails: [random_uniq_email],
+        blacklisted_emails: [random_uniq_email],
         whitelisted_domains: [random_uniq_domain_name],
         blacklisted_domains: [random_uniq_domain_name],
         blacklisted_mx_ip_addresses: create_servers_list,
@@ -29,7 +31,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorJson do
     end
 
     shared_context 'serialized json' do
-      %i[whitelist regex mx mx_blacklist smtp].each do |validation_layer_name|
+      %i[emails_list domains_list regex mx mx_blacklist smtp].each do |validation_layer_name|
         describe "#{validation_layer_name} validation" do
           let(:validation_type) { validation_layer_name }
 
