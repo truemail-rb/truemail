@@ -6,7 +6,7 @@ defaults: &defaults
     - image: cimg/ruby:<< parameters.ruby-version >>
 
 orbs:
-  ruby: circleci/ruby@1.8.0
+  ruby: circleci/ruby@2.0.0
 
 references:
   restore_bundle_cache: &restore_bundle_cache
