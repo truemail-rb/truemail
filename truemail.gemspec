@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| ::File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'net-smtp', '~> 0.3.2' if ::Gem::Version.new(::RUBY_VERSION) >= ::Gem::Version.new('3.1.0')
+  spec.add_runtime_dependency 'net-smtp', '~> 0.3.3' if ::Gem::Version.new(::RUBY_VERSION) >= ::Gem::Version.new('3.1.0')
   spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
 
   spec.add_development_dependency 'dns_mock', '~> 1.5', '>= 1.5.5'
@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'json_matchers', '~> 0.11.1'
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   spec.add_development_dependency 'rspec', '~> 3.12'
-  spec.add_development_dependency 'smtp_mock', '~> 1.2', '>= 1.2.2'
+  spec.add_development_dependency 'smtp_mock', '~> 1.3'
   spec.add_development_dependency 'truemail-rspec', '~> 1.0'
   spec.add_development_dependency 'webmock', '~> 3.18', '>= 3.18.1'
 end
