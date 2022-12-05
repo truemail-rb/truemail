@@ -1,0 +1,29 @@
+# frozen_string_literal: true
+
+require_relative 'lib/truemail/version'
+
+Gem::Specification.new do |spec|
+  spec.name          = 'truemail'
+  spec.version       = Truemail::VERSION
+  spec.authors       = ['Vladislav Trotsenko']
+  spec.email         = %w[admin@bestweb.com.ua]
+  spec.summary       = %(truemail)
+  spec.description   = %(Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS, SMTP and even more.)
+  spec.homepage      = 'https://github.com/truemail-rb/truemail'
+  spec.license       = 'MIT'
+
+  spec.required_ruby_version = '>= 2.5.0'
+  spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.require_paths = %w[lib]
+
+  spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
+
+  spec.add_development_dependency 'dns_mock'
+  spec.add_development_dependency 'ffaker'
+  spec.add_development_dependency 'json_matchers'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'smtp_mock'
+  spec.add_development_dependency 'truemail-rspec'
+  spec.add_development_dependency 'webmock'
+end
