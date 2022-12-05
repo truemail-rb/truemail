@@ -1,11 +1,14 @@
+---
+
 require:
   - rubocop-rspec
   - rubocop-performance
 
 AllCops:
-  DisplayCopNames:    true
-  DisplayStyleGuide:  true
-  TargetRubyVersion:  2.5
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  TargetRubyVersion: 2.5
+  SuggestExtensions: false
   NewCops: enable
 
 # Metrics ---------------------------------------------------------------------
@@ -63,13 +66,13 @@ Layout/ClassStructure:
       - prepend
       - extend
   ExpectedOrder:
-      - module_inclusion
-      - constants
-      - public_class_methods
-      - initializer
-      - public_methods
-      - protected_methods
-      - private_methods
+    - module_inclusion
+    - constants
+    - public_class_methods
+    - initializer
+    - public_methods
+    - protected_methods
+    - private_methods
 
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
