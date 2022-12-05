@@ -1,3 +1,5 @@
+---
+
 detectors:
   IrresponsibleModule:
     enabled: false
@@ -19,12 +21,12 @@ detectors:
 
   TooManyInstanceVariables:
     exclude:
-     - Truemail::Configuration
-     - Truemail::Validate::Smtp::Request
+      - Truemail::Configuration
+      - Truemail::Validate::Smtp::Request
 
   TooManyMethods:
     exclude:
-     - Truemail::Configuration
+      - Truemail::Configuration
 
   Attribute:
     exclude:

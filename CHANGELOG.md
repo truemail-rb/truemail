@@ -2,6 +2,25 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.3] - 2022.12.05
+
+### Added
+
+- Added new bunch of project linters
+- Added auto deploy to RubyGems
+- Added auto creating release notes on GitHub
+
+### Updated
+
+- Updated gemspecs
+- Updated codeclimate/circleci configs
+- Updated gem development dependencies
+- Updated gem version
+
+### Removed
+
+- Removed `overcommit` dependency
+
 ## [3.0.2] - 2022.11.21
 
 ### Updated
@@ -789,7 +808,7 @@ end
 
 Truemail gem allows to output tracking events to stdout/file or both of these. Please note, at least one of the outputs must exist. Tracking event by default is `:error`
 
-**Available tracking events**
+#### Available tracking events
 
 - `:all`, all detected events including success validation cases
 - `:unrecognized_error`, unrecognized errors only (when `smtp_safe_check = true` and SMTP server does not return an exact answer that the email does not exist)
@@ -869,7 +888,7 @@ Truemail.configure do |config|
 end
 ```
 
-**Email has whitelisted domain**
+#### Email has whitelisted domain
 
 ```ruby
 Truemail.validate('email@white-domain.com', with: :regex)
@@ -885,7 +904,7 @@ Truemail.validate('email@white-domain.com', with: :regex)
   @validation_type=:regex>
 ```
 
-**Email hasn't whitelisted domain**
+#### Email hasn't whitelisted domain
 
 ```ruby
 Truemail.validate('email@domain.com', with: :regex)
@@ -1120,10 +1139,10 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 ### Fixed
 
 - Default `REGEX_EMAIL_PATTERN`, [issue details](https://github.com/truemail-rb/truemail/issues/7)
-  * local part of address can't start with a dot or special symbol
-  * local part of address can include ```+``` symbol
+  - local part of address can't start with a dot or special symbol
+  - local part of address can include ```+``` symbol
 - Default `REGEX_DOMAIN_PATTERN`, [issue details](https://github.com/truemail-rb/truemail/issues/8)
-  * TLD size increased up to 63 characters
+  - TLD size increased up to 63 characters
 - Case sensitive domain names, [issue details](https://github.com/truemail-rb/truemail/issues/9)
 
 ### Changed

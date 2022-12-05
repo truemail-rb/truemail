@@ -1,3 +1,5 @@
+---
+
 version: 2.1
 
 defaults: &defaults
@@ -18,20 +20,34 @@ references:
     run:
       name: Installing gems
       command: |
-            bundle config set --local path 'vendor/bundle'
+            bundle config set --local path '~/vendor/bundle'
             bundle install
 
   save_bundle_cache: &save_bundle_cache
     save_cache:
       key: truemail-{{ checksum "truemail.gemspec" }}
       paths:
-        - vendor/bundle
+        - ~/vendor/bundle
 
   install_system_dependencies: &install_system_dependencies
     run:
       name: Installing system dependencies
       command: |
             bundle exec smtp_mock -s -i ~
+
+  install_yamllint: &install_yamllint
+    run:
+      name: Installing Yamllint
+      command: |
+            sudo apt-get update -y
+            sudo apt-get install -y yamllint
+
+  install_lefthook: &install_lefthook
+    run:
+      name: Installing Lefthook
+      command: |
+            curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' | sudo -E bash
+            sudo apt-get install -y lefthook
 
   install_codeclimate_reporter: &install_codeclimate_reporter
     run:
@@ -44,13 +60,13 @@ references:
     run:
       name: Using latest gemspec
       command: |
-            cp .circleci/gemspec_latest truemail.gemspec
+            cp .circleci/gemspecs/latest truemail.gemspec
 
   use_compatible_gemspec: &use_compatible_gemspec
     run:
       name: Using compatible gemspec
       command: |
-            cp .circleci/gemspec_compatible truemail.gemspec
+            cp .circleci/gemspecs/compatible truemail.gemspec
 
 jobs:
   linters-ruby:
@@ -67,12 +83,23 @@ jobs:
       - <<: *restore_bundle_cache
       - <<: *bundle_install
       - <<: *save_bundle_cache
+      - <<: *install_yamllint
+      - <<: *install_lefthook
 
       - run:
-          name: Running Overcommit
+          name: Running code style linters
+          command: lefthook run code-style-linters
+
+      - run:
+          name: Running code performance linters
           command: |
-            bundle exec overcommit -s
-            SKIP=AuthorEmail,AuthorName bundle exec overcommit -r
+                cp .circleci/linter_configs/.fasterer.yml .fasterer.yml
+                lefthook run code-performance-linters
+                rm .fasterer.yml
+
+      - run:
+          name: Running code vulnerability linters
+          command: lefthook run code-vulnerability-linters
 
   tests-ruby:
     parameters:
@@ -116,22 +143,45 @@ jobs:
     parameters:
       ruby-version:
         type: string
-    docker:
-      - image: cimg/ruby:<< parameters.ruby-version >>
+
+    <<: *defaults
+
     steps:
       - checkout
+
       - <<: *use_compatible_gemspec
+
       - ruby/install-deps:
           bundler-version: "2.3.26"
           with-cache: false
-          path: './vendor/custom_bundle'
+          path: '~/vendor/custom_bundle'
+
       - <<: *install_system_dependencies
+
       - run:
           name: Running compatibility tests
           command: bundle exec rspec
 
+  releasing-gem-from-ruby:
+    parameters:
+      ruby-version:
+        type: string
+
+    <<: *defaults
+
+    steps:
+      - checkout
+
+      - add_ssh_keys:
+          fingerprints:
+            - "f9:1e:0f:31:36:83:47:40:fe:05:74:91:00:21:02:3e"
+
+      - run:
+          name: Publishing new release
+          command: ./.circleci/scripts/release.sh
+
 workflows:
-  build_and_test:
+  build_test_deploy:
     jobs:
       - linters-ruby:
           matrix:
@@ -145,3 +195,14 @@ workflows:
           matrix:
             parameters:
               ruby-version: ["2.5", "2.6", "2.7", "3.0"]
+      - releasing-gem-from-ruby:
+          requires:
+            - linters-ruby
+            - tests-ruby
+            - compatibility-ruby
+          matrix:
+            parameters:
+              ruby-version: ["2.5"]
+          filters:
+            branches:
+              only: master

@@ -45,4 +45,4 @@ Guidelines for pull requests:
 5. Create a new branch
 6. Read our [setup development environment guide](.github/DEVELOPMENT_ENVIRONMENT_GUIDE.md)
 7. Make your changes. Please note that your PR should include tests for the new codebase!
-9. Push to your fork and submit a pull request to `develop` branch
+8. Push to your fork and submit a pull request to `develop` branch
