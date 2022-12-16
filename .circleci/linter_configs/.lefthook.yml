@@ -1,0 +1,34 @@
+---
+
+no_tty: true
+skip_output:
+  - meta
+
+code-style-linters:
+  commands:
+    reek:
+      run: bundle exec reek
+    rubocop:
+      run: bundle exec rubocop -c '.circleci/linter_configs/.rubocop.yml'
+    shellcheck:
+      glob: '*.{sh}'
+      run: shellcheck --norc {all_files}
+    yamllint:
+      run: yamllint -c '.circleci/linter_configs/.yamllint.yml' .
+
+code-performance-linters:
+  commands:
+    fasterer:
+      run: bundle exec fasterer
+
+code-vulnerability-linters:
+  commands:
+    bundle-audit:
+      run: bundle exec bundle-audit check -c '.circleci/linter_configs/.bundler-audit.yml' --update
+
+code-documentation-linters:
+  commands:
+    cspell:
+      run: cspell-cli lint -c '.circleci/linter_configs/.cspell.yml' '**/*.{txt,md}'
+    markdownlint:
+      run: markdownlint -c '.circleci/linter_configs/.markdownlint.yml' '**/*.md'

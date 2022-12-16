@@ -1,4 +1,4 @@
-# !/bin/sh
+#!/bin/sh
 set -e
 set +x
 mkdir -p ~/.gem

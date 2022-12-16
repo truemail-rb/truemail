@@ -16,7 +16,7 @@ bugfix/fix-some-bug-name
 
 ### Squash commits
 
-Please squash all branch commits into the one before openning your PR from your fork. It's simple to do with the git:
+Please squash all branch commits into the one before opening your PR from your fork. It's simple to do with the git:
 
 ```bash
 git rebase -i [hash your first commit of your branch]~1
@@ -25,7 +25,7 @@ git rebase -i 6467fe36232401fa740af067cfd8ac9ec932fed2~1 # example
 
 ### Add commit description
 
-Please complete your commit description folowing next pattern:
+Please complete your commit description following next pattern:
 
 ```
 Technical/Add info files # should be the same name as your branch name
