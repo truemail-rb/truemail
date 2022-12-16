@@ -610,7 +610,7 @@ RSpec.describe Truemail::Configuration do
       end
 
       describe '#smtp_fail_fast=' do
-        it 'sets smtp fail fast behaviour' do
+        it 'sets smtp fail fast behavior' do
           expect { configuration_instance.smtp_fail_fast = true }
             .to change(configuration_instance, :smtp_fail_fast)
             .from(false).to(true)

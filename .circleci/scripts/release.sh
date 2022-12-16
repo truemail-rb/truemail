@@ -1,4 +1,4 @@
-# !/bin/sh
+#!/bin/sh
 set -e
 
 GH_CLI_RELEASES_URL="https://github.com/cli/cli/releases"
@@ -8,7 +8,7 @@ DELIMETER="_"
 PACKAGE_FILE="$FILE_NAME$DELIMETER$BUILD_ARCHITECTURE"
 
 gh_cli_latest_release() {
-  curl -sL -o /dev/null -w %{url_effective} "$GH_CLI_RELEASES_URL/latest" | rev | cut -f1 -d'/'| rev
+  curl -sL -o /dev/null -w '%{url_effective}' "$GH_CLI_RELEASES_URL/latest" | rev | cut -f1 -d'/'| rev
 }
 
 download_gh_cli() {
@@ -17,7 +17,7 @@ download_gh_cli() {
     echo "Unable to get GitHub CLI release." >&2
     exit 1
   }
-  curl -s -L -o "$PACKAGE_FILE" "$GH_CLI_RELEASES_URL/download/$VERSION/$FILE_NAME$DELIMETER${VERSION:1}$DELIMETER$BUILD_ARCHITECTURE"
+  curl -s -L -o "$PACKAGE_FILE" "$GH_CLI_RELEASES_URL/download/$VERSION/$FILE_NAME$DELIMETER$(printf '%s' "$VERSION" | cut -c 2-100)$DELIMETER$BUILD_ARCHITECTURE"
 }
 
 install_gh_cli() {
@@ -26,7 +26,7 @@ install_gh_cli() {
 }
 
 get_release_candidate_version() {
-  echo $(ruby -r rubygems -e "puts Gem::Specification::load('$(ls *.gemspec)').version")
+  ruby -r rubygems -e "puts Gem::Specification::load('$(ls -- *.gemspec)').version"
 }
 
 release_candidate_tag="v$(get_release_candidate_version)"
@@ -39,8 +39,8 @@ release_to_rubygems() {
   echo "Setting RubyGems publisher credentials..."
   ./.circleci/scripts/set_publisher_credentials.sh
   echo "Preparation for release..."
-  git config --global user.email ${PUBLISHER_EMAIL}
-  git config --global user.name ${PUBLISHER_NAME}
+  git config --global user.email "${PUBLISHER_EMAIL}"
+  git config --global user.name "${PUBLISHER_NAME}"
   git stash
   git checkout develop
   gem install yard gem-ctags

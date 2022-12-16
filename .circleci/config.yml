@@ -35,19 +35,16 @@ references:
       command: |
             bundle exec smtp_mock -s -i ~
 
-  install_yamllint: &install_yamllint
+  install_linters: &install_linters
     run:
-      name: Installing Yamllint
-      command: |
-            sudo apt-get update -y
-            sudo apt-get install -y yamllint
-
-  install_lefthook: &install_lefthook
-    run:
-      name: Installing Lefthook
+      name: Installing bunch of linters
       command: |
             curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' | sudo -E bash
-            sudo apt-get install -y lefthook
+            sudo apt-get update -y
+            sudo apt-get install -y lefthook shellcheck yamllint
+            npm install --prefix='~/.local' --global --save-dev git+https://github.com/streetsidesoftware/cspell-cli markdownlint-cli
+            cp .circleci/linter_configs/.fasterer.yml .fasterer.yml
+            cp .circleci/linter_configs/.lefthook.yml lefthook.yml
 
   install_codeclimate_reporter: &install_codeclimate_reporter
     run:
@@ -83,8 +80,7 @@ jobs:
       - <<: *restore_bundle_cache
       - <<: *bundle_install
       - <<: *save_bundle_cache
-      - <<: *install_yamllint
-      - <<: *install_lefthook
+      - <<: *install_linters
 
       - run:
           name: Running code style linters
@@ -92,14 +88,15 @@ jobs:
 
       - run:
           name: Running code performance linters
-          command: |
-                cp .circleci/linter_configs/.fasterer.yml .fasterer.yml
-                lefthook run code-performance-linters
-                rm .fasterer.yml
+          command: lefthook run code-performance-linters
 
       - run:
           name: Running code vulnerability linters
           command: lefthook run code-vulnerability-linters
+
+      - run:
+          name: Running code documentation linters
+          command: lefthook run code-documentation-linters
 
   tests-ruby:
     parameters:
@@ -186,7 +183,7 @@ workflows:
       - linters-ruby:
           matrix:
             parameters:
-              ruby-version: ["3.1"]
+              ruby-version: ["3.1-node"]
       - tests-ruby:
           matrix:
             parameters:

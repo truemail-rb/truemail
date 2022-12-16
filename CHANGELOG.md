@@ -2,6 +2,28 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.4] - 2022.12.16
+
+### Fixed
+
+- Fixed linters issues
+
+### Added
+
+- Added `cspell` linter
+- Added `markdownlint` linter
+- Added `shellcheck` linter
+
+### Updated
+
+- Updated gemspecs
+- Updated `rubocop`/`codeclimate`/`lefthook`/`circleci` configs
+- Updated gem version
+
+### Removed
+
+- `mdl` linter, config
+
 ## [3.0.3] - 2022.12.05
 
 ### Added
@@ -13,7 +35,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Updated
 
 - Updated gemspecs
-- Updated codeclimate/circleci configs
+- Updated `codeclimate`/`circleci` configs
 - Updated gem development dependencies
 - Updated gem version
 
@@ -26,8 +48,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Updated
 
 - Updated gem runtime/development dependencies
-- Updated gemspecs, circleci config
-- Updated rubocop/codeclimate configs
+- Updated gemspecs, `circleci` config
+- Updated `rubocop`/`codeclimate` configs
 - Updated gem version
 
 ## [3.0.1] - 2022.11.01
@@ -39,7 +61,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Updated
 
 - Updated RSpec helpers
-- Updated gemspecs, circleci config
+- Updated gemspecs, `circleci` config
 - Updated gem version
 
 ## [3.0.0] - 2022.10.24
@@ -70,39 +92,39 @@ end
 - Updated `Truemail::Log::Serializer::ValidatorJson`, tests
 - Updated `Truemail::Log::Serializer::ValidatorText`, tests
 - Updated `Truemail::Log::Serializer::AuditorJson`, tests
-- Updated schemas, gemspecs, circleci/codeclimate config
+- Updated schemas, gemspecs, `circleci`/`codeclimate` config
 - Updated docs, gem version
 
 ## [2.7.5] - 2022.10.10
 
 ### Updated
 
-- Updated gemspecs, circleci config
-- Updated codeclimate config
+- Updated gemspecs, `circleci` config
+- Updated `codeclimate` config
 - Updated gem version
 
 ## [2.7.4] - 2022.08.16
 
 ### Updated
 
-- Updated gemspecs, circleci config
-- Updated rubocop/codeclimate configs
+- Updated gemspecs, `circleci` config
+- Updated `rubocop`/`codeclimate` configs
 - Updated gem version
 
 ## [2.7.3] - 2022.05.31
 
 ### Updated
 
-- Updated gemspecs, circleci config
-- Updated rubocop/codeclimate configs
+- Updated gemspecs, `circleci` config
+- Updated `rubocop`/`codeclimate` configs
 - Updated gem version
 
 ## [2.7.2] - 2022.04.02
 
 ### Updated
 
-- Updated gemspecs, circleci config
-- Updated rubocop/codeclimate configs
+- Updated gemspecs, `circleci` config
+- Updated `rubocop`/`codeclimate` configs
 - Updated git templates
 - Updated gem version
 
@@ -144,7 +166,7 @@ end
 ### Updated
 
 - Updated default gemspec, ruby-version
-- Updated CircleCI Ruby env flow
+- Updated `circleci` Ruby env flow
 - Updated gem version
 
 ### Fixed
@@ -182,7 +204,7 @@ end
 ### Updated
 
 - Updated `Truemail::Validate::Smtp::Request::Session#initialize`, `Truemail::Validate::Smtp::Request::Session#start`, tests
-- Updated rubocop/reek configs
+- Updated `rubocop`/reek configs
 - Updated gem docs, version
 
 ## [2.6.0] - 2021.12.28
@@ -195,7 +217,7 @@ end
 ### Updated
 
 - Updated `Truemail::Validate::Smtp::Request#session`, `Truemail::Validate::Smtp::Request#run`, tests
-- Updated rubocop/reek/codeclimate/circleci configs
+- Updated `rubocop`/reek/`codeclimate`/`circleci` configs
 - Updated gem runtime/development dependencies
 - Updated gem docs, version
 
@@ -208,7 +230,7 @@ end
 ### Updated
 
 - Updated `Truemail::Validate::Smtp::Request#run`
-- Updated rubocop/codeclimate configs
+- Updated `rubocop`/`codeclimate` configs
 - Updated gem development dependencies
 - Updated gem docs, version
 
@@ -228,7 +250,7 @@ end
 
 ### Fixed
 
-- `Truemail::RegexConstant::REGEX_EMAIL_PATTERN` behaviour with double `@` in email. Thanks [@your-favorite-dev](https://github.com/your-favorite-dev) for bug report.
+- `Truemail::RegexConstant::REGEX_EMAIL_PATTERN` behavior with double `@` in email. Thanks [@your-favorite-dev](https://github.com/your-favorite-dev) for bug report.
 
 ### Updated
 
@@ -313,7 +335,7 @@ Allowed using special characters in email user names (following [RFC 3696](https
 
 - Updated `Truemail::RegexConstant::REGEX_EMAIL_PATTERN`, tests
 - Updated gem development dependencies
-- Updated Rubocop/Codeclimate config
+- Updated `rubocop`/`codeclimate` config
 - Updated gem documentation, version
 
 ## [2.4.3] - 2021.06.15
@@ -321,7 +343,7 @@ Allowed using special characters in email user names (following [RFC 3696](https
 ### Updated
 
 - Updated gem development dependencies
-- Updated Rubocop/Codeclimate config
+- Updated `rubocop`/`codeclimate` config
 - Updated gem documentation, version
 
 ## [2.4.2] - 2021.05.13
@@ -334,7 +356,7 @@ Allowed using special characters in email user names (following [RFC 3696](https
 ### Updated
 
 - Updated gem development dependencies
-- Updated simplecov/CircleCi config
+- Updated `simplecov`/`circleci` config
 - Updated gem documentation, version
 
 ## [2.4.1] - 2021.05.05
@@ -379,29 +401,29 @@ Fixed bug with impossibility to use valid dns port number. Now validation for dn
 
 - Updated `Truemail::RegexConstant::REGEX_PORT_NUMBER`, tests
 - Updated gem documentation
-- CircleCI config moved to `.circleci/config.yml`
+- `circleci` config moved to `.`circleci`/config.yml`
 
 ## [2.3.3] - 2021.04.14
 
 ### Changed
 
 - Updated gem development dependencies
-- Updated rubocop/codeclimate config
-- Updated CircleCI config
+- Updated `rubocop`/`codeclimate` config
+- Updated `circleci` config
 
 ## [2.3.2] - 2021.03.08
 
 ### Changed
 
 - Updated gem development dependencies
-- Updated rubocop/codeclimate config
+- Updated `rubocop`/`codeclimate` config
 
 ## [2.3.1] - 2021.02.26
 
 ### Changed
 
 - Updated gem development dependencies
-- Updated rubocop/codeclimate config
+- Updated `rubocop`/`codeclimate` config
 - Updated tests
 
 ## [2.3.0] - 2021.02.05
@@ -433,7 +455,7 @@ end
 - Updated `Truemail::Log::Serializer::Base`, dependent tests
 - Updated namespaces for stdlib classes
 - Updated gem development dependencies
-- Updated linters/codeclimate configs
+- Updated linters/`codeclimate` configs
 - Updated gem runtime/development dependencies
 - Updated gem documentation, changelog, version
 
@@ -447,14 +469,14 @@ Removed needless `Timeout.timeout` block in `Truemail::Validate::Smtp::Request#c
 
 - Updated `Truemail::Validate::Smtp::Request`
 - Updated gem development dependencies
-- Updated rubocop, reek configs
+- Updated `rubocop`, reek configs
 
 ## [2.2.2] - 2020.12.30
 
 ### Changed
 
 - Updated gem development dependencies
-- Updated rubocop config
+- Updated `rubocop` config
 
 ## [2.2.1] - 2020.12.06
 
@@ -475,7 +497,7 @@ Removed needless `Timeout.timeout` block in `Truemail::Validate::Smtp::Request#c
 
 ## [2.2.0] - 2020.12.01
 
-Ability to use fail fast behaviour for SMTP validation layer. When `smtp_fail_fast = true` it means that `truemail` ends smtp validation session after first attempt on the first mx server in any fail cases (network connection/timeout error, smtp validation error). This feature helps to reduce total time of SMTP validation session up to 1 second.
+Ability to use fail fast behavior for SMTP validation layer. When `smtp_fail_fast = true` it means that `truemail` ends smtp validation session after first attempt on the first mx server in any fail cases (network connection/timeout error, smtp validation error). This feature helps to reduce total time of SMTP validation session up to 1 second.
 
 ### Added
 
@@ -1068,7 +1090,7 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Fixed
 
-- Behaviour of current host address resolver, [issue details](https://github.com/truemail-rb/truemail/issues/18)
+- Behavior of current host address resolver, [issue details](https://github.com/truemail-rb/truemail/issues/18)
 
 ### Changed
 
