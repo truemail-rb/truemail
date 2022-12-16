@@ -237,7 +237,7 @@ Truemail.configure do |config|
   # Optional parameter. SMTP port number. It is equal to 25 by default.
   config.smtp_port = 2525
 
-  # Optional parameter. This option will provide to use smtp fail fast behaviour. When
+  # Optional parameter. This option will provide to use smtp fail fast behavior. When
   # smtp_fail_fast = true it means that Truemail ends smtp validation session after first
   # attempt on the first mx server in any fail cases (network connection/timeout error,
   # smtp validation error). This feature helps to reduce total time of SMTP validation
@@ -871,7 +871,7 @@ By default, you don't need pass with-parameter to use it. Example of usage is sp
 
 ##### SMTP fail fast enabled
 
-Truemail can use fail fast behaviour for SMTP validation layer. When `smtp_fail_fast = true` it means that `truemail` ends smtp validation session after first attempt on the first mx server in any fail cases (network connection/timeout error, smtp validation error). This feature helps to reduce total time of SMTP validation session up to 1 second.
+Truemail can use fail fast behavior for SMTP validation layer. When `smtp_fail_fast = true` it means that `truemail` ends smtp validation session after first attempt on the first mx server in any fail cases (network connection/timeout error, smtp validation error). This feature helps to reduce total time of SMTP validation session up to 1 second.
 
 ```ruby
 require 'truemail'
