@@ -98,6 +98,10 @@ jobs:
           name: Running code documentation linters
           command: lefthook run code-documentation-linters
 
+      - run:
+          name: Running release linters
+          command: lefthook run release-linters
+
   tests-ruby:
     parameters:
       ruby-version:
