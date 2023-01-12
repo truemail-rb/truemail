@@ -163,7 +163,7 @@ jobs:
           name: Running compatibility tests
           command: bundle exec rspec
 
-  building-rubygems-dependencies-from-ruby:
+  rubygems-deps-ruby:
     parameters:
       ruby-version:
         type: string
@@ -177,7 +177,7 @@ jobs:
           name: Building rubygems dependencies from default gemspec on minimal Ruby version
           command: bundle install
 
-  releasing-gem-from-ruby:
+  releasing-gem-ruby:
     parameters:
       ruby-version:
         type: string
@@ -210,16 +210,16 @@ workflows:
           matrix:
             parameters:
               ruby-version: ["2.5", "2.6", "2.7", "3.0", "3.1"]
-      - building-rubygems-dependencies-from-ruby:
+      - rubygems-deps-ruby:
           matrix:
             parameters:
               ruby-version: ["2.5"]
-      - releasing-gem-from-ruby:
+      - releasing-gem-ruby:
           requires:
             - linters-ruby
             - tests-ruby
             - compatibility-ruby
-            - building-rubygems-dependencies-from-ruby
+            - rubygems-deps-ruby
           matrix:
             parameters:
               ruby-version: ["2.5"]
