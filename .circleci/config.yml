@@ -98,6 +98,10 @@ jobs:
           name: Running code documentation linters
           command: lefthook run code-documentation-linters
 
+      - run:
+          name: Running release linters
+          command: lefthook run release-linters
+
   tests-ruby:
     parameters:
       ruby-version:
@@ -183,15 +187,15 @@ workflows:
       - linters-ruby:
           matrix:
             parameters:
-              ruby-version: ["3.1-node"]
+              ruby-version: ["3.2-node"]
       - tests-ruby:
           matrix:
             parameters:
-              ruby-version: ["3.1"]
+              ruby-version: ["3.2"]
       - compatibility-ruby:
           matrix:
             parameters:
-              ruby-version: ["2.5", "2.6", "2.7", "3.0"]
+              ruby-version: ["2.5", "2.6", "2.7", "3.0", "3.1"]
       - releasing-gem-from-ruby:
           requires:
             - linters-ruby

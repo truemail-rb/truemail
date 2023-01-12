@@ -8,7 +8,7 @@ DELIMETER="_"
 PACKAGE_FILE="$FILE_NAME$DELIMETER$BUILD_ARCHITECTURE"
 
 gh_cli_latest_release() {
-  curl -sL -o /dev/null -w '%{url_effective}' "$GH_CLI_RELEASES_URL/latest" | rev | cut -f1 -d'/'| rev
+  curl -sL -o /dev/null -w '%{url_effective}' "$GH_CLI_RELEASES_URL/latest" | rev | cut -f 1 -d '/'| rev
 }
 
 download_gh_cli() {
@@ -42,7 +42,6 @@ release_to_rubygems() {
   git config --global user.email "${PUBLISHER_EMAIL}"
   git config --global user.name "${PUBLISHER_NAME}"
   git stash
-  git checkout develop
   gem install yard gem-ctags
   bundle install
   echo "Publishing new gem release to RubyGems..."
@@ -57,7 +56,14 @@ release_to_github() {
   gh release create "$release_candidate_tag" --generate-notes
 }
 
+update_develop_branch() {
+  echo "Updating develop branch with new release tag..."
+  git checkout develop
+  git merge "$release_candidate_tag" --ff --no-edit
+  git push origin develop
+}
+
 if is_an_existing_github_release
 then echo "Tag $release_candidate_tag already exists on GitHub. Skipping releasing flow..."
-else release_to_rubygems; release_to_github
+else release_to_rubygems; release_to_github; update_develop_branch
 fi
