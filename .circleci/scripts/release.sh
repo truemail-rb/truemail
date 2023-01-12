@@ -56,7 +56,14 @@ release_to_github() {
   gh release create "$release_candidate_tag" --generate-notes
 }
 
+update_develop_branch() {
+  echo "Updating develop branch with new release tag..."
+  git checkout develop
+  git merge "$release_candidate_tag" --ff --no-edit
+  git push origin develop
+}
+
 if is_an_existing_github_release
 then echo "Tag $release_candidate_tag already exists on GitHub. Skipping releasing flow..."
-else release_to_rubygems; release_to_github
+else release_to_rubygems; release_to_github; update_develop_branch
 fi
