@@ -2,6 +2,21 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.5] - 2023.01.12
+
+### Added
+
+- Added supporting of latest Ruby 3.2.0
+- Added `changelog` linter
+
+### Updated
+
+- Updated development dependencies
+- Updated gemspecs
+- Updated `CI` release script
+- Updated `rubocop`/`codeclimate`/`lefthook`/`circleci` configs
+- Updated gem version
+
 ## [3.0.4] - 2022.12.16
 
 ### Fixed
