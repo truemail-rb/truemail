@@ -11,23 +11,12 @@ orbs:
   ruby: circleci/ruby@2.0.0
 
 references:
-  restore_bundle_cache: &restore_bundle_cache
-    restore_cache:
-      keys:
-        - truemail-{{ checksum "truemail.gemspec" }}
-
   bundle_install: &bundle_install
     run:
       name: Installing gems
       command: |
             bundle config set --local path '~/vendor/bundle'
             bundle install
-
-  save_bundle_cache: &save_bundle_cache
-    save_cache:
-      key: truemail-{{ checksum "truemail.gemspec" }}
-      paths:
-        - ~/vendor/bundle
 
   install_system_dependencies: &install_system_dependencies
     run:
@@ -53,6 +42,12 @@ references:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
 
+  use_latest_bundler: &use_latest_bundler
+    run:
+      name: Using latest bundler
+      command: |
+            gem install bundler
+
   use_latest_gemspec: &use_latest_gemspec
     run:
       name: Using latest gemspec
@@ -76,10 +71,9 @@ jobs:
     steps:
       - checkout
 
+      - <<: *use_latest_bundler
       - <<: *use_latest_gemspec
-      - <<: *restore_bundle_cache
       - <<: *bundle_install
-      - <<: *save_bundle_cache
       - <<: *install_linters
 
       - run:
@@ -112,10 +106,9 @@ jobs:
     steps:
       - checkout
 
+      - <<: *use_latest_bundler
       - <<: *use_latest_gemspec
-      - <<: *restore_bundle_cache
       - <<: *bundle_install
-      - <<: *save_bundle_cache
       - <<: *install_system_dependencies
       - <<: *install_codeclimate_reporter
 
