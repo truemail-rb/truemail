@@ -21,8 +21,7 @@ references:
   install_system_dependencies: &install_system_dependencies
     run:
       name: Installing system dependencies
-      command: |
-            bundle exec smtp_mock -s -i ~
+      command: bundle exec smtp_mock -s -i ~
 
   install_linters: &install_linters
     run:
@@ -45,20 +44,17 @@ references:
   use_latest_bundler: &use_latest_bundler
     run:
       name: Using latest bundler
-      command: |
-            gem install bundler
+      command: gem install bundler
 
   use_latest_gemspec: &use_latest_gemspec
     run:
       name: Using latest gemspec
-      command: |
-            cp .circleci/gemspecs/latest truemail.gemspec
+      command: cp .circleci/gemspecs/latest truemail.gemspec
 
   use_compatible_gemspec: &use_compatible_gemspec
     run:
       name: Using compatible gemspec
-      command: |
-            cp .circleci/gemspecs/compatible truemail.gemspec
+      command: cp .circleci/gemspecs/compatible truemail.gemspec
 
 jobs:
   linters-ruby:
