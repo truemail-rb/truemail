@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.files = `git ls-files -z`.split("\x0").select { |f| f.match(%r{^(bin|lib)/|.ruby-version|truemail.gemspec|LICENSE}) }
   spec.require_paths = %w[lib]
 
+  spec.add_runtime_dependency 'net-smtp', '~> 0.3.3' if ::Gem::Version.new(::RUBY_VERSION) >= ::Gem::Version.new('3.1.0')
   spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
 
   spec.add_development_dependency 'dns_mock', '~> 1.5', '>= 1.5.15'
