@@ -11,11 +11,6 @@ orbs:
   ruby: circleci/ruby@2.0.0
 
 references:
-  restore_bundle_cache: &restore_bundle_cache
-    restore_cache:
-      keys:
-        - truemail-{{ checksum "truemail.gemspec" }}
-
   bundle_install: &bundle_install
     run:
       name: Installing gems
@@ -23,17 +18,10 @@ references:
             bundle config set --local path '~/vendor/bundle'
             bundle install
 
-  save_bundle_cache: &save_bundle_cache
-    save_cache:
-      key: truemail-{{ checksum "truemail.gemspec" }}
-      paths:
-        - ~/vendor/bundle
-
   install_system_dependencies: &install_system_dependencies
     run:
       name: Installing system dependencies
-      command: |
-            bundle exec smtp_mock -s -i ~
+      command: bundle exec smtp_mock -s -i ~
 
   install_linters: &install_linters
     run:
@@ -53,17 +41,20 @@ references:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
 
+  use_latest_bundler: &use_latest_bundler
+    run:
+      name: Using latest bundler
+      command: gem install bundler
+
   use_latest_gemspec: &use_latest_gemspec
     run:
       name: Using latest gemspec
-      command: |
-            cp .circleci/gemspecs/latest truemail.gemspec
+      command: cp .circleci/gemspecs/latest truemail.gemspec
 
   use_compatible_gemspec: &use_compatible_gemspec
     run:
       name: Using compatible gemspec
-      command: |
-            cp .circleci/gemspecs/compatible truemail.gemspec
+      command: cp .circleci/gemspecs/compatible truemail.gemspec
 
 jobs:
   linters-ruby:
@@ -76,10 +67,9 @@ jobs:
     steps:
       - checkout
 
+      - <<: *use_latest_bundler
       - <<: *use_latest_gemspec
-      - <<: *restore_bundle_cache
       - <<: *bundle_install
-      - <<: *save_bundle_cache
       - <<: *install_linters
 
       - run:
@@ -112,10 +102,9 @@ jobs:
     steps:
       - checkout
 
+      - <<: *use_latest_bundler
       - <<: *use_latest_gemspec
-      - <<: *restore_bundle_cache
       - <<: *bundle_install
-      - <<: *save_bundle_cache
       - <<: *install_system_dependencies
       - <<: *install_codeclimate_reporter
 
@@ -163,7 +152,7 @@ jobs:
           name: Running compatibility tests
           command: bundle exec rspec
 
-  building-rubygems-dependencies-from-ruby:
+  rubygems-deps-ruby:
     parameters:
       ruby-version:
         type: string
@@ -177,7 +166,7 @@ jobs:
           name: Building rubygems dependencies from default gemspec on minimal Ruby version
           command: bundle install
 
-  releasing-gem-from-ruby:
+  releasing-gem-ruby:
     parameters:
       ruby-version:
         type: string
@@ -210,16 +199,16 @@ workflows:
           matrix:
             parameters:
               ruby-version: ["2.5", "2.6", "2.7", "3.0", "3.1"]
-      - building-rubygems-dependencies-from-ruby:
+      - rubygems-deps-ruby:
           matrix:
             parameters:
               ruby-version: ["2.5"]
-      - releasing-gem-from-ruby:
+      - releasing-gem-ruby:
           requires:
             - linters-ruby
             - tests-ruby
             - compatibility-ruby
-            - building-rubygems-dependencies-from-ruby
+            - rubygems-deps-ruby
           matrix:
             parameters:
               ruby-version: ["2.5"]
