@@ -35,6 +35,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   spec.add_development_dependency 'rspec', '~> 3.12'
   spec.add_development_dependency 'smtp_mock', '~> 1.3', '>= 1.3.4'
-  spec.add_development_dependency 'truemail-rspec', '~> 1.0'
+  spec.add_development_dependency 'truemail-rspec', '~> 1.1'
   spec.add_development_dependency 'webmock', '~> 3.18', '>= 3.18.1'
 end
