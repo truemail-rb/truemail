@@ -9,7 +9,7 @@ checks:
 plugins:
   rubocop:
     enabled: true
-    channel: rubocop-1-45
+    channel: rubocop-1-48
     config:
       file: .circleci/linter_configs/.rubocop.yml
 
