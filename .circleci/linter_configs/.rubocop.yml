@@ -136,3 +136,6 @@ RSpec/SubjectStub:
 
 RSpec/VerifiedDoubleReference:
   Enabled: false
+
+RSpec/IndexedLet:
+  Enabled: false
