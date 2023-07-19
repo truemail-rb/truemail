@@ -70,7 +70,7 @@ module Truemail
 
       def hosts_from_cname_records?
         cname_records = Truemail::Dns::Resolver.cname_records(domain, configuration: configuration)
-        return if cname_records.empty?
+        return false if cname_records.empty?
         cname_records.each do |cname_record|
           host = a_record(cname_record.name.to_s)
           hostname = Truemail::Dns::Resolver.dns_lookup(host, configuration: configuration)
