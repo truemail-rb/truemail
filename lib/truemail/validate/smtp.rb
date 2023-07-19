@@ -62,7 +62,7 @@ module Truemail
       end
 
       def not_includes_user_not_found_errors?
-        return unless configuration.smtp_safe_check
+        return false unless configuration.smtp_safe_check
         result.smtp_debug.map(&:response).map(&:errors).all? do |errors|
           next true unless errors.key?(:rcptto)
           errors.slice(:rcptto).values.none? do |error|

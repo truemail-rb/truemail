@@ -2,6 +2,21 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.9] - 2023.07.19
+
+### Fixed
+
+- Fixed `Truemail::RegexConstant::REGEX_DOMAIN`. Thanks [@Sybe](https://github.com/Sybe) for report.
+
+### Updated
+
+- Updated `Truemail::Validate::Mx#hosts_from_cname_records?`
+- Updated `Truemail::Validate::Smtp#not_includes_user_not_found_errors?`
+- Updated development dependencies
+- Updated gemspecs
+- Updated `codeclimate` config
+- Updated gem version
+
 ## [3.0.8] - 2023.05.11
 
 ### Updated

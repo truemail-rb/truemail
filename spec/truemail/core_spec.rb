@@ -126,6 +126,9 @@ RSpec.describe Truemail::RegexConstant do
       expect(regex_pattern.match?('l.us')).to be(true)
       expect(regex_pattern.match?('1domain.us')).to be(true)
       expect(regex_pattern.match?('1-domain.us')).to be(true)
+      expect(regex_pattern.match?('1--domain.us')).to be(true)
+      expect(regex_pattern.match?('truemail---website.com')).to be(true)
+      expect(regex_pattern.match?('1-domain-.us')).to be(false)
     end
 
     it 'allows nested subdomains' do
