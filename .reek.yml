@@ -13,6 +13,7 @@ detectors:
     exclude:
       - Truemail::Validate::Smtp::Request#run
       - Truemail::Validate::Smtp#run
+      - Truemail::Validate::Smtp#not_includes_user_not_found_errors?
       - Truemail::Validate::Mx#hosts_from_cname_records
       - Truemail::Configuration#logger=
       - Truemail::Validate::Smtp::Request#initialize
