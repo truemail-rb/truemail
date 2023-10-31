@@ -41,26 +41,26 @@ RSpec.describe Truemail::RegexConstant do
 
     it 'allows from 6 to 255 chars' do
       expect(
-        regex_pattern.match?(Truemail::GenerateEmailHelper.call(size: :min))
+        regex_pattern.match?(Truemail::RspecHelper::GenerateEmail.call(size: :min))
       ).to be(true)
 
       expect(
-        regex_pattern.match?(Truemail::GenerateEmailHelper.call)
+        regex_pattern.match?(Truemail::RspecHelper::GenerateEmail.call)
       ).to be(true)
 
       expect(
-        regex_pattern.match?(Truemail::GenerateEmailHelper.call(size: :max))
+        regex_pattern.match?(Truemail::RspecHelper::GenerateEmail.call(size: :max))
       ).to be(true)
     end
 
     it 'not allows more then 255 chars' do
       expect(
-        regex_pattern.match?(Truemail::GenerateEmailHelper.call(size: :out_of_range))
+        regex_pattern.match?(Truemail::RspecHelper::GenerateEmail.call(size: :out_of_range))
       ).to be(false)
     end
 
     it "allows '-', '_', '.', '+', numbers, letters case insensitive before @domain" do
-      expect(regex_pattern.match?(Truemail::GenerateEmailHelper.call)).to be(true)
+      expect(regex_pattern.match?(Truemail::RspecHelper::GenerateEmail.call)).to be(true)
     end
 
     it 'allows tld size between 2 and 63 chars' do
@@ -79,7 +79,7 @@ RSpec.describe Truemail::RegexConstant do
     it 'allows special chars' do
       expect(
         regex_pattern.match?(
-          Truemail::GenerateEmailHelper.call(symbols: special_chars)
+          Truemail::RspecHelper::GenerateEmail.call(symbols: special_chars)
         )
       ).to be(true)
     end
@@ -87,7 +87,7 @@ RSpec.describe Truemail::RegexConstant do
     it 'not allows special chars for one char username' do
       expect(
         regex_pattern.match?(
-          Truemail::GenerateEmailHelper.call(size: :min, invalid_email_with: special_chars)
+          Truemail::RspecHelper::GenerateEmail.call(size: :min, invalid_email_with: special_chars)
         )
       ).to be(false)
     end
@@ -95,7 +95,7 @@ RSpec.describe Truemail::RegexConstant do
     it 'not allows double @ char in email' do
       expect(
         regex_pattern.match?(
-          Truemail::GenerateEmailHelper.call(invalid_email_with: %w[@])
+          Truemail::RspecHelper::GenerateEmail.call(invalid_email_with: %w[@])
         )
       ).to be(false)
     end

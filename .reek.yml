@@ -56,7 +56,7 @@ detectors:
 
   ControlParameter:
     exclude:
-      - Truemail::GenerateEmailHelper#calculate_email_size
+      - Truemail::RspecHelper::GenerateEmail#calculate_email_size
       - Truemail::Worker#success
       - Truemail#raise_unless
       - Truemail::Configuration#raise_unless
@@ -65,7 +65,7 @@ detectors:
   FeatureEnvy:
     exclude:
       - Truemail::Validate::Smtp#not_includes_user_not_found_errors
-      - Truemail::GenerateEmailHelper#prepare_user_name
+      - Truemail::RspecHelper::GenerateEmail#prepare_user_name
       - Truemail::ConfigurationHelper#create_configuration
       - Truemail::Log::Serializer::Base#smtp_debug
       - Truemail::Log::Serializer::Text#data_composer

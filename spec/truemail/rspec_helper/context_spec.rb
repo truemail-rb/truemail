@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Truemail::ContextHelper, type: :helper do # rubocop:disable RSpec/FilePath
+RSpec.describe Truemail::RspecHelper::Context, type: :helper do
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:NON_ASCII_WORDS) }
   end

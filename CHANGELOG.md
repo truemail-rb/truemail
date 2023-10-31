@@ -356,8 +356,8 @@ Optimized DNS (MX) validation flow. Removed needless DNS request for case when c
 
 ### Updated
 
-- Updated gem codebase, refactored `Truemail::ContextHelper`
-- Updated tests with `Truemail::DnsHelper#dns_mock_gateway`
+- Updated gem codebase, refactored `Truemail::RspecHelper::Context`
+- Updated tests with `Truemail::RspecHelper::Dns#dns_mock_gateway`
 - Updated gem development dependencies
 - Updated gem version
 

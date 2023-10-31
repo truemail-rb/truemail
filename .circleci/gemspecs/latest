@@ -16,23 +16,23 @@ Gem::Specification.new do |spec|
   spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.require_paths = %w[lib]
 
-  spec.add_runtime_dependency 'net-smtp', '~> 0.3.3'
+  spec.add_runtime_dependency 'net-smtp', '~> 0.4.0'
   spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
 
   spec.add_development_dependency 'bundler-audit', '~> 0.9.1'
-  spec.add_development_dependency 'dns_mock', '~> 1.5', '>= 1.5.15'
+  spec.add_development_dependency 'dns_mock', '~> 1.5', '>= 1.5.16'
   spec.add_development_dependency 'fasterer', '~> 0.10.1'
-  spec.add_development_dependency 'ffaker', '~> 2.21'
+  spec.add_development_dependency 'ffaker', '~> 2.23'
   spec.add_development_dependency 'json_matchers', '~> 0.11.1'
   spec.add_development_dependency 'pry-byebug', '~> 3.10', '>= 3.10.1'
-  spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
+  spec.add_development_dependency 'rake', '~> 13.1'
   spec.add_development_dependency 'reek', '~> 6.1', '>= 6.1.4'
   spec.add_development_dependency 'rspec', '~> 3.12'
-  spec.add_development_dependency 'rubocop', '~> 1.56'
-  spec.add_development_dependency 'rubocop-performance', '~> 1.19'
-  spec.add_development_dependency 'rubocop-rspec', '~> 2.23', '>= 2.23.2'
+  spec.add_development_dependency 'rubocop', '~> 1.57', '>= 1.57.2'
+  spec.add_development_dependency 'rubocop-performance', '~> 1.19', '>= 1.19.1'
+  spec.add_development_dependency 'rubocop-rspec', '~> 2.25'
   spec.add_development_dependency 'simplecov', '~> 0.22.0'
-  spec.add_development_dependency 'smtp_mock', '~> 1.3', '>= 1.3.4'
-  spec.add_development_dependency 'truemail-rspec', '~> 1.1'
-  spec.add_development_dependency 'webmock', '~> 3.18', '>= 3.18.1'
+  spec.add_development_dependency 'smtp_mock', '~> 1.3', '>= 1.3.5'
+  spec.add_development_dependency 'truemail-rspec', '~> 1.2'
+  spec.add_development_dependency 'webmock', '~> 3.19', '>= 3.19.1'
 end

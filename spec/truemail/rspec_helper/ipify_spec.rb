@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Truemail::IpifyHelper, type: :helper do # rubocop:disable RSpec/FilePath
+RSpec.describe Truemail::RspecHelper::Ipify, type: :helper do
   describe '#mock_ipify_request' do
     let(:ip_address) { random_ip_address }
 
