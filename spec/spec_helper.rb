@@ -9,9 +9,9 @@ rspec_custom = ::File.join(::File.dirname(__FILE__), 'support/**/*.rb')
 
 RSpec::Mocks.configuration.allow_message_expectations_on_nil = true
 RSpec.configure do |config|
-  config.include Truemail::ContextHelper
-  config.include Truemail::DnsHelper
-  config.include Truemail::IpifyHelper
+  config.include Truemail::RspecHelper::Context
+  config.include Truemail::RspecHelper::Dns
+  config.include Truemail::RspecHelper::Ipify
   config.order = :random
   config.example_status_persistence_file_path = '.rspec_status'
   config.disable_monkey_patching!

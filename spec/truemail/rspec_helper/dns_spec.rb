@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Truemail::DnsHelper, type: :helper do # rubocop:disable RSpec/FilePath
+RSpec.describe Truemail::RspecHelper::Dns, type: :helper do
   describe 'defined constants' do
     specify { expect(described_class).to be_const_defined(:LOCALHOST_IP_ADDRESS) }
   end
@@ -23,7 +23,7 @@ RSpec.describe Truemail::DnsHelper, type: :helper do # rubocop:disable RSpec/Fil
       expect(dns_mock_records.dig(email_domain, :mx).size).to eq(1)
       expect(dns_mock_records).to eq(
         email_domain => { mx: [mx_domain] },
-        mx_domain => { a: [Truemail::DnsHelper::LOCALHOST_IP_ADDRESS] }
+        mx_domain => { a: [Truemail::RspecHelper::Dns::LOCALHOST_IP_ADDRESS] }
       )
     end
 

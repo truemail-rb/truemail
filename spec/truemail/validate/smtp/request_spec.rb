@@ -272,8 +272,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
 
         it 'rcptto smtp server error' do
           allow(session).to receive(:start).with(verifier_domain).and_yield(session)
-          allow(session).to receive(:helo).and_return(true)
-          allow(session).to receive(:mailfrom).and_return(true)
+          allow(session).to receive_messages(helo: true, mailfrom: true)
           allow(session).to receive(:rcptto).and_raise(::StandardError, error_message)
 
           expect { response_instance_target_method }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Truemail::GenerateEmailHelper, type: :helper do # rubocop:disable RSpec/FilePath
+RSpec.describe Truemail::RspecHelper::GenerateEmail, type: :helper do
   describe '.call' do
     context 'without params' do
       subject(:generate_email) { described_class.call }
