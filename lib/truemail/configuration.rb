@@ -69,7 +69,7 @@ module Truemail
     end
 
     Truemail::Configuration::SETTERS.each do |method|
-      define_method("#{method}=") do |argument|
+      define_method(:"#{method}=") do |argument|
         raise_unless(argument, __method__, argument_consistent?(method, argument))
         instance_variable_set(:"@#{method}", argument)
       end
