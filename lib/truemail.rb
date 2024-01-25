@@ -31,7 +31,6 @@ module Truemail
     end
 
     def valid?(email, **options)
-      check_argument_type(email)
       validate(email, **options).result.valid?
     end
 
