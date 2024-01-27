@@ -2,6 +2,15 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.1] - 2024.01.27
+
+### Updated
+
+- Updated `valid?` predicate. Thanks [@SofiaSousa](https://github.com/SofiaSousa) for report
+- Updated runtime/development dependencies
+- Updated `codeclimate` config
+- Updated gem version
+
 ## [3.1.0] - 2023.10.31
 
 ### Updated
@@ -16,7 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
-- Fixed `Truemail::RegexConstant::REGEX_DOMAIN`. Thanks [@Sybe](https://github.com/Sybe) for report.
+- Fixed `Truemail::RegexConstant::REGEX_DOMAIN`. Thanks [@Sybe](https://github.com/Sybe) for report
 
 ### Updated
 
