@@ -13,24 +13,25 @@ languageSettings:
       - GithubUser
 
 words:
-  - Commiting
-  - Gitter
-  - Multihomed
-  - Trotsenko
-  - Truemail
-  - Vladislav
+  - bagage
+  - bagages
   - bestwebua
+  - configurator
   - codebases
   - codeclimate
+  - commitspell
   - dockerized
   - gemspecs
   - lefthook
   - markdownlint
   - multihomed
   - punycode
+  - rcptto
   - rubocop
+  - representer
   - shortcuting
   - simplecov
   - stdlib
   - substeps
+  - truemail
   - yamlint
