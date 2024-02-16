@@ -75,6 +75,7 @@ jobs:
       - run:
           name: Running commit linters
           command: lefthook run commit-linters
+
       - run:
           name: Running code style linters
           command: lefthook run code-style-linters

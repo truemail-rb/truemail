@@ -6,8 +6,8 @@ skip_output:
 
 commit-linters:
   commands:
-    commit_spellcheck:
-      run: .circleci/scripts/commit_spellcheck.sh  -c '.circleci/linter_configs/.commit_spellcheck.yml'
+    commitspell:
+      run: .circleci/scripts/commitspell.sh -c '.circleci/linter_configs/.commitspell.yml'
 
 code-style-linters:
   commands:
