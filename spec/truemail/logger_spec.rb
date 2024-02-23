@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe Truemail::Logger do
-  subject(:logger_instance) { described_class.new(event, stdout, file) }
+  subject(:logger_instance) { described_class.new(logger_class, event, stdout, file) }
 
+  let(:logger_class) { ::Logger }
   let(:event) { :event }
   let(:stdout) { true }
   let(:file) { nil }
 
   describe '.new' do
     it 'creates event logger with settings' do
+      expect(logger_instance.logger_class).to eq(logger_class)
       expect(logger_instance.event).to eq(event)
       expect(logger_instance.stdout).to eq(stdout)
       expect(logger_instance.file).to eq(file)
@@ -59,9 +61,9 @@ RSpec.describe Truemail::Logger do
 
       context 'when output file path configured' do
         let(:stdout) { false }
-        let(:file) { Pathname(File.expand_path('../support/tmp/log', File.dirname(__FILE__))) }
+        let(:file) { Pathname(::File.expand_path('../support/tmp/log', ::File.dirname(__FILE__))) }
 
-        after { FileUtils.rm_rf(file.dirname) }
+        after { ::FileUtils.rm_rf(file.dirname) }
 
         context 'when log file not exists' do
           it 'creates file, add log' do
@@ -75,7 +77,7 @@ RSpec.describe Truemail::Logger do
 
           before do
             file.parent.mkpath
-            File.open(file, 'a+') { |data| data.puts file_context }
+            ::File.open(file, 'a+') { |data| data.puts file_context }
           end
 
           it 'add log to exsiting file context' do

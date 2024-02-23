@@ -249,10 +249,16 @@ Truemail.configure do |config|
   # By default this option is disabled, available for SMTP validation only.
   config.smtp_safe_check = true
 
-  # Optional parameter. This option will enable tracking events. You can print tracking events to
-  # stdout, write to file or both of these. Tracking event by default is :error
+  # Optional parameter. This option will enable tracking events. You can print tracking
+  # events to stdout, write to file or both of these. Logger class by default is Logger
+  # from Ruby stdlib. Tracking event by default is :error
   # Available tracking event: :all, :unrecognized_error, :recognized_error, :error
-  config.logger = { tracking_event: :all, stdout: true, log_absolute_path: '/home/app/log/truemail.log' }
+  config.logger = {
+    logger_class: MyCustomLogger,
+    tracking_event: :all,
+    stdout: true,
+    log_absolute_path: '/home/app/log/truemail.log'
+  }
 end
 ```
 
@@ -285,7 +291,7 @@ Truemail.configuration
  @smtp_fail_fast=true,
  @smtp_safe_check=true,
  @logger=#<Truemail::Logger:0x0000557f837450b0
-   @event=:all, @file="/home/app/log/truemail.log", @stdout=true>>
+   @event=:all, @file="/home/app/log/truemail.log", @logger_class=MyCustomLogger, @stdout=true>>
 ```
 
 ##### Update global configuration
@@ -321,7 +327,7 @@ Truemail.configuration
  @smtp_fail_fast=true,
  @smtp_safe_check=true,
  @logger=#<Truemail::Logger:0x0000557f837450b0
-   @event=:all, @file="/home/app/log/truemail.log", @stdout=true>>
+   @event=:all, @file="/home/app/log/truemail.log", @logger_class=MyCustomLogger, @stdout=true>>
 ```
 
 ##### Reset global configuration
@@ -1242,11 +1248,30 @@ Truemail.host_audit
 
 ### Event logger
 
-Truemail gem allows to output tracking events to stdout/file or both of these. Please note, at least one of the outputs must exist. Tracking event by default is `:error`
+Truemail gem allows to output tracking events to stdout/file or both of these. Please note, at least one of the outputs (stdout or file path) must exists. Tracking event by default is `:error`.
 
 ```ruby
 Truemail.configure do |config|
-  config.logger = { tracking_event: :all, stdout: true, log_absolute_path: '/home/app/log/truemail.log' }
+  config.logger = {
+    tracking_event: :all,
+    stdout: true,
+    log_absolute_path: '/home/app/log/truemail.log'
+    }
+end
+```
+
+#### Using custom logger
+
+By default Truemail using default logger class from Ruby stdlib (`Logger`). But you can override this behavior passing your own class in logger configuration. Please note, your own logger class should have the same interface as builtin stdlib `Logger` class.
+
+```ruby
+Truemail.configure do |config|
+  config.logger = {
+    logger_class: MyCustomLogger,
+    tracking_event: :all,
+    stdout: true,
+    log_absolute_path: '/home/app/log/truemail.log'
+    }
 end
 ```
 

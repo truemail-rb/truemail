@@ -2,12 +2,19 @@
 
 module Truemail
   class Configuration
+    require 'logger'
+
     DEFAULT_CONNECTION_TIMEOUT = 2
     DEFAULT_RESPONSE_TIMEOUT = 2
     DEFAULT_CONNECTION_ATTEMPTS = 2
     DEFAULT_VALIDATION_TYPE = :smtp
     DEFAULT_SMTP_PORT = 25
-    DEFAULT_LOGGER_OPTIONS = { tracking_event: :error, stdout: false, log_absolute_path: nil }.freeze
+    DEFAULT_LOGGER_OPTIONS = {
+      logger_class: ::Logger,
+      tracking_event: :error,
+      stdout: false,
+      log_absolute_path: nil
+    }.freeze
     SETTERS = %i[
       email_pattern
       smtp_error_body_pattern
@@ -75,15 +82,17 @@ module Truemail
       end
     end
 
-    def logger=(options)
-      tracking_event, stdout, log_absolute_path = logger_options(options)
+    def logger=(options) # rubocop:disable Metrics/AbcSize
+      raise_unless(options, __method__, options.is_a?(::Hash))
+      logger_class, tracking_event, stdout, log_absolute_path = logger_options(options)
+      raise_unless(logger_class, __method__, logger_class.is_a?(::Class))
       valid_event = Truemail::Log::Event::TRACKING_EVENTS.key?(tracking_event)
       stdout_only = stdout && log_absolute_path.nil?
       file_only = log_absolute_path.is_a?(::String)
       both_types = stdout && file_only
       argument_info = valid_event ? log_absolute_path : tracking_event
       raise_unless(argument_info, __method__, valid_event && (stdout_only || file_only || both_types))
-      @logger = Truemail::Logger.new(tracking_event, stdout, log_absolute_path)
+      @logger = Truemail::Logger.new(logger_class, tracking_event, stdout, log_absolute_path)
     end
 
     def complete?
