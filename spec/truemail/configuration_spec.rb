@@ -33,7 +33,15 @@ RSpec.describe Truemail::Configuration do
 
     context 'DEFAULT_LOGGER_OPTIONS' do
       specify { expect(described_class).to be_const_defined(:DEFAULT_LOGGER_OPTIONS) }
-      specify { expect(described_class::DEFAULT_LOGGER_OPTIONS).to eq(tracking_event: :error, stdout: false, log_absolute_path: nil) }
+
+      specify do
+        expect(described_class::DEFAULT_LOGGER_OPTIONS).to eq(
+          logger_class: ::Logger,
+          tracking_event: :error,
+          stdout: false,
+          log_absolute_path: nil
+        )
+      end
     end
 
     context 'SETTERS' do
@@ -692,11 +700,28 @@ RSpec.describe Truemail::Configuration do
               end
             end
           end
+
+          context 'with valid logger class' do
+            let(:logger_class) { ::Class }
+            let(:logger_params) { { logger_class: logger_class, stdout: true } }
+
+            it 'sets logger class' do
+              set_logger
+              expect(configuration_instance.logger.logger_class).to eq(logger_class)
+            end
+          end
         end
 
         context 'with invalid logger setting' do
           shared_examples 'raises logger argument error' do
             specify { expect { set_logger }.to raise_error(Truemail::ArgumentError, error_message) }
+          end
+
+          context 'with wrong params type' do
+            let(:logger_params) { 42 }
+            let(:error_message) { "#{logger_params} is not a valid logger=" }
+
+            include_examples 'raises logger argument error'
           end
 
           context 'with empty params' do
@@ -726,6 +751,14 @@ RSpec.describe Truemail::Configuration do
             let(:tracking_event) { :not_existing_tracking_event }
             let(:logger_params) { { tracking_event: tracking_event } }
             let(:error_message) { "#{tracking_event} is not a valid logger=" }
+
+            include_examples 'raises logger argument error'
+          end
+
+          context 'with valid logger class' do
+            let(:logger_class) { 42 }
+            let(:logger_params) { { logger_class: logger_class, stdout: true } }
+            let(:error_message) { "#{logger_class} is not a valid logger=" }
 
             include_examples 'raises logger argument error'
           end
