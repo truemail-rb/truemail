@@ -50,6 +50,7 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
     - [PTR audit](#ptr-audit)
     - [Example of using](#example-of-using)
   - [Event logger](#event-logger)
+    - [Using custom logger](#using-custom-logger)
     - [Available tracking events](#available-tracking-events)
   - [JSON serializers](#json-serializers)
     - [Auditor JSON serializer](#auditor-json-serializer)
