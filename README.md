@@ -1263,7 +1263,7 @@ end
 
 #### Using custom logger
 
-By default Truemail using default logger class from Ruby stdlib (`Logger`). But you can override this behavior passing your own class in logger configuration. Please note, your own logger class should have the same interface as builtin stdlib `Logger` class.
+By default Truemail uses `Logger`, default logger class from Ruby stdlib. But you can override this behavior passing your own class in logger configuration. Please note, your own logger class should have the same interface as builtin stdlib `Logger` class.
 
 ```ruby
 Truemail.configure do |config|
