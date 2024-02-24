@@ -2,6 +2,21 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2024.02.24
+
+### Added
+
+- Added ability to use custom logger in event logger
+- Added `commitspell` linter
+
+### Updated
+
+- Updated `Truemail::Configuration`
+- Updated `Truemail::Logger`
+- Updated development dependencies
+- Updated `circleci`/`lefthook` configs
+- Updated gem version
+
 ## [3.1.2] - 2024.02.15
 
 ### Added
