@@ -4,6 +4,11 @@ no_tty: true
 skip_output:
   - meta
 
+commit-linters:
+  commands:
+    commitspell:
+      run: .circleci/scripts/commitspell.sh -c '.circleci/linter_configs/.commitspell.yml'
+
 code-style-linters:
   commands:
     reek:

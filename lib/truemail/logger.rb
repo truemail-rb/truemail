@@ -2,11 +2,10 @@
 
 module Truemail
   class Logger
-    require 'logger'
+    attr_reader :logger_class, :event, :stdout, :file
 
-    attr_reader :event, :stdout, :file
-
-    def initialize(event, error_stdout, log_absolute_path)
+    def initialize(logger_class, event, error_stdout, log_absolute_path)
+      @logger_class = logger_class
       @event = event
       @stdout = error_stdout
       @file = log_absolute_path
@@ -30,7 +29,7 @@ module Truemail
     def create_logs(log_level, serialized_object)
       %i[stdout file].each do |output_type|
         next unless public_send(output_type)
-        ::Logger.new(output_type.eql?(:stdout) ? $stdout : init_log_file).add(log_level) { serialized_object }
+        logger_class.new(output_type.eql?(:stdout) ? $stdout : init_log_file).add(log_level) { serialized_object }
       end
     end
   end

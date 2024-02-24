@@ -1,0 +1,37 @@
+---
+
+enableGlobDot: true
+
+patterns:
+  - name: GithubUser
+    pattern: /\[@.+\]/gmx
+
+languageSettings:
+  - languageId: markdown
+    ignoreRegExpList:
+      - Email
+      - GithubUser
+
+words:
+  - bagage
+  - bagages
+  - bestwebua
+  - configurator
+  - codebases
+  - codeclimate
+  - commitspell
+  - dockerized
+  - gemspecs
+  - lefthook
+  - markdownlint
+  - multihomed
+  - punycode
+  - rcptto
+  - rubocop
+  - representer
+  - shortcuting
+  - simplecov
+  - stdlib
+  - substeps
+  - truemail
+  - yamlint
