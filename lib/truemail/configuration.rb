@@ -2,15 +2,12 @@
 
 module Truemail
   class Configuration
-    require 'logger'
-
     DEFAULT_CONNECTION_TIMEOUT = 2
     DEFAULT_RESPONSE_TIMEOUT = 2
     DEFAULT_CONNECTION_ATTEMPTS = 2
     DEFAULT_VALIDATION_TYPE = :smtp
     DEFAULT_SMTP_PORT = 25
     DEFAULT_LOGGER_OPTIONS = {
-      logger_class: ::Logger,
       tracking_event: :error,
       stdout: false,
       log_absolute_path: nil
@@ -82,17 +79,9 @@ module Truemail
       end
     end
 
-    def logger=(options) # rubocop:disable Metrics/AbcSize
+    def logger=(options)
       raise_unless(options, __method__, options.is_a?(::Hash))
-      logger_class, tracking_event, stdout, log_absolute_path = logger_options(options)
-      raise_unless(logger_class, __method__, logger_class.is_a?(::Class))
-      valid_event = Truemail::Log::Event::TRACKING_EVENTS.key?(tracking_event)
-      stdout_only = stdout && log_absolute_path.nil?
-      file_only = log_absolute_path.is_a?(::String)
-      both_types = stdout && file_only
-      argument_info = valid_event ? log_absolute_path : tracking_event
-      raise_unless(argument_info, __method__, valid_event && (stdout_only || file_only || both_types))
-      @logger = Truemail::Logger.new(logger_class, tracking_event, stdout, log_absolute_path)
+      @logger = Truemail::Logger::Builder.call(Truemail::Configuration::DEFAULT_LOGGER_OPTIONS, **options)
     end
 
     def complete?
@@ -162,10 +151,6 @@ module Truemail
         raise_unless(domain, 'domain', match_regex?(Truemail::RegexConstant::REGEX_DOMAIN_PATTERN, domain))
         check_validation_type(validation_type)
       end
-    end
-
-    def logger_options(current_options)
-      Truemail::Configuration::DEFAULT_LOGGER_OPTIONS.merge(current_options).values
     end
   end
 end

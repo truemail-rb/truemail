@@ -251,11 +251,11 @@ Truemail.configure do |config|
   config.smtp_safe_check = true
 
   # Optional parameter. This option will enable tracking events. You can print tracking
-  # events to stdout, write to file or both of these. Logger class by default is Logger
-  # from Ruby stdlib. Tracking event by default is :error
+  # events to stdout, write to file or both of these. Logger instance by default is Logger
+  # instance from Ruby stdlib. You can override this behavior. See how to do it in the
+  # examples below. Tracking event by default is :error
   # Available tracking event: :all, :unrecognized_error, :recognized_error, :error
   config.logger = {
-    logger_class: MyCustomLogger,
     tracking_event: :all,
     stdout: true,
     log_absolute_path: '/home/app/log/truemail.log'
@@ -292,7 +292,7 @@ Truemail.configuration
  @smtp_fail_fast=true,
  @smtp_safe_check=true,
  @logger=#<Truemail::Logger:0x0000557f837450b0
-   @event=:all, @file="/home/app/log/truemail.log", @logger_class=MyCustomLogger, @stdout=true>>
+   @event=:all, @file="/home/app/log/truemail.log", @custom_logger=nil @stdout=true>>
 ```
 
 ##### Update global configuration
@@ -328,7 +328,7 @@ Truemail.configuration
  @smtp_fail_fast=true,
  @smtp_safe_check=true,
  @logger=#<Truemail::Logger:0x0000557f837450b0
-   @event=:all, @file="/home/app/log/truemail.log", @logger_class=MyCustomLogger, @stdout=true>>
+   @event=:all, @file="/home/app/log/truemail.log", @custom_logger=nil @stdout=true>>
 ```
 
 ##### Reset global configuration
@@ -1263,16 +1263,11 @@ end
 
 #### Using custom logger
 
-By default Truemail uses `Logger`, default logger class from Ruby stdlib. But you can override this behavior passing your own class in logger configuration. Please note, your own logger class should have the same interface as builtin stdlib `Logger` class.
+By default Truemail uses `Logger`, default logger instance from Ruby stdlib. But you can override this behavior passing your logger instance in event logger configuration. Please note, your own logger instance should have the same interface as builtin stdlib `Logger` instance. In this case `custom_logger` is only one required field for logger configuration (you don't have to use `stdout` and `log_absolute_path`).
 
 ```ruby
 Truemail.configure do |config|
-  config.logger = {
-    logger_class: MyCustomLogger,
-    tracking_event: :all,
-    stdout: true,
-    log_absolute_path: '/home/app/log/truemail.log'
-    }
+  config.logger = { custom_logger: MyCustomLogger.new }
 end
 ```
 
