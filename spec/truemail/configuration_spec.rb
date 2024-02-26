@@ -36,7 +36,6 @@ RSpec.describe Truemail::Configuration do
 
       specify do
         expect(described_class::DEFAULT_LOGGER_OPTIONS).to eq(
-          logger_class: ::Logger,
           tracking_event: :error,
           stdout: false,
           log_absolute_path: nil
@@ -645,6 +644,7 @@ RSpec.describe Truemail::Configuration do
           end
 
           let(:default_tracking_events_expectation) { expect(configuration_instance.logger.event).to eq(:error) }
+          let(:file) { Pathname(::File.expand_path('../support/tmp/log', ::File.dirname(__FILE__))) }
 
           context 'when stdout only' do
             let(:logger_params) { { stdout: true } }
@@ -659,7 +659,9 @@ RSpec.describe Truemail::Configuration do
           end
 
           context 'when file only' do
-            let(:logger_params) { { log_absolute_path: 'some_absolute_path' } }
+            let(:logger_params) { { log_absolute_path: file.to_s } }
+
+            after { ::FileUtils.rm_rf(file.dirname) }
 
             include_examples 'sets logger instance'
 
@@ -671,7 +673,9 @@ RSpec.describe Truemail::Configuration do
           end
 
           context 'when stdout and file outputs' do
-            let(:logger_params) { { stdout: true, log_absolute_path: 'some_absolute_path' } }
+            let(:logger_params) { { stdout: true, log_absolute_path: file.to_s } }
+
+            after { ::FileUtils.rm_rf(file.dirname) }
 
             include_examples 'sets logger instance'
 
@@ -702,12 +706,12 @@ RSpec.describe Truemail::Configuration do
           end
 
           context 'with valid logger class' do
-            let(:logger_class) { ::Class }
-            let(:logger_params) { { logger_class: logger_class, stdout: true } }
+            let(:custom_logger) { instance_double('LoggerClassInstance', add: 42) }
+            let(:logger_params) { { custom_logger: custom_logger, stdout: true } }
 
             it 'sets logger class' do
               set_logger
-              expect(configuration_instance.logger.logger_class).to eq(logger_class)
+              expect(configuration_instance.logger.custom_logger).to eq(custom_logger)
             end
           end
         end
@@ -715,6 +719,10 @@ RSpec.describe Truemail::Configuration do
         context 'with invalid logger setting' do
           shared_examples 'raises logger argument error' do
             specify { expect { set_logger }.to raise_error(Truemail::ArgumentError, error_message) }
+          end
+
+          let(:error_message_wrong_logger_output) do
+            '{:stdout=>false, :log_absolute_path=>nil} is not a valid stdout=, log_absolute_path='
           end
 
           context 'with wrong params type' do
@@ -726,7 +734,7 @@ RSpec.describe Truemail::Configuration do
 
           context 'with empty params' do
             let(:logger_params) { {} }
-            let(:error_message) { ' is not a valid logger=' }
+            let(:error_message) { error_message_wrong_logger_output }
 
             include_examples 'raises logger argument error'
           end
@@ -734,7 +742,7 @@ RSpec.describe Truemail::Configuration do
           context 'with log_absolute_path wrong type' do
             let(:log_absolute_path) { true }
             let(:logger_params) { { log_absolute_path: log_absolute_path } }
-            let(:error_message) { "#{log_absolute_path} is not a valid logger=" }
+            let(:error_message) { '{:stdout=>false, :log_absolute_path=>true} is not a valid stdout=, log_absolute_path=' }
 
             include_examples 'raises logger argument error'
           end
@@ -742,7 +750,7 @@ RSpec.describe Truemail::Configuration do
           context 'when attempt configure logger without output' do
             let(:stdout) { false }
             let(:logger_params) { { stdout: stdout } }
-            let(:error_message) { ' is not a valid logger=' }
+            let(:error_message) { error_message_wrong_logger_output }
 
             include_examples 'raises logger argument error'
           end
@@ -750,15 +758,15 @@ RSpec.describe Truemail::Configuration do
           context 'with not existing tracking event' do
             let(:tracking_event) { :not_existing_tracking_event }
             let(:logger_params) { { tracking_event: tracking_event } }
-            let(:error_message) { "#{tracking_event} is not a valid logger=" }
+            let(:error_message) { "#{tracking_event} is not a valid tracking_event=" }
 
             include_examples 'raises logger argument error'
           end
 
-          context 'with valid logger class' do
-            let(:logger_class) { 42 }
-            let(:logger_params) { { logger_class: logger_class, stdout: true } }
-            let(:error_message) { "#{logger_class} is not a valid logger=" }
+          context 'with invalid logger class' do
+            let(:custom_logger_instance) { 42 }
+            let(:logger_params) { { custom_logger: custom_logger_instance, stdout: true } }
+            let(:error_message) { "#{custom_logger_instance} is not a valid custom_logger=" }
 
             include_examples 'raises logger argument error'
           end

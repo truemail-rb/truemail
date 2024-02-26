@@ -15,7 +15,6 @@ detectors:
       - Truemail::Validate::Smtp#run
       - Truemail::Validate::Smtp#not_includes_user_not_found_errors?
       - Truemail::Validate::Mx#hosts_from_cname_records
-      - Truemail::Configuration#logger=
       - Truemail::Validate::Smtp::Request#initialize
       - Truemail::Validate::Smtp::Request::Session#initialize
       - Truemail::RSpec::ValidatorHelper::ValidatorFactory#process_validator_params
@@ -40,7 +39,6 @@ detectors:
   UtilityFunction:
     exclude:
       - Truemail::Audit::Base#verifier_domain
-      - Truemail::Configuration#logger_options
       - Truemail::Configuration#match_regex?
       - Truemail::Configuration#regex_by_method
       - Truemail::Dns::Worker#nameserver_port
@@ -61,6 +59,7 @@ detectors:
       - Truemail#raise_unless
       - Truemail::Configuration#raise_unless
       - Truemail#determine_configuration
+      - Truemail::Logger::Builder#raise_unless
 
   FeatureEnvy:
     exclude:
@@ -75,12 +74,12 @@ detectors:
   NilCheck:
     exclude:
       - Truemail::Validator#result_not_changed?
-      - Truemail::Configuration#logger=
+      - Truemail::Logger::Builder#validate_logger_output
       - Truemail::Validator#run
 
-  BooleanParameter:
+  ManualDispatch:
     exclude:
-      - Truemail::Configuration#logger=
+      - Truemail::Logger::Builder#validate_logger_instance
 
   TooManyConstants:
     exclude:
