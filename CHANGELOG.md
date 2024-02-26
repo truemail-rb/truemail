@@ -2,6 +2,24 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2024.02.26
+
+### Added
+
+- Added ability to use custom logger instance in event logger. Thanks [@n-rodriguez](https://github.com/n-rodriguez) for report
+- Added `Truemail::Logger::Builder`, tests
+
+### Updated
+
+- Updated `Truemail::Configuration#logger=`, tests
+- Updated `Truemail::Logger`, tests
+- Updated `circleci`/`lefthook` configs
+- Updated gem version
+
+### Removed
+
+- Removed `Truemail::Configuration#logger_options`
+
 ## [3.2.0] - 2024.02.24
 
 ### Added
