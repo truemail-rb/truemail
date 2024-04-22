@@ -142,3 +142,6 @@ RSpec/VerifiedDoubleReference:
 
 RSpec/IndexedLet:
   Enabled: false
+
+RSpec/IsExpectedSpecify:
+  Enabled: false
