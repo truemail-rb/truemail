@@ -34,3 +34,5 @@ words:
   - shortcuting
   - stdlib
   - substeps
+  - IDNA
+  - fullwidth
