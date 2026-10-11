@@ -39,6 +39,9 @@ Naming/RescuedExceptionsVariableName:
 Naming/InclusiveLanguage:
   Enabled: false
 
+Naming/PredicateMethod:
+  Enabled: false
+
 # Style -----------------------------------------------------------------------
 
 Style/Documentation:
@@ -54,6 +57,9 @@ Style/RescueStandardError:
   Enabled: false
 
 Style/RedundantConstantBase:
+  Enabled: false
+
+Style/EmptyClassDefinition:
   Enabled: false
 
 # Layout ----------------------------------------------------------------------
@@ -102,6 +108,9 @@ Gemspec/RubyVersionGlobalsUsage:
 Gemspec/DevelopmentDependencies:
   Enabled: false
 
+Gemspec/AddRuntimeDependency:
+  Enabled: false
+
 # RSpec -----------------------------------------------------------------------
 
 RSpec/ExampleLength:
@@ -144,4 +153,10 @@ RSpec/IndexedLet:
   Enabled: false
 
 RSpec/IsExpectedSpecify:
+  Enabled: false
+
+RSpec/IncludeExamples:
+  Enabled: false
+
+RSpec/ExpectInLet:
   Enabled: false

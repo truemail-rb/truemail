@@ -18,7 +18,8 @@ words:
   - bestwebua
   - configurator
   - codebases
-  - codeclimate
+  - cobertura
+  - codecov
   - commitspell
   - dockerized
   - gemspecs
