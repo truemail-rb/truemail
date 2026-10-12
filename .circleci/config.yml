@@ -34,12 +34,17 @@ references:
             cp .circleci/linter_configs/.fasterer.yml .fasterer.yml
             cp .circleci/linter_configs/.lefthook.yml lefthook.yml
 
-  install_codeclimate_reporter: &install_codeclimate_reporter
+  install_codecov_cli: &install_codecov_cli
     run:
-      name: Installing CodeClimate test reporter
+      name: Installing Codecov CLI
       command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
+            curl https://keybase.io/codecovsecops/pgp_keys.asc | gpg --no-default-keyring --keyring trustedkeys.gpg --import
+            curl -Os https://cli.codecov.io/latest/linux/codecov
+            curl -Os https://cli.codecov.io/latest/linux/codecov.SHA256SUM
+            curl -Os https://cli.codecov.io/latest/linux/codecov.SHA256SUM.sig
+            gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
+            shasum -a 256 -c codecov.SHA256SUM
+            chmod +x codecov
 
   use_latest_bundler: &use_latest_bundler
     run:
@@ -110,28 +115,20 @@ jobs:
       - <<: *use_latest_gemspec
       - <<: *bundle_install
       - <<: *install_system_dependencies
-      - <<: *install_codeclimate_reporter
+      - <<: *install_codecov_cli
 
       - run:
           name: Running RSpec
-          command: |
-            ./cc-test-reporter before-build
-            bundle exec rspec
-
-      - run:
-          name: Creating CodeClimate test coverage report
-          command: |
-            ./cc-test-reporter format-coverage -t simplecov -o "coverage/codeclimate.$CIRCLE_NODE_INDEX.json"
+          command: bundle exec rspec
 
       - store_artifacts:
           name: Saving Simplecov coverage artifacts
           path: ~/truemail/coverage
           destination: coverage
 
-      - deploy:
-          name: Uploading CodeClimate test coverage report
-          command: |
-            ./cc-test-reporter sum-coverage --output - --parts $CIRCLE_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --debug --input -
+      - run:
+          name: Uploading coverage to Codecov
+          command: ./codecov upload-process --fail-on-error -f coverage/coverage.xml
 
   compatibility-ruby:
     parameters:
@@ -182,7 +179,7 @@ jobs:
 
       - add_ssh_keys:
           fingerprints:
-            - "f9:1e:0f:31:36:83:47:40:fe:05:74:91:00:21:02:3e"
+            - "SHA256:7lCZYwSF6mZ8xY9KodH4HAjosRcuhGD1P2lmy1obHKA"
 
       - run:
           name: Publishing new release

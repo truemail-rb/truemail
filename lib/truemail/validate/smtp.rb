@@ -8,7 +8,7 @@ module Truemail
       attr_reader :smtp_results
 
       def initialize(result)
-        super(result)
+        super
         @smtp_results = []
       end
 

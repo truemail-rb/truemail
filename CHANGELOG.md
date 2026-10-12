@@ -2,6 +2,22 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Added Codecov coverage reporting (`simplecov-cobertura`, Codecov CLI upload)
+
+### Removed
+
+- Removed CodeClimate integration (`.codeclimate.yml`, `cc-test-reporter`, maintainability badge)
+
+### Updated
+
+- Updated latest gemspec
+- Updated README coverage badge to Codecov
+- Updated `circleci`/`simplecov`/`commitspell`/`rubocop`/`markdownlint` configs
+
 ## [3.3.1] - 2024.04.23
 
 ### Updated
