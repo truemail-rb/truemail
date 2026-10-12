@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 
 - Added Codecov coverage reporting (`simplecov-cobertura`, Codecov CLI upload)
+- Added Ruby 4.0 CircleCI pipeline
 
 ### Updated
 
