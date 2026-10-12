@@ -285,6 +285,41 @@ RSpec.describe Truemail::Validate::Mx do
 
         specify { is_expected.to be(false) }
       end
+
+      context 'when mapped fullwidth email domain' do
+        shared_examples 'rejects mapped fullwidth email domain' do
+          before do
+            allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
+            result_instance.success = true
+          end
+
+          specify do
+            expect(mx_validator_instance).not_to receive(:hosts_from_mx_records?)
+            expect(mx_validator_instance).not_to receive(:hosts_from_cname_records?)
+            expect(mx_validator_instance).not_to receive(:host_from_a_record?)
+            expect { mx_validator }
+              .to change(result_instance, :success)
+              .from(true).to(false)
+              .and change(result_instance, :errors)
+              .from({}).to(mx: Truemail::Validate::Mx::ERROR)
+              .and not_change(result_instance, :mail_servers)
+          end
+
+          specify { is_expected.to be(false) }
+        end
+
+        context 'when domain has mapped fullwidth tld' do
+          let(:email) { 'somebody@reready.cｏ' }
+
+          include_examples 'rejects mapped fullwidth email domain'
+        end
+
+        context 'when domain mixes mapped fullwidth and real idn labels' do
+          let(:email) { 'somebody@reready.cｏ.укр' }
+
+          include_examples 'rejects mapped fullwidth email domain'
+        end
+      end
     end
   end
 end

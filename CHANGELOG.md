@@ -4,19 +4,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed MX validation accepting IDNA-mapped confusable/fullwidth domains (e.g. `somebody@reready.cｏ` mapped to ASCII `reready.co` without `xn--` labels). Thanks [@dan-jensen](https://github.com/dan-jensen) for report
+
 ### Added
 
 - Added Codecov coverage reporting (`simplecov-cobertura`, Codecov CLI upload)
-
-### Removed
-
-- Removed CodeClimate integration (`.codeclimate.yml`, `cc-test-reporter`, maintainability badge)
 
 ### Updated
 
 - Updated latest gemspec
 - Updated README coverage badge to Codecov
 - Updated `circleci`/`simplecov`/`commitspell`/`rubocop`/`markdownlint` configs
+
+### Removed
+
+- Removed CodeClimate integration (`.codeclimate.yml`, `cc-test-reporter`, maintainability badge)
 
 ## [3.3.1] - 2024.04.23
 

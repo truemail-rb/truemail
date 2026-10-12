@@ -5,6 +5,7 @@ module Truemail
     class Mx < Truemail::Validate::Base
       ERROR = 'target host(s) not found'
       NULL_MX_RECORD = 'null_mx_record'
+      IDNA_PREFIX = 'xn--'
 
       def run
         return false unless Truemail::Validate::Regex.check(result)
@@ -15,8 +16,16 @@ module Truemail
 
       private
 
+      def email_domain_idn_safe?(result_domain)
+        return true if result_domain.ascii_only?
+        result_domain.split('.').zip(domain.split('.')).all? do |original_label, ascii_label|
+          original_label.ascii_only? || ascii_label.start_with?(Truemail::Validate::Mx::IDNA_PREFIX)
+        end
+      end
+
       def email_domain_valid?
-        Truemail::RegexConstant::REGEX_DOMAIN_PATTERN.match?(result.domain)
+        result_domain = result.domain
+        Truemail::RegexConstant::REGEX_DOMAIN_PATTERN.match?(result_domain) && email_domain_idn_safe?(result_domain)
       end
 
       def host_extractor_methods

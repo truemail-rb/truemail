@@ -36,3 +36,5 @@ words:
   - substeps
   - truemail
   - yamlint
+  - IDNA
+  - fullwidth
