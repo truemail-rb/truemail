@@ -721,8 +721,10 @@ RSpec.describe Truemail::Configuration do
             specify { expect { set_logger }.to raise_error(Truemail::ArgumentError, error_message) }
           end
 
+          # Hash#inspect differs across Ruby versions (≤ 3.3: {:key=>value}, ≥ 3.4: {key: value}).
+          # Build expected messages via .inspect so they match the current runtime.
           let(:error_message_wrong_logger_output) do
-            '{:stdout=>false, :log_absolute_path=>nil} is not a valid stdout=, log_absolute_path='
+            "#{{ stdout: false, log_absolute_path: nil }.inspect} is not a valid stdout=, log_absolute_path="
           end
 
           context 'with wrong params type' do
@@ -742,7 +744,9 @@ RSpec.describe Truemail::Configuration do
           context 'with log_absolute_path wrong type' do
             let(:log_absolute_path) { true }
             let(:logger_params) { { log_absolute_path: log_absolute_path } }
-            let(:error_message) { '{:stdout=>false, :log_absolute_path=>true} is not a valid stdout=, log_absolute_path=' }
+            let(:error_message) do
+              "#{{ stdout: false, log_absolute_path: true }.inspect} is not a valid stdout=, log_absolute_path="
+            end
 
             include_examples 'raises logger argument error'
           end

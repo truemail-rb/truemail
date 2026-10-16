@@ -205,7 +205,11 @@ RSpec.describe Truemail::Logger::Builder do
       context 'when builtin logger output did not specified' do
         let(:stdout) { nil }
         let(:log_absolute_path) { nil }
-        let(:error_context) { '{:stdout=>nil, :log_absolute_path=>nil} is not a valid stdout=, log_absolute_path=' }
+        # Hash#inspect differs across Ruby versions (≤ 3.3: {:key=>value}, ≥ 3.4: {key: value}).
+        # Build expected message via .inspect so it matches the current runtime.
+        let(:error_context) do
+          "#{{ stdout: nil, log_absolute_path: nil }.inspect} is not a valid stdout=, log_absolute_path="
+        end
 
         include_examples 'raises truemail argument error'
       end

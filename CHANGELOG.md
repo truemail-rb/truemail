@@ -2,6 +2,28 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2026.10.16
+
+### Fixed
+
+- Fixed MX validation accepting IDNA-mapped confusable/fullwidth domains (e.g. `somebody@reready.cｏ` mapped to ASCII `reready.co` without `xn--` labels). Thanks [@dan-jensen](https://github.com/dan-jensen) for report
+
+### Added
+
+- Added Codecov coverage reporting (`simplecov-cobertura`, Codecov CLI upload)
+- Added Ruby 4.0 CircleCI pipeline
+
+### Updated
+
+- Updated runtime/development dependencies
+- Updated `circleci`/`simplecov`/`commitspell`/`rubocop`/`markdownlint` configs
+- Updated project documentation
+- Updated gem version
+
+### Removed
+
+- Removed CodeClimate integration (`.codeclimate.yml`, `cc-test-reporter`, maintainability badge)
+
 ## [3.3.1] - 2024.04.23
 
 ### Updated

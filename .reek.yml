@@ -70,6 +70,7 @@ detectors:
       - Truemail::Log::Serializer::Text#data_composer
       - Truemail::Log::Serializer::ValidatorBase#smtp_debug
       - Truemail::Log::Serializer::ValidatorText#data_composer
+      - Truemail::Validate::Mx#email_domain_idn_safe?
 
   NilCheck:
     exclude:

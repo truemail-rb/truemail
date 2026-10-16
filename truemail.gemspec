@@ -24,20 +24,22 @@ Gem::Specification.new do |spec|
 
   current_ruby_version = ::Gem::Version.new(::RUBY_VERSION)
   ffaker_version = current_ruby_version >= ::Gem::Version.new('3.0.0') ? '~> 2.23' : '~> 2.21'
+  webmock_version = current_ruby_version >= ::Gem::Version.new('2.6.0') ? '~> 3.30' : '~> 3.23'
 
   spec.required_ruby_version = '>= 2.5.0'
   spec.files = `git ls-files -z`.split("\x0").select { |f| f.match(%r{^(bin|lib)/|.ruby-version|truemail.gemspec|LICENSE}) }
   spec.require_paths = %w[lib]
 
-  spec.add_runtime_dependency 'net-smtp', '~> 0.5.0' if current_ruby_version >= ::Gem::Version.new('3.1.0')
+  spec.add_runtime_dependency 'logger', '>= 1.7' if current_ruby_version >= ::Gem::Version.new('4.0.0')
+  spec.add_runtime_dependency 'net-smtp', '>= 0.5.2' if current_ruby_version >= ::Gem::Version.new('3.1.0')
   spec.add_runtime_dependency 'simpleidn', '~> 0.2.1'
 
   spec.add_development_dependency 'dns_mock', '~> 1.7', '>= 1.7.1'
   spec.add_development_dependency 'ffaker', ffaker_version
   spec.add_development_dependency 'json_matchers', '~> 0.11.1'
-  spec.add_development_dependency 'rake', '~> 13.2', '>= 13.2.1'
-  spec.add_development_dependency 'rspec', '~> 3.13'
+  spec.add_development_dependency 'rake', '>= 13.4.2'
+  spec.add_development_dependency 'rspec', '>= 3.13.2'
   spec.add_development_dependency 'smtp_mock', '~> 1.4', '>= 1.4.1'
   spec.add_development_dependency 'truemail-rspec', '~> 1.3', '>= 1.3.1'
-  spec.add_development_dependency 'webmock', '~> 3.23'
+  spec.add_development_dependency 'webmock', webmock_version
 end
