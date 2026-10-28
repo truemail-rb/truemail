@@ -10,16 +10,16 @@ RSpec.describe Truemail::Dns::PunycodeRepresenter do
       specify { expect(service).to be_nil }
     end
 
-    context 'when email not includes ASCII chars' do
+    context 'when email includes only ASCII chars' do
       let(:email) { random_email }
 
-      it 'returns not changed email' do
+      it 'returns unchanged email' do
         expect(SimpleIDN).not_to receive(:to_ascii)
         expect(service).to eq(email)
       end
     end
 
-    context 'when email includes ASCII chars' do
+    context 'when email includes non-ASCII chars' do
       let(:user) { 'niña' }
       let(:domain) { 'mañana.cøm' }
       let(:punycode) { 'xn--maana-pta.xn--cm-lka' }

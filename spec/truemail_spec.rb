@@ -5,7 +5,7 @@ RSpec.describe Truemail do
   let(:custom_configuration) { nil }
 
   shared_examples 'configuration error' do
-    context 'when global configuration not set or custom configuration not passed' do
+    context 'when global configuration is not set and no custom configuration is passed' do
       specify do
         expect { subject }.to raise_error(Truemail::ConfigurationError, Truemail::NOT_CONFIGURED)
       end
@@ -98,7 +98,7 @@ RSpec.describe Truemail do
 
       specify { expect(configuration).to be_instance_of(Truemail::Configuration) }
 
-      it 'accepts to rewrite current configuration settings' do
+      it 'allows rewriting current configuration settings' do
         expect do
           configuration.tap(&configuration_block(
             verifier_email: new_email,
@@ -142,7 +142,7 @@ RSpec.describe Truemail do
     include_examples 'configuration error'
 
     context 'when passed email is a String' do
-      context 'when global configuration successfully set' do
+      context 'when global configuration is successfully set' do
         before { described_class.configure { |config| config.verifier_email = random_email } }
 
         include_examples 'returns validator instance'
@@ -161,7 +161,7 @@ RSpec.describe Truemail do
             end
           end
 
-          context 'when checks real email' do
+          context 'when checking a real email' do
             let(:smtp_mock_server_options) { {} }
 
             specify do
@@ -169,7 +169,7 @@ RSpec.describe Truemail do
             end
           end
 
-          context 'when checks fake email' do
+          context 'when checking a fake email' do
             let(:smtp_mock_server_options) { { not_registered_emails: [target_email] } }
 
             specify do
@@ -179,7 +179,7 @@ RSpec.describe Truemail do
         end
       end
 
-      context 'when custom configuration passed' do
+      context 'when custom configuration is passed' do
         let(:custom_configuration) { create_configuration }
 
         include_examples 'returns validator instance'
@@ -203,13 +203,13 @@ RSpec.describe Truemail do
     include_examples 'configuration error'
 
     context 'when passed email is a String' do
-      context 'when global configuration successfully set' do
+      context 'when global configuration is successfully set' do
         before { described_class.configure { |config| config.verifier_email = email } }
 
         include_examples 'returns boolean'
       end
 
-      context 'when custom configuration passed' do
+      context 'when custom configuration is passed' do
         let(:custom_configuration) { create_configuration }
 
         include_examples 'returns boolean'
@@ -233,13 +233,13 @@ RSpec.describe Truemail do
 
     include_examples 'configuration error'
 
-    context 'when global configuration successfully set' do
+    context 'when global configuration is successfully set' do
       before { described_class.configure { |config| config.verifier_email = email } }
 
       include_examples 'returns auditor instance'
     end
 
-    context 'when custom configuration passed' do
+    context 'when custom configuration is passed' do
       let(:custom_configuration) { create_configuration }
 
       include_examples 'returns auditor instance'

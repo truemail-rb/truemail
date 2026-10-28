@@ -37,8 +37,8 @@ module Truemail
     attr_accessor :whitelist_validation, :not_rfc_mx_lookup_flow, :smtp_fail_fast, :smtp_safe_check
 
     def initialize(&block)
-      instance_initializer.each do |instace_variable, value|
-        instance_variable_set(:"@#{instace_variable}", value)
+      instance_initializer.each do |instance_variable, value|
+        instance_variable_set(:"@#{instance_variable}", value)
       end
       tap(&block) if block
     end

@@ -17,7 +17,7 @@ RSpec.describe Truemail::Validate::Regex do
       Truemail::Validator::Result.new(email: random_email, configuration: configuration_instance)
     end
 
-    context 'when validation pass' do
+    context 'when validation passes' do
       before { allow(configuration_instance).to receive_message_chain(:email_pattern, :match?).and_return(true) }
 
       specify { expect { regex_validator }.to change(result_instance, :success).from(nil).to(true) }

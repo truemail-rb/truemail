@@ -7,7 +7,7 @@ assignees: bestwebua
 
 ---
 
-<!-- Thanks for helping to make Truemail better! Before submit your new feature request, please make sure to check the following boxes by putting an x in the [ ] (don't: [x ], [ x], do: [x]) -->
+<!-- Thanks for helping to make Truemail better! Before submitting your feature request, please make sure to check the following boxes by putting an x in the [ ] (don't: [x ], [ x], do: [x]) -->
 
 ### New feature request checklist
 
@@ -16,7 +16,7 @@ assignees: bestwebua
 - [ ] I have read the [documentation](https://truemail-rb.org/truemail-gem)
 - [ ] I have searched for [existing GitHub issues](https://github.com/truemail-rb/truemail/issues)
 
-<!-- Please use next pattern for your feature request title: [FEATURE] Your feature request title here -->
+<!-- Please use the following pattern for your feature request title: [FEATURE] Your feature request title here -->
 
 ### Feature description
 

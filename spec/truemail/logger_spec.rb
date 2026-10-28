@@ -39,7 +39,7 @@ RSpec.describe Truemail::Logger do
     context 'when invalid event' do
       let(:event_status) { false }
 
-      it 'not calls create_logs' do
+      it 'does not call create_logs' do
         expect(Truemail::Log::Event).to receive(:new).with(logger_instance.event, validator_instance).and_return(event_instance)
         expect(logger_instance).not_to receive(:create_logs).with(event_instance.log_level, serialized_object)
         push_log
@@ -56,7 +56,7 @@ RSpec.describe Truemail::Logger do
     let(:custom_logger_instnace) { instance_double('SomeCustomLoggerInstance') }
 
     context 'when stdout configured' do
-      it 'print to stdout logger info' do
+      it 'prints logger info to stdout' do
         expect(custom_logger_instnace)
           .not_to receive(:add)
           .with(log_level) { |&block| expect(block.call).to eq(serialized_object) }
@@ -70,8 +70,8 @@ RSpec.describe Truemail::Logger do
 
       after { ::FileUtils.rm_rf(file.dirname) }
 
-      context 'when log file not exists' do
-        it 'creates file, add log' do
+      context 'when log file does not exist' do
+        it 'creates file, adds log' do
           expect(custom_logger_instnace)
             .not_to receive(:add)
             .with(log_level) { |&block| expect(block.call).to eq(serialized_object) }
@@ -88,7 +88,7 @@ RSpec.describe Truemail::Logger do
           ::File.open(file, 'a+') { |data| data.puts file_context }
         end
 
-        it 'add log to exsiting file context' do
+        it 'adds log to existing file' do
           expect { create_logs }.not_to output(/#{output_expectation}/).to_stdout
           expect(file.read).to include(file_context, output_expectation)
         end
@@ -202,7 +202,7 @@ RSpec.describe Truemail::Logger::Builder do
         include_examples 'raises truemail argument error'
       end
 
-      context 'when builtin logger output did not specified' do
+      context 'when built-in logger output is not specified' do
         let(:stdout) { nil }
         let(:log_absolute_path) { nil }
         # Hash#inspect differs across Ruby versions (≤ 3.3: {:key=>value}, ≥ 3.4: {key: value}).
@@ -214,7 +214,7 @@ RSpec.describe Truemail::Logger::Builder do
         include_examples 'raises truemail argument error'
       end
 
-      context 'when the custom logger instance has a different than stdlib logger interface' do
+      context 'when the custom logger instance has an interface different from the stdlib logger' do
         let(:custom_logger) { instance_double('SomeCustomLoggerInstance') }
         let(:stdout) { nil }
         let(:log_absolute_path) { nil }

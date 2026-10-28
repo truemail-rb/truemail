@@ -26,7 +26,7 @@ RSpec.describe Truemail::Validate::Mx do
 
     let(:mx_validator_instance) { instance_double(described_class, run: true) }
 
-    it 'receive #run' do
+    it 'receives #run' do
       allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
       expect(described_class).to receive(:new).and_return(mx_validator_instance)
       expect(mx_validator_instance).to receive(:run)
@@ -55,13 +55,13 @@ RSpec.describe Truemail::Validate::Mx do
       end
     end
 
-    context 'when validation pass' do
+    context 'when validation passes' do
       before do
         allow(Truemail::Validate::Regex).to receive(:check).and_return(true)
         result_instance.success = true
       end
 
-      context 'when mx records found' do
+      context 'when mx records are found' do
         let(:total_records) { 2 }
         let(:mx_records) { ::Array.new(total_records) { random_domain_name } }
         let(:a_record) { random_ip_address }
@@ -94,7 +94,7 @@ RSpec.describe Truemail::Validate::Mx do
         end
       end
 
-      context 'when cname records found' do
+      context 'when cname records are found' do
         let(:total_records) { 2 }
         let(:cname_records) { [random_domain_name] }
         let(:a_records) { [random_ip_address] }
@@ -113,7 +113,7 @@ RSpec.describe Truemail::Validate::Mx do
 
         before { dns_mock_server.assign_mocks(dns_mock_records) }
 
-        context 'when mx records found' do
+        context 'when mx records are found' do
           specify do
             expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
             expect(mx_validator_instance).to receive(:hosts_from_cname_records?).and_call_original
@@ -132,7 +132,7 @@ RSpec.describe Truemail::Validate::Mx do
           include_context 'when internationalized email'
         end
 
-        context 'when mx records not found' do
+        context 'when mx records are not found' do
           let(:mx_records_dns_mock) { {} }
           let(:cname_records_dns_mock) { cname_records.zip(a_records).to_h.transform_values { |value| { a: [value] } } }
 
@@ -153,7 +153,7 @@ RSpec.describe Truemail::Validate::Mx do
         end
       end
 
-      context 'when a record found' do
+      context 'when a record is found' do
         let(:a_record) { random_ip_address }
         let(:dns_mock_records) { { domain_from_email(email) => { a: [a_record] } } }
 
@@ -194,7 +194,7 @@ RSpec.describe Truemail::Validate::Mx do
         specify { is_expected.to be(false) }
       end
 
-      context 'when mx records found with null mx' do
+      context 'when mx records are found with null mx' do
         let(:dns_mock_records) { { domain_from_email(email) => { mx: %w[.:0] } } }
         let(:mx_lookup_chain_expectations) do
           expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
@@ -212,7 +212,7 @@ RSpec.describe Truemail::Validate::Mx do
         include_context 'when internationalized email'
       end
 
-      context 'when not RFC MX lookup flow enabled' do
+      context 'when non-RFC MX lookup flow is enabled' do
         let(:configuration) do
           create_configuration(
             not_rfc_mx_lookup_flow: true,
@@ -234,7 +234,7 @@ RSpec.describe Truemail::Validate::Mx do
         include_context 'when internationalized email'
       end
 
-      context 'when any of mx lookup methods fail' do
+      context 'when any of the mx lookup methods fails' do
         let(:mx_lookup_chain_expectations) do
           expect(mx_validator_instance).to receive(:hosts_from_mx_records?).and_call_original
           expect(mx_validator_instance).to receive(:hosts_from_cname_records?).and_call_original
@@ -286,7 +286,7 @@ RSpec.describe Truemail::Validate::Mx do
         specify { is_expected.to be(false) }
       end
 
-      context 'when mapped fullwidth email domain' do
+      context 'when email domain is mapped fullwidth' do
         shared_examples 'rejects mapped fullwidth email domain' do
           before do
             allow(Truemail::Validate::Regex).to receive(:check).and_return(true)

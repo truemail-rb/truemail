@@ -15,7 +15,7 @@ RSpec.describe Truemail::Validate::MxBlacklist do
     let(:result_instance) { instance_double('ValidatorInstanceResult') }
     let(:mx_blacklist_validator_instance) { instance_double(described_class, run: true) }
 
-    it 'receive #run' do
+    it 'receives #run' do
       allow(Truemail::Validate::Mx).to receive(:check).and_return(true)
       expect(described_class).to receive(:new).and_return(mx_blacklist_validator_instance)
       expect(mx_blacklist_validator_instance).to receive(:run)
@@ -55,13 +55,13 @@ RSpec.describe Truemail::Validate::MxBlacklist do
         end
       end
 
-      context 'when ip list match validation not configured' do
+      context 'when ip list match validation is not configured' do
         let(:configuration_instance) { create_configuration }
 
         it_behaves_like 'not blacklisted mx server ip address'
       end
 
-      context 'when mx servers ip addresses not included in blacklisted mx ip address list' do
+      context 'when mx server ip addresses are not in the blacklisted mx ip address list' do
         it_behaves_like 'not blacklisted mx server ip address'
       end
     end
@@ -76,7 +76,7 @@ RSpec.describe Truemail::Validate::MxBlacklist do
         end
       end
 
-      context 'when mx servers ip addresses included in blacklisted mx ip address list' do
+      context 'when mx server ip addresses are in the blacklisted mx ip address list' do
         let(:blacklisted_mx_ip_addresses) { mail_servers.sample(1) }
 
         specify do

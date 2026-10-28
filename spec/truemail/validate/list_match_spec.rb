@@ -21,10 +21,10 @@ RSpec.describe Truemail::Validate::ListMatch do
       allow(configuration_instance).to receive(:whitelist_validation).and_return(whitelist_validation_condition)
     end
 
-    context 'when whitelist validation not configured' do
+    context 'when whitelist validation is not configured' do
       let(:whitelist_validation_condition) { false }
 
-      context 'when email in white list' do
+      context 'when email is in whitelist' do
         specify do
           allow(configuration_instance).to receive(:whitelisted_emails).and_return([email])
           expect { domain_list_match_validator }
@@ -34,7 +34,7 @@ RSpec.describe Truemail::Validate::ListMatch do
         end
       end
 
-      context 'when email domain in white list' do
+      context 'when email domain is in whitelist' do
         specify do
           allow(configuration_instance).to receive(:whitelisted_domains).and_return([domain])
           expect { domain_list_match_validator }
@@ -45,7 +45,7 @@ RSpec.describe Truemail::Validate::ListMatch do
         end
       end
 
-      context 'when email in black list' do
+      context 'when email is in blacklist' do
         specify do
           allow(configuration_instance).to receive(:blacklisted_emails).and_return([email])
           expect { domain_list_match_validator }
@@ -58,7 +58,7 @@ RSpec.describe Truemail::Validate::ListMatch do
         end
       end
 
-      context 'when email domain in black list' do
+      context 'when email domain is in blacklist' do
         specify do
           allow(configuration_instance).to receive(:blacklisted_domains).and_return([domain])
           expect { domain_list_match_validator }
@@ -71,7 +71,7 @@ RSpec.describe Truemail::Validate::ListMatch do
         end
       end
 
-      context 'when email exists on both lists' do
+      context 'when email is on both lists' do
         specify do
           allow(configuration_instance).to receive_messages(whitelisted_emails: [email], blacklisted_emails: [email])
           expect { domain_list_match_validator }
@@ -81,7 +81,7 @@ RSpec.describe Truemail::Validate::ListMatch do
         end
       end
 
-      context 'when email domain exists on both lists' do
+      context 'when email domain is on both lists' do
         specify do
           allow(configuration_instance).to receive_messages(whitelisted_domains: [domain], blacklisted_domains: [domain])
           expect { domain_list_match_validator }
@@ -92,7 +92,7 @@ RSpec.describe Truemail::Validate::ListMatch do
         end
       end
 
-      context 'when email domain exists not on both lists' do
+      context 'when email domain is on neither list' do
         specify do
           allow(configuration_instance).to receive_messages(whitelisted_domains: [], blacklisted_domains: [])
           expect { domain_list_match_validator }
@@ -103,13 +103,13 @@ RSpec.describe Truemail::Validate::ListMatch do
       end
     end
 
-    context 'when whitelist validation configured' do
+    context 'when whitelist validation is configured' do
       let(:whitelist_validation_condition) { true }
 
-      context 'when email whitelisted in configuration' do
+      context 'when email is whitelisted in configuration' do
         before { allow(configuration_instance).to receive(:whitelisted_emails).and_return([email]) }
 
-        context 'when email in white list' do
+        context 'when email is in whitelist' do
           specify do
             expect { domain_list_match_validator }
               .to not_change(result_instance, :success)
@@ -118,7 +118,7 @@ RSpec.describe Truemail::Validate::ListMatch do
           end
         end
 
-        context 'when email exists on both lists' do
+        context 'when email is on both lists' do
           specify do
             allow(configuration_instance).to receive(:blacklisted_emails).and_return([email])
             expect { domain_list_match_validator }
@@ -131,10 +131,10 @@ RSpec.describe Truemail::Validate::ListMatch do
         end
       end
 
-      context 'when email domain whitelisted in configuration' do
+      context 'when email domain is whitelisted in configuration' do
         before { allow(configuration_instance).to receive(:whitelisted_domains).and_return([domain]) }
 
-        context 'when email domain in white list' do
+        context 'when email domain is in whitelist' do
           specify do
             expect { domain_list_match_validator }
               .to not_change(result_instance, :success)
@@ -143,7 +143,7 @@ RSpec.describe Truemail::Validate::ListMatch do
           end
         end
 
-        context 'when email domain exists on both lists' do
+        context 'when email domain is on both lists' do
           specify do
             allow(configuration_instance).to receive(:blacklisted_domains).and_return([domain])
             expect { domain_list_match_validator }
@@ -157,10 +157,10 @@ RSpec.describe Truemail::Validate::ListMatch do
         end
       end
 
-      context 'when email not whitelisted in configuration' do
+      context 'when email is not whitelisted in configuration' do
         before { allow(configuration_instance).to receive(:whitelisted_emails).and_return([]) }
 
-        context 'when email in black list' do
+        context 'when email is in blacklist' do
           specify do
             allow(configuration_instance).to receive(:blacklisted_emails).and_return([email])
             expect { domain_list_match_validator }
@@ -173,7 +173,7 @@ RSpec.describe Truemail::Validate::ListMatch do
           end
         end
 
-        context 'when email not exists on both lists' do
+        context 'when email is on neither list' do
           specify do
             allow(configuration_instance).to receive(:blacklisted_emails).and_return([])
             expect { domain_list_match_validator }
@@ -187,10 +187,10 @@ RSpec.describe Truemail::Validate::ListMatch do
         end
       end
 
-      context 'when email domain not whitelisted in configuration' do
+      context 'when email domain is not whitelisted in configuration' do
         before { allow(configuration_instance).to receive(:whitelisted_domains).and_return([]) }
 
-        context 'when email domain in black list' do
+        context 'when email domain is in blacklist' do
           specify do
             allow(configuration_instance).to receive(:blacklisted_domains).and_return([domain])
             expect { domain_list_match_validator }
@@ -203,7 +203,7 @@ RSpec.describe Truemail::Validate::ListMatch do
           end
         end
 
-        context 'when email domain not exists on both lists' do
+        context 'when email domain is on neither list' do
           specify do
             allow(configuration_instance).to receive(:blacklisted_domains).and_return([])
             expect { domain_list_match_validator }

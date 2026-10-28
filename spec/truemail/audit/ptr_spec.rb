@@ -20,7 +20,7 @@ RSpec.describe Truemail::Audit::Ptr do
 
     let(:ptr_auditor_instance) { instance_double(described_class, run: true) }
 
-    it 'receive #run' do
+    it 'receives #run' do
       allow(described_class).to receive(:new).and_return(ptr_auditor_instance)
       expect(ptr_auditor_instance).to receive(:run)
       ptr_auditor
@@ -33,18 +33,18 @@ RSpec.describe Truemail::Audit::Ptr do
     let(:ptr_auditor_instance) { described_class.new(result_instance) }
 
     describe 'Success' do
-      context 'when ptr record exists and refereces to verifier domain' do
+      context 'when ptr record exists and refers to verifier domain' do
         before { dns_mock_server.assign_mocks(current_host_ip => { ptr: [verifier_domain] }) }
 
-        it 'not changes warnings' do
+        it 'does not change warnings' do
           expect { ptr_auditor }.to not_change(result_instance, :warnings)
         end
       end
     end
 
     describe 'Fails' do
-      shared_examples 'addes warning context into result instance' do
-        it 'addes warning context into result instance' do
+      shared_examples 'adds warning context to result instance' do
+        it 'adds warning context to result instance' do
           expect { ptr_auditor }
             .to change(result_instance, :warnings)
             .from({})
@@ -58,13 +58,13 @@ RSpec.describe Truemail::Audit::Ptr do
 
           before { allow(Truemail::Dns::Resolver).to receive(:ptr_records).and_raise(::Resolv::ResolvError) }
 
-          include_examples 'addes warning context into result instance'
+          include_examples 'adds warning context to result instance'
         end
 
-        context 'when ptr record for current host address was not found' do
+        context 'when ptr record for current host address is not found' do
           let(:warning_context) { Truemail::Audit::Ptr::PTR_NOT_FOUND }
 
-          include_examples 'addes warning context into result instance'
+          include_examples 'adds warning context to result instance'
         end
       end
 
@@ -74,7 +74,7 @@ RSpec.describe Truemail::Audit::Ptr do
 
           before { dns_mock_server.assign_mocks(current_host_ip => { ptr: [random_domain_name] }) }
 
-          include_examples 'addes warning context into result instance'
+          include_examples 'adds warning context to result instance'
         end
       end
     end

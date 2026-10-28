@@ -4,13 +4,13 @@ module Truemail
   RSpec.shared_examples 'request retry behavior' do
     before { error_stubs }
 
-    context 'when attempts not exists' do
+    context 'when attempts do not exist' do
       specify do
         expect { response_instance_target_method }.to not_change(request_instance, :attempts)
       end
     end
 
-    context 'when attempts exists' do
+    context 'when attempts exist' do
       let(:attempts) { { attempts: 5 } }
 
       specify do

@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Vladislav Trotsenko']
   spec.email         = %w[admin@bestweb.com.ua]
 
-  spec.summary       = %(Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS, SMTP and even more)
-  spec.description   = %(Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS, SMTP and even more.)
+  spec.summary       = %(Configurable, framework-agnostic plain Ruby email validator. Verify emails via regex, DNS, SMTP and more)
+  spec.description   = %(Configurable, framework-agnostic plain Ruby email validator. Verify emails via regex, DNS, SMTP and more.)
 
   spec.homepage      = 'https://github.com/truemail-rb/truemail'
   spec.license       = 'MIT'

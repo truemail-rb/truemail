@@ -6,14 +6,14 @@ Clone `truemail` repository:
 
 ```bash
 git clone https://github.com/truemail-rb/truemail.git
-cd  truemail
+cd truemail
 ```
 
-Configure latest Ruby environment:
+Configure the latest Ruby environment:
 
 ```bash
 echo 'ruby-3.1.2' > .ruby-version
-cp .circleci/gemspec_latest truemail.gemspec
+cp .circleci/gemspecs/latest truemail.gemspec
 ```
 
 ## Installing dependencies
@@ -23,9 +23,9 @@ bundle install
 bundle exec smtp_mock -s -i ~
 ```
 
-## Commiting
+## Committing
 
-Commit your changes excluding `.ruby-version`, `truemail.gemspec`
+Commit your changes, excluding `.ruby-version` and `truemail.gemspec`:
 
 ```bash
 git add . ':!.ruby-version' ':!truemail.gemspec'

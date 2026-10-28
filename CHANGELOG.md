@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
-- Fixed MX validation accepting IDNA-mapped confusable/fullwidth domains (e.g. `somebody@reready.cｏ` mapped to ASCII `reready.co` without `xn--` labels). Thanks [@dan-jensen](https://github.com/dan-jensen) for report
+- Fixed MX validation accepting IDNA-mapped confusable/fullwidth domains (e.g. `somebody@reready.cｏ` mapped to ASCII `reready.co` without `xn--` labels). Thanks to [@dan-jensen](https://github.com/dan-jensen) for the report
 
 ### Added
 
@@ -36,7 +36,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Added ability to use custom logger instance in event logger. Thanks [@n-rodriguez](https://github.com/n-rodriguez) for report
+- Added the ability to use a custom logger instance in the event logger. Thanks to [@n-rodriguez](https://github.com/n-rodriguez) for the report
 - Added `Truemail::Logger::Builder`, tests
 
 ### Updated
@@ -54,7 +54,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Added ability to use custom logger in event logger
+- Added the ability to use a custom logger in the event logger
 - Added `commitspell` linter
 
 ### Updated
@@ -69,7 +69,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Added supporting of latest Ruby 3.3.0
+- Added support for the latest Ruby 3.3.0
 - Added `changelog` linter
 
 ### Updated
@@ -82,7 +82,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Updated
 
-- Updated `valid?` predicate. Thanks [@SofiaSousa](https://github.com/SofiaSousa) for report
+- Updated `valid?` predicate. Thanks to [@SofiaSousa](https://github.com/SofiaSousa) for the report
 - Updated runtime/development dependencies
 - Updated `codeclimate` config
 - Updated gem version
@@ -101,7 +101,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
-- Fixed `Truemail::RegexConstant::REGEX_DOMAIN`. Thanks [@Sybe](https://github.com/Sybe) for report
+- Fixed `Truemail::RegexConstant::REGEX_DOMAIN`. Thanks to [@Sybe](https://github.com/Sybe) for the report
 
 ### Updated
 
@@ -143,7 +143,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Added supporting of latest Ruby 3.2.0
+- Added support for the latest Ruby 3.2.0
 - Added `changelog` linter
 
 ### Updated
@@ -158,7 +158,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
-- Fixed linters issues
+- Fixed linter issues
 
 ### Added
 
@@ -180,9 +180,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Added new bunch of project linters
-- Added auto deploy to RubyGems
-- Added auto creating release notes on GitHub
+- Added a new bunch of project linters
+- Added automatic deployment to RubyGems
+- Added automatic creation of release notes on GitHub
 
 ### Updated
 
@@ -208,7 +208,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
-- Fixed wrong semantic version comparison in gemspec runtime dependency definition
+- Fixed wrong semantic version comparison in the gemspec runtime dependency definition
 
 ### Updated
 
@@ -220,18 +220,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Added ability to specify whitelisted/blacklisted emails by complete match
+- Added the ability to specify whitelisted/blacklisted emails by exact match
 
 ```ruby
 Truemail.configure do |config|
-  # Optional parameter. Validation of email which contains whitelisted emails always will
-  # return true. Other validations will not processed even if it was defined in validation_type_for
-  # It is equal to empty array by default.
+  # Optional parameter. Validation of a whitelisted email will always return true.
+  # Other validations will not be performed, even if defined in validation_type_for.
+  # It defaults to an empty array.
   config.whitelisted_emails = %w[user@somedomain1.com user@somedomain2.com]
 
-  # Optional parameter. Validation of email which contains blacklisted emails always will
-  # return false. Other validations will not processed even if it was defined in validation_type_for
-  # It is equal to empty array by default.
+  # Optional parameter. Validation of a blacklisted email will always return false.
+  # Other validations will not be performed, even if defined in validation_type_for.
+  # It defaults to an empty array.
   config.blacklisted_emails = %w[user@somedomain3.com user@somedomain4.com]
 end
 ```
@@ -240,7 +240,7 @@ end
 
 - Updated `Truemail::Configuration`, tests
 - Updated namespace from `Truemail::Validate::DomainListMatch` to `Truemail::Validate::ListMatch`
-- Updated `Truemail::Validator#run, tests
+- Updated `Truemail::Validator#run`, tests
 - Updated `Truemail::Log::Serializer::ValidatorJson`, tests
 - Updated `Truemail::Log::Serializer::ValidatorText`, tests
 - Updated `Truemail::Log::Serializer::AuditorJson`, tests
@@ -291,7 +291,7 @@ end
 
 ### Added
 
-- Added ability to specify SMTP port number
+- Added the ability to specify the SMTP port number
 
 ### Updated
 
@@ -313,7 +313,7 @@ end
 
 ### Added
 
-- Added gemspec with latest dependencies for latest Ruby env
+- Added a gemspec with the latest dependencies for the latest Ruby environment
 
 ### Updated
 
@@ -323,13 +323,13 @@ end
 
 ### Fixed
 
-- Fixed redefining builtin implementations caused using stdlib as external dependencies
+- Fixed redefinition of built-in implementations caused by using stdlib as external dependencies
 
 ## [2.6.4] - 2022.02.09
 
 ### Fixed
 
-- Fixed redefining builtin implementations caused using stdlib as external dependencies. Thanks [@adzap](https://github.com/adzap) for report.
+- Fixed redefinition of built-in implementations caused by using stdlib as external dependencies. Thanks to [@adzap](https://github.com/adzap) for the report.
 
 ## [2.6.3] - 2022.02.07
 
@@ -351,7 +351,7 @@ end
 
 ### Fixed
 
-- Fixed redefining builtin implementations caused using stdlib as external dependencies. Thanks [@allard](https://github.com/allard) for report.
+- Fixed redefinition of built-in implementations caused by using stdlib as external dependencies. Thanks to [@allard](https://github.com/allard) for the report.
 
 ### Updated
 
@@ -364,7 +364,7 @@ end
 ### Added
 
 - Added Ruby 3.1.x compatibility
-- Added `Truemail::Validate::Smtp::Request::Session` - `Net::SMTP` wrapper, tests
+- Added `Truemail::Validate::Smtp::Request::Session`, a `Net::SMTP` wrapper, tests
 
 ### Updated
 
@@ -377,7 +377,7 @@ end
 
 ### Fixed
 
-- `Net::SMTP#start` Ruby 2.x compatibility. Thanks [@evserykh](https://github.com/evserykh) for bug report.
+- Fixed `Net::SMTP#start` Ruby 2.x compatibility. Thanks to [@evserykh](https://github.com/evserykh) for the bug report.
 
 ### Updated
 
@@ -390,7 +390,7 @@ end
 
 ### Fixed
 
-- Fixed Ruby 3.0 stdlib SMTP client SSL certificate verification issues for cases when IP address uses as MX host. Thanks [@esb](https://github.com/esb) for bug report.
+- Fixed Ruby 3.0 stdlib SMTP client SSL certificate verification issues for cases when an IP address is used as the MX host. Thanks to [@esb](https://github.com/esb) for the bug report.
 
 ### Updated
 
@@ -402,7 +402,7 @@ end
 
 ### Fixed
 
-- `Truemail::RegexConstant::REGEX_EMAIL_PATTERN` behavior with double `@` in email. Thanks [@your-favorite-dev](https://github.com/your-favorite-dev) for bug report.
+- Fixed `Truemail::RegexConstant::REGEX_EMAIL_PATTERN` behavior with a double `@` in the email. Thanks to [@your-favorite-dev](https://github.com/your-favorite-dev) for the bug report.
 
 ### Updated
 
@@ -421,7 +421,7 @@ end
 
 ### Updated
 
-Optimized DNS (MX) validation flow. Removed needless DNS request for case when custom email pattern was defined and email for validation includes invalid domain name.
+Optimized the DNS (MX) validation flow. Removed a needless DNS request for the case when a custom email pattern is defined and the email being validated includes an invalid domain name.
 
 - Updated `Truemail::Validate::Mx#run`, tests
 - Updated gem development dependencies
@@ -445,7 +445,7 @@ Optimized DNS (MX) validation flow. Removed needless DNS request for case when c
 
 ### Changed
 
-- `faker` to `ffaker` development dependency
+- Switched the `faker` development dependency to `ffaker`
 
 ## [2.4.7] - 2021.08.09
 
@@ -460,7 +460,7 @@ Optimized DNS (MX) validation flow. Removed needless DNS request for case when c
 
 ### Fixed
 
-- Wrong domain punycode extraction in DNS validation layer
+- Fixed wrong domain punycode extraction in the DNS validation layer
 
 ### Updated
 
@@ -483,7 +483,7 @@ Optimized DNS (MX) validation flow. Removed needless DNS request for case when c
 
 ### Updated
 
-Allowed using special characters in email user names (following [RFC 3696](https://datatracker.ietf.org/doc/html/rfc3696#page-6)) for default regex email pattern.
+Allowed special characters in email user names (following [RFC 3696](https://datatracker.ietf.org/doc/html/rfc3696#page-6)) in the default regex email pattern.
 
 - Updated `Truemail::RegexConstant::REGEX_EMAIL_PATTERN`, tests
 - Updated gem development dependencies
@@ -502,7 +502,7 @@ Allowed using special characters in email user names (following [RFC 3696](https
 
 ### Fixed
 
-- Fixed security vulnerability for bundler ([CVE-2019-3881](https://github.com/advisories/GHSA-g98m-96g9-wfjq))
+- Fixed a security vulnerability in bundler ([CVE-2019-3881](https://github.com/advisories/GHSA-g98m-96g9-wfjq))
 - Fixed test coverage issues
 
 ### Updated
@@ -523,13 +523,13 @@ Allowed using special characters in email user names (following [RFC 3696](https
 
 ### Added
 
-- Implemented `MxBlacklist` validation. This layer provides checking mail servers with predefined blacklisted IP addresses list and can be used as a part of DEA ([disposable email address](https://en.wikipedia.org/wiki/Disposable_email_address)) validations.
+- Implemented `MxBlacklist` validation. This layer checks mail servers against a predefined list of blacklisted IP addresses and can be used as part of DEA ([disposable email address](https://en.wikipedia.org/wiki/Disposable_email_address)) validation.
 
 ```ruby
 Truemail.configure do |config|
-  # Optional parameter. With this option Truemail will filter out unwanted mx servers via
-  # predefined list of ip addresses. It can be used as a part of DEA (disposable email
-  # address) validations. It is equal to empty array by default.
+  # Optional parameter. With this option Truemail will filter out unwanted MX servers using
+  # a predefined list of IP addresses. It can be used as part of DEA (disposable email
+  # address) validation. It defaults to an empty array.
   config.blacklisted_mx_ip_addresses = ['1.1.1.1', '2.2.2.2']
 end
 ```
@@ -549,11 +549,11 @@ end
 
 ### Fixed
 
-Fixed bug with impossibility to use valid dns port number. Now validation for dns port for range `1..65535` works as expected.
+Fixed a bug that made it impossible to use a valid DNS port number. Validation of DNS ports in the range `1..65535` now works as expected.
 
 - Updated `Truemail::RegexConstant::REGEX_PORT_NUMBER`, tests
 - Updated gem documentation
-- `circleci` config moved to `.`circleci`/config.yml`
+- Moved the `circleci` config to `.circleci/config.yml`
 
 ## [2.3.3] - 2021.04.14
 
@@ -582,14 +582,14 @@ Fixed bug with impossibility to use valid dns port number. Now validation for dn
 
 ### Added
 
-- Ability to use custom DNS gateway. Thanks [@le0pard](https://github.com/le0pard) for the great idea and [@verdi8](https://github.com/verdi8) for feature [request](https://github.com/truemail-rb/truemail/issues/126).
+- Ability to use a custom DNS gateway. Thanks to [@le0pard](https://github.com/le0pard) for the great idea and to [@verdi8](https://github.com/verdi8) for the feature [request](https://github.com/truemail-rb/truemail/issues/126).
 
 ```ruby
 Truemail.configure do |config|
-  # Optional parameter. This option will provide to use custom DNS gateway when Truemail
-  # interacts with DNS. If you won't specify nameserver's ports Truemail will use default
-  # DNS TCP/UDP port 53. By default Truemail uses DNS gateway from system settings
-  # and this option is equal to empty array.
+  # Optional parameter. This option makes Truemail use custom DNS gateways when it
+  # interacts with DNS. If you don't specify a nameserver port, Truemail will use the default
+  # DNS TCP/UDP port 53. By default Truemail uses the DNS gateway from the system settings,
+  # and this option is an empty array.
   config.dns = ['10.0.0.1', '10.0.0.2:5300']
 end
 ```
@@ -615,7 +615,7 @@ end
 
 ### Fixed
 
-Removed needless `Timeout.timeout` block in `Truemail::Validate::Smtp::Request#check_port`, replaced `TCPSocket` to `Socket` with native timeout detection. Thanks to [@wikiti](https://github.com/wikiti) for idea, testing on production and clean PR [#127](https://github.com/truemail-rb/truemail/pull/127).
+Removed a needless `Timeout.timeout` block in `Truemail::Validate::Smtp::Request#check_port` and replaced `TCPSocket` with `Socket`, which has native timeout detection. Thanks to [@wikiti](https://github.com/wikiti) for the idea, for testing in production, and for the clean PR [#127](https://github.com/truemail-rb/truemail/pull/127).
 
 ### Changed
 
@@ -634,8 +634,8 @@ Removed needless `Timeout.timeout` block in `Truemail::Validate::Smtp::Request#c
 
 ### Fixed
 
-- Filter out ASCII-8BIT chars for serialized SMTP response errors. Fixed `Encoding::UndefinedConversionError` in `Truemail::Log::Serializer::ValidatorJson#serialize`. Thanks to [@eni9889](https://github.com/eni9889) for report
-- Added missed `smtp_fail_fast` attribute to serialized validator and auditor results
+- Filtered out ASCII-8BIT chars from serialized SMTP response errors. Fixed `Encoding::UndefinedConversionError` in `Truemail::Log::Serializer::ValidatorJson#serialize`. Thanks to [@eni9889](https://github.com/eni9889) for the report
+- Added the missing `smtp_fail_fast` attribute to serialized validator and auditor results
 
 ### Added
 
@@ -649,7 +649,7 @@ Removed needless `Timeout.timeout` block in `Truemail::Validate::Smtp::Request#c
 
 ## [2.2.0] - 2020.12.01
 
-Ability to use fail fast behavior for SMTP validation layer. When `smtp_fail_fast = true` it means that `truemail` ends smtp validation session after first attempt on the first mx server in any fail cases (network connection/timeout error, smtp validation error). This feature helps to reduce total time of SMTP validation session up to 1 second.
+Ability to use fail-fast behavior for the SMTP validation layer. When `smtp_fail_fast = true`, `truemail` ends the SMTP validation session after the first attempt on the first MX server in any failure case (network connection/timeout error, SMTP validation error). This feature helps reduce the total time of an SMTP validation session to about 1 second.
 
 ### Added
 
@@ -663,19 +663,19 @@ Ability to use fail fast behavior for SMTP validation layer. When `smtp_fail_fas
 - Updated `Truemail::Validate::Smtp#establish_smtp_connection`
 - Updated gem documentation
 
-It's a configurable and not required option:
+It's a configurable, optional setting:
 
 ```ruby
 Truemail.configure do |config|
-  config.smtp_fail_fast = true # by default it's equal to false
+  config.smtp_fail_fast = true # it defaults to false
 end
 ```
 
-Thanks to [@wikiti](https://github.com/wikiti) for timeout reports.
+Thanks to [@wikiti](https://github.com/wikiti) for the timeout reports.
 
 ## [2.1.0] - 2020.11.21
 
-Collecting only unique ip-addresses for target mail servers. This update reduces email validation time for case when remote server have closed connection via avoiding connection attempt to server with the same ip address.
+Only unique IP addresses are now collected for target mail servers. This update reduces email validation time for the case when the remote server has closed the connection, by avoiding connection attempts to servers with the same IP address.
 
 ### Changed
 
@@ -685,7 +685,7 @@ Collecting only unique ip-addresses for target mail servers. This update reduces
 
 ### Fixed
 
-Timeouts time units in `Setting global configuration` of Truemail documentation's section. Thanks to [@wikiti](https://github.com/wikiti) for report.
+Fixed the timeout time units in the `Setting global configuration` section of the Truemail documentation. Thanks to [@wikiti](https://github.com/wikiti) for the report.
 
 ### Changed
 
@@ -704,7 +704,7 @@ Timeouts time units in `Setting global configuration` of Truemail documentation'
 
 ### Fixed
 
-SMTP connection errors: invalid `HELO` hostname (`localhost`), duplicate `HELO` (`verifier domain`). Thanks to [@nenoganchev](https://github.com/nenoganchev) for report.
+Fixed SMTP connection errors: invalid `HELO` hostname (`localhost`), duplicate `HELO` (`verifier domain`). Thanks to [@nenoganchev](https://github.com/nenoganchev) for the report.
 
 ### Changed
 
@@ -712,7 +712,7 @@ SMTP connection errors: invalid `HELO` hostname (`localhost`), duplicate `HELO` 
 - Updated `Truemail::Validate::Smtp::Request#session_data`
 - Updated `Truemail::Validate::Smtp::Response`
 
-Now `helo` is a `Boolean` instead of `Net::SMTP::Response` instance. It was changed because `helo` is sending during SMTP-session initializing (`Net::SMTP.new.start`), and `helo` is always `true` if session up is okay. Also `hello` response won't logged as error if it happens. Example of `Truemail::Validate::Smtp::Response` instance from 2.x version.
+`helo` is now a `Boolean` instead of a `Net::SMTP::Response` instance. It was changed because `helo` is sent during SMTP session initialization (`Net::SMTP.new.start`), and `helo` is always `true` if the session comes up fine. Also, the `helo` response is no longer logged as an error when that happens. Example of a `Truemail::Validate::Smtp::Response` instance from version 2.x:
 
 ```ruby
 #<struct Truemail::Validate::Smtp::Response:0x00007fa74704cd10
@@ -729,7 +729,7 @@ Now `helo` is a `Boolean` instead of `Net::SMTP::Response` instance. It was chan
 ### Added
 
 - `Truemail::TypeError`
-- error handling for invalid types as input email
+- Error handling for invalid input email types
 
 ### Changed
 
@@ -748,13 +748,13 @@ Migrated to updated Ruby 2.7.x syntax.
 
 ### Added
 
-- Ability to use `Truemail::Auditor` instance represented as json directly
+- Ability to represent a `Truemail::Auditor` instance as JSON directly
 - `Truemail::Log::Serializer::AuditorJson`
 
 ### Changed
 
 - `Truemail::Auditor`, `Truemail::Validator`
-- serializers namespaces
+- Serializer namespaces
 - gem development dependencies
 - gem documentation
 
@@ -767,7 +767,7 @@ Truemail.host_audit.as_json
   "date": "2020-08-31 22:33:43 +0300",
   "current_host_ip": "127.0.0.1",
   "warnings": {
-    "dns": "A-record of verifier domain not refers to current host ip address", "ptr": "PTR-record does not reference to current verifier domain"
+    "dns": "A record of verifier domain does not refer to current host IP address", "ptr": "PTR record does not refer to current verifier domain"
   },
  "configuration": {
     "validation_type_by_domain": null,
@@ -786,7 +786,7 @@ Truemail.host_audit.as_json
 
 ### Added
 
-Separated audit features for verifier host.
+Separated the audit features for the verifier host.
 
 - `Truemail::Audit::Ip`
 - `Truemail::Audit::Dns`
@@ -799,8 +799,8 @@ Truemail.host_audit
   #<struct Truemail::Auditor::Result
     current_host_ip="127.0.0.1",
     warnings={
-      :dns=>"a record of verifier domain not refers to current host ip address",
-      :ptr=>"ptr record does not reference to current verifier domain"
+      :dns=>"a record of verifier domain does not refer to current host ip address",
+      :ptr=>"ptr record does not refer to current verifier domain"
     },
     configuration=
     #<Truemail::Configuration:0x00005615e86327a8
@@ -833,7 +833,7 @@ Truemail.host_audit
 
 ### Added
 
-- Ability to show `not_rfc_mx_lookup_flow` attribute in serialized validation result
+- Ability to show the `not_rfc_mx_lookup_flow` attribute in the serialized validation result
 
 ```ruby
 Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
@@ -881,13 +881,13 @@ Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
 
 ### Added
 
-- Ability to use not RFC MX lookup flow (MX and Null MX records will be checked on the DNS validation layer only)
+- Ability to use a non-RFC MX lookup flow (only MX and Null MX records are checked on the DNS validation layer, skipping the CNAME and A record fallbacks)
 
 ```ruby
 Truemail.configure do |config|
-  # Optional parameter. This option will provide to use not RFC MX lookup flow.
-  # It means that MX and Null MX records will be cheked on the DNS validation layer only.
-  # By default this option is disabled.
+  # Optional parameter. This option enables the non-RFC MX lookup flow.
+  # It means that only MX and Null MX records will be checked on the DNS validation layer.
+  # This option is disabled by default.
   config.not_rfc_mx_lookup_flow = true
 end
 ```
@@ -913,13 +913,13 @@ end
 
 ### Removed
 
-`Truemail::Configuration.retry_count` deprecated, and alias for this method has been removed. Please use `Truemail::Configuration.connection_attempts` instead.
+`Truemail::Configuration.retry_count` was deprecated, and the alias for this method has been removed. Please use `Truemail::Configuration.connection_attempts` instead.
 
 ## [1.6.0] - 2020-02-01
 
 ### Added
 
-- Ability to use `Truemail::Validator` instance represented as json directly
+- Ability to represent a `Truemail::Validator` instance as JSON directly
 
 ### Changed
 
@@ -937,7 +937,7 @@ end
 
 ### Added
 
-- Supporting of internationalized emails ([EAI](https://en.wikipedia.org/wiki/International_email)). Now you can validate emails, like: `dörte@sörensen.de`, `квіточка@пошта.укр`, `alegría@mañana.es`
+- Support for internationalized emails ([EAI](https://en.wikipedia.org/wiki/International_email)). Now you can validate emails like `dörte@sörensen.de`, `квіточка@пошта.укр`, `alegría@mañana.es`
 
 ### Changed
 
@@ -949,7 +949,7 @@ end
 - gem runtime dependencies
 - gem development dependencies
 - gem documentation
-- linters configs
+- linter configs
 
 ## [1.4.2] - 2019-11-27
 
@@ -957,7 +957,7 @@ end
 
 - `Truemail::Configuration`
 - gem development dependencies
-- linters configs
+- linter configs
 
 ## [1.4.1] - 2019-11-20
 
@@ -965,11 +965,11 @@ end
 
 - gem development dependencies
 - gem documentation
-- linters configs
+- linter configs
 
 ### Removed
 
-- truemail rspec helpers (moved to independent gem [`truemail-rspec`](https://github.com/truemail-rb/truemail-rspec))
+- Truemail RSpec helpers (moved to the independent gem [`truemail-rspec`](https://github.com/truemail-rb/truemail-rspec))
 
 ## [1.4.0] - 2019-10-28
 
@@ -980,12 +980,12 @@ end
 - [Changelog](CHANGELOG.md)
 - [Logo](https://repository-images.githubusercontent.com/173723932/6dffee00-e88e-11e9-94b6-c97aacc0df00)
 
-Truemail gem allows to output tracking events to stdout/file or both of these. Please note, at least one of the outputs must exist. Tracking event by default is `:error`
+The Truemail gem can output tracking events to stdout, to a file, or both. Please note that at least one of the outputs must be configured. The default tracking event is `:error`.
 
 #### Available tracking events
 
-- `:all`, all detected events including success validation cases
-- `:unrecognized_error`, unrecognized errors only (when `smtp_safe_check = true` and SMTP server does not return an exact answer that the email does not exist)
+- `:all`, all detected events, including successful validations
+- `:unrecognized_error`, unrecognized errors only (when `smtp_safe_check = true` and the SMTP server does not return an explicit answer that the email does not exist)
 - `:recognized_error`, recognized errors only
 - `:error`, recognized and unrecognized errors only
 
@@ -995,7 +995,7 @@ Truemail.configure do |config|
 end
 ```
 
-Also starting from this version Truemail has built in JSON serializer for `Truemail::Validator` instance, so you can represent your email validation result as json.
+Also, starting from this version, Truemail has a built-in JSON serializer for `Truemail::Validator` instances, so you can represent your email validation result as JSON.
 
 ```ruby
 Truemail::Log::Serializer::Json.call(Truemail.validate('nonexistent_email@bestweb.com.ua'))
@@ -1014,7 +1014,7 @@ Truemail::Log::Serializer::Json.call(Truemail.validate('nonexistent_email@bestwe
 
 ### Added
 
-- Ability to create new `Truemail::Configuration` instance with block
+- Ability to create a new `Truemail::Configuration` instance with a block
 - `Truemail::Validate::Smtp::Request::Configuration`
 
 ### Changed
@@ -1052,7 +1052,7 @@ Truemail::Log::Serializer::Json.call(Truemail.validate('nonexistent_email@bestwe
 
 - Configurable option: validation for whitelisted domains only.
 
-When email domain in whitelist and ```whitelist_validation``` is sets equal to ```true``` validation type will be passed to other validators. Validation of email which not contains whitelisted domain always will return ```false```.
+When the email domain is whitelisted and ```whitelist_validation``` is set to ```true```, validation is passed on to the other validators. Validation of an email whose domain is not whitelisted will always return ```false```.
 
 ```ruby
 Truemail.configure do |config|
@@ -1062,7 +1062,7 @@ Truemail.configure do |config|
 end
 ```
 
-#### Email has whitelisted domain
+#### Email has a whitelisted domain
 
 ```ruby
 Truemail.validate('email@white-domain.com', with: :regex)
@@ -1078,7 +1078,7 @@ Truemail.validate('email@white-domain.com', with: :regex)
   @validation_type=:regex>
 ```
 
-#### Email hasn't whitelisted domain
+#### Email does not have a whitelisted domain
 
 ```ruby
 Truemail.validate('email@domain.com', with: :regex)
@@ -1105,7 +1105,7 @@ Truemail.validate('email@domain.com', with: :regex)
 
 - Configurable default validation type, [issue details](https://github.com/truemail-rb/truemail/issues/48)
 
-You can predefine default validation type for `Truemail.validate('email@email.com')` call without with-parameter. Available validation types: `:regex`, `:mx`, `:smtp`. By default validation type still remains `:smtp`
+You can predefine the default validation type for `Truemail.validate('email@email.com')` calls made without the `with:` parameter. Available validation types: `:regex`, `:mx`, `:smtp`. The default validation type remains `:smtp`.
 
 ```ruby
 Truemail.configure do |config|
@@ -1160,16 +1160,16 @@ Truemail.validate('email@black-domain.com')
 
 ### Added
 
-- Feature domain whitelist blacklist. Other validations will not processed even if it was defined in `validation_type_for`.
+- Domain whitelist/blacklist feature. Other validations will not be performed, even if defined in `validation_type_for`.
 
 ```ruby
 Truemail.configure do |config|
-  # Optional parameter. Validation of email which contains whitelisted domain
-  # always will return true.
+  # Optional parameter. Validation of an email with a whitelisted domain
+  # will always return true.
   config.whitelisted_domains = ['somedomain1.com', 'somedomain2.com']
 
-  # Optional parameter. Validation of email which contains whitelisted domain
-  # always will return false.
+  # Optional parameter. Validation of an email with a blacklisted domain
+  # will always return false.
   config.blacklisted_domains = ['somedomain1.com', 'somedomain2.com']
 end
 ```
@@ -1187,7 +1187,7 @@ Truemail.configuration.blacklisted_domains = ['somedomain1.com', 'somedomain2.co
 
 ### Fixed
 
-- error key in `lower_snake_case`
+- Error key in `lower_snake_case`
 
 ### Changed
 
@@ -1198,7 +1198,7 @@ Truemail.configuration.blacklisted_domains = ['somedomain1.com', 'somedomain2.co
 
 ### Added
 
-- skip validation by domain for `validation_type_for` configuration option:
+- Skipping validation by domain via the `validation_type_for` configuration option:
 
 ```ruby
 Truemail.configure do |config|
@@ -1232,7 +1232,7 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Fixed
 
-- Empty ptr constant
+- Empty PTR constant
 
 ## [0.1.8] - 2019-04-29
 
@@ -1264,12 +1264,12 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- MX gem logic with [RFC 7505](https://tools.ietf.org/html/rfc7505), null MX record supporting, [issue details](https://github.com/truemail-rb/truemail/issues/27)
+- MX logic following [RFC 7505](https://tools.ietf.org/html/rfc7505), null MX record support, [issue details](https://github.com/truemail-rb/truemail/issues/27)
 - [Contributing guideline](CONTRIBUTING.md)
 
 ### Fixed
 
-- Multihomed MX records supporting, [issue details](https://github.com/truemail-rb/truemail/issues/28)
+- Multihomed MX record support, [issue details](https://github.com/truemail-rb/truemail/issues/28)
 
 ### Changed
 
@@ -1280,11 +1280,11 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- Retries for `Truemail::Validate::Smtp` for cases when one mx server
+- Retries for `Truemail::Validate::Smtp` for cases when there is one MX server
 
 ### Changed
 
-- `Truemail::Configuration` class, please use `.connection_attempts` instead `.retry_count`
+- `Truemail::Configuration` class, please use `.connection_attempts` instead of `.retry_count`
 - `Truemail::VERSION`
 - gem documentation
 
@@ -1292,10 +1292,10 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- Checking A record presence if `MX` and `CNAME` records not exist, [issue details](https://github.com/truemail-rb/truemail/issues/10)
+- Checking for A record presence if `MX` and `CNAME` records do not exist, [issue details](https://github.com/truemail-rb/truemail/issues/10)
 - Handling of `CNAME` records, [issue details](https://github.com/truemail-rb/truemail/issues/11)
-- Checking A record if `MX` and `CNAME` records not found, [issue details](https://github.com/truemail-rb/truemail/issues/12)
-- Supporting of multihomed MX records, conversion host names to ips, [issue details](https://github.com/truemail-rb/truemail/issues/17)
+- Checking the A record if `MX` and `CNAME` records are not found, [issue details](https://github.com/truemail-rb/truemail/issues/12)
+- Support for multihomed MX records, conversion of host names to IPs, [issue details](https://github.com/truemail-rb/truemail/issues/17)
 - Timeout configuration for DNS resolver, [issue details](https://github.com/truemail-rb/truemail/issues/13)
 - `.valid?` helper
 
@@ -1308,16 +1308,16 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- Independent domain name extractor to `Truemail::Validate::Mx#run`
+- Independent domain name extractor for `Truemail::Validate::Mx#run`
 
 ### Fixed
 
 - Default `REGEX_EMAIL_PATTERN`, [issue details](https://github.com/truemail-rb/truemail/issues/7)
-  - local part of address can't start with a dot or special symbol
-  - local part of address can include ```+``` symbol
+  - the local part of the address can't start with a dot or a special symbol
+  - the local part of the address can include the ```+``` symbol
 - Default `REGEX_DOMAIN_PATTERN`, [issue details](https://github.com/truemail-rb/truemail/issues/8)
-  - TLD size increased up to 63 characters
-- Case sensitive domain names, [issue details](https://github.com/truemail-rb/truemail/issues/9)
+  - TLD size increased to 63 characters
+- Case-sensitive domain names, [issue details](https://github.com/truemail-rb/truemail/issues/9)
 
 ### Changed
 
@@ -1328,7 +1328,7 @@ Truemail.configuration.validation_type_for = { 'somedomain.com' => :skip }
 
 ### Added
 
-- 'SMTP safe check' option for cases when SMTP server does not return an exact answer that the email does not exist.
+- 'SMTP safe check' option for cases when the SMTP server does not return an explicit answer that the email does not exist.
 
 ```ruby
 Truemail.configure do |config|

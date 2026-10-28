@@ -23,7 +23,7 @@ RSpec.describe Truemail::Log::Event do
     let(:validation_errors) { {} }
     let(:smtp_debug) { nil }
 
-    shared_examples 'untracking action' do
+    shared_examples 'untracked action' do
       specify { expect(event_instance.valid?).to be(false) }
     end
 
@@ -31,10 +31,10 @@ RSpec.describe Truemail::Log::Event do
       specify { expect(event_instance.valid?).to be(true) }
       specify { expect(event_instance.log_level).to eq(1) }
 
-      context 'when current action not exists in tracking event' do
+      context 'when current action does not exist in tracking event' do
         let(:event) { :error }
 
-        it_behaves_like 'untracking action'
+        it_behaves_like 'untracked action'
       end
     end
 
@@ -44,10 +44,10 @@ RSpec.describe Truemail::Log::Event do
       specify { expect(event_instance.valid?).to be(true) }
       specify { expect(event_instance.log_level).to eq(2) }
 
-      context 'when current action not exists in tracking event' do
+      context 'when current action does not exist in tracking event' do
         let(:event) { :recognized_error }
 
-        it_behaves_like 'untracking action'
+        it_behaves_like 'untracked action'
       end
     end
 
@@ -58,10 +58,10 @@ RSpec.describe Truemail::Log::Event do
       specify { expect(event_instance.valid?).to be(true) }
       specify { expect(event_instance.log_level).to eq(3) }
 
-      context 'when current action not exists in tracking event' do
+      context 'when current action does not exist in tracking event' do
         let(:event) { :unrecognized_error }
 
-        it_behaves_like 'untracking action'
+        it_behaves_like 'untracked action'
       end
     end
   end

@@ -51,7 +51,7 @@ RSpec.describe Truemail::Validate::Smtp do
         end
       end
 
-      context 'when more then one mail server' do
+      context 'when more than one mail server' do
         include_examples 'returns empty hash'
       end
 
@@ -73,7 +73,7 @@ RSpec.describe Truemail::Validate::Smtp do
     describe '#establish_smtp_connection' do
       before { allow(result_instance.mail_servers).to receive(:each).and_call_original }
 
-      context 'when establishment smtp connection fails' do
+      context 'when establishing smtp connection fails' do
         context 'when smtp fail fast disabled' do
           context 'until request port check fails' do
             it 'creates smtp request instances' do
@@ -91,7 +91,7 @@ RSpec.describe Truemail::Validate::Smtp do
             end
           end
 
-          context 'until request run fails, more then one mail server' do
+          context 'until request run fails, more than one mail server' do
             it 'creates smtp request instances' do
               allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
               allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(false)
@@ -177,8 +177,8 @@ RSpec.describe Truemail::Validate::Smtp do
         end
       end
 
-      context 'when establishment smtp connection successful' do
-        context 'when request port check run completed successfully' do
+      context 'when establishing smtp connection succeeds' do
+        context 'when request port check completes successfully' do
           it 'creates only one smtp request instance' do
             allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:check_port).and_return(true)
             allow_any_instance_of(Truemail::Validate::Smtp::Request).to receive(:run).and_return(true)
@@ -267,7 +267,7 @@ RSpec.describe Truemail::Validate::Smtp do
           smtp_results.push(request_1, request_2, request_3)
         end
 
-        context 'wihout smtp safe check' do
+        context 'without smtp safe check' do
           specify do
             allow(smtp_validator_instance.send(:filtered_mail_servers_by_fail_fast_scenario))
               .to receive(:each)
@@ -287,7 +287,7 @@ RSpec.describe Truemail::Validate::Smtp do
         context 'with smtp safe check' do
           before { configuration_instance.smtp_safe_check = true }
 
-          context 'when smtp user error has been not detected' do
+          context 'when smtp user error has not been detected' do
             specify do
               allow(smtp_validator_instance.send(:filtered_mail_servers_by_fail_fast_scenario))
                 .to receive(:each)
@@ -323,7 +323,7 @@ RSpec.describe Truemail::Validate::Smtp do
               specify { expect(smtp_validator_instance.run).to be(false) }
             end
 
-            context 'with error in others smtp responses' do
+            context 'with error in other smtp responses' do
               context 'with error in rcptto response' do
                 let(:smtp_error_context_1) { smtp_error_context }
 

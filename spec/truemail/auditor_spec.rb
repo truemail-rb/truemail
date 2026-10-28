@@ -20,7 +20,7 @@ RSpec.describe Truemail::Auditor do
   end
 
   describe '#run' do
-    it 'runs audition methods' do
+    it 'runs audit methods' do
       expect(Truemail::Audit::Ip).to receive(:check)
       expect(auditor_instance.run).to be_an_instance_of(described_class)
     end

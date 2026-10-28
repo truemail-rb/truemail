@@ -19,7 +19,7 @@ RSpec.describe Truemail::Audit::Dns do
 
     let(:dns_auditor_instance) { instance_double(described_class) }
 
-    it 'receive #run' do
+    it 'receives #run' do
       allow(described_class).to receive(:new).and_return(dns_auditor_instance)
       expect(dns_auditor_instance).to receive(:run)
       dns_auditor
@@ -32,10 +32,10 @@ RSpec.describe Truemail::Audit::Dns do
     let(:dns_auditor_instance) { described_class.new(result_instance) }
 
     describe 'Success' do
-      context 'when a record found and refers to current host ip' do
+      context 'when a record is found and refers to current host ip' do
         before { dns_mock_server.assign_mocks(verifier_domain => { a: [current_host_ip] }) }
 
-        it 'not changes warnings' do
+        it 'does not change warnings' do
           expect { dns_auditor }.to not_change(result_instance, :warnings)
           dns_auditor
         end
@@ -43,8 +43,8 @@ RSpec.describe Truemail::Audit::Dns do
     end
 
     describe 'Fails' do
-      shared_examples 'addes verifier domain not refer warning to result instance' do
-        it 'addes verifier domain not refer warning to result instance' do
+      shared_examples 'adds verifier domain not refer warning to result instance' do
+        it 'adds verifier domain not refer warning to result instance' do
           expect { dns_auditor }
             .to change(result_instance, :warnings)
             .from({}).to(dns: Truemail::Audit::Dns::VERIFIER_DOMAIN_NOT_REFER)
@@ -52,14 +52,14 @@ RSpec.describe Truemail::Audit::Dns do
         end
       end
 
-      context 'when verifier domain not found' do
-        include_examples 'addes verifier domain not refer warning to result instance'
+      context 'when verifier domain is not found' do
+        include_examples 'adds verifier domain not refer warning to result instance'
       end
 
-      context 'when a record of verifier domain not refers to currernt host ip address' do
+      context 'when a record of verifier domain does not refer to current host ip address' do
         before { dns_mock_server.assign_mocks(verifier_domain => { a: [random_ip_address] }) }
 
-        include_examples 'addes verifier domain not refer warning to result instance'
+        include_examples 'adds verifier domain not refer warning to result instance'
       end
     end
   end

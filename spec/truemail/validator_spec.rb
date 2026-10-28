@@ -61,7 +61,7 @@ RSpec.describe Truemail::Validator do
     describe 'validation detection layer' do
       before { allow(validator_instance).to receive(:result_not_changed?).and_return(condition) }
 
-      context 'when email not in whitelist/blacklist' do
+      context 'when email is not in whitelist/blacklist' do
         let(:condition) { true }
 
         it 'calls predefined validation class' do
@@ -74,10 +74,10 @@ RSpec.describe Truemail::Validator do
         end
       end
 
-      context 'when email in the whitelist/blacklist' do
+      context 'when email is in the whitelist/blacklist' do
         let(:condition) { false }
 
-        it 'not calls predefined validation class' do
+        it 'does not call predefined validation class' do
           expect(Truemail::Validate::Regex).not_to receive(:check)
           expect(validator_instance_run).to be_an_instance_of(described_class)
         end
@@ -102,10 +102,10 @@ RSpec.describe Truemail::Validator do
       before { allow(validator_instance).to receive(:logger).and_return(logger_instance) }
 
       describe 'works without logs' do
-        context 'when logger not configured' do
+        context 'when logger is not configured' do
           let(:logger_instance) { nil }
 
-          it 'not pushes logs' do
+          it 'does not push logs' do
             expect(logger_instance).not_to receive(:push)
             expect(validator_instance_run).to be_an_instance_of(described_class)
           end
@@ -113,7 +113,7 @@ RSpec.describe Truemail::Validator do
       end
 
       describe 'works with logs' do
-        context 'when logger configured' do
+        context 'when logger is configured' do
           let(:logger_instance) { instance_double('LoggerInstance') }
 
           it 'pushes logs' do
@@ -153,7 +153,7 @@ RSpec.describe Truemail::Validator do
       end
     end
 
-    context 'when domain of current email not exists in configuration' do
+    context 'when domain of current email does not exist in configuration' do
       let(:email) { 'email@other-great.domain' }
 
       it 'uses current validation type' do
@@ -189,7 +189,7 @@ RSpec.describe Truemail::Validator::Result do
   describe '#punycode_email' do
     subject(:result_instance) { described_class.new(email: email) }
 
-    it 'calls with memoization punycode representer' do
+    it 'calls punycode representer with memoization' do
       expect(Truemail::Dns::PunycodeRepresenter).to receive(:call).once.with(email).and_call_original
       2.times { result_instance.punycode_email }
     end

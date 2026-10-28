@@ -43,7 +43,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
   describe '#check_port' do
     let(:response_instance_target_method) { request_instance.check_port }
 
-    context 'when port opened' do
+    context 'when port is open' do
       specify do
         allow(::Socket).to receive(:tcp)
           .with(
@@ -57,7 +57,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
       end
     end
 
-    context 'when port closed' do
+    context 'when port is closed' do
       let(:error_stubs) do
         allow(::Socket).to receive(:tcp)
           .with(
@@ -78,7 +78,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
   end
 
   describe '#session' do
-    context 'when session creates' do
+    context 'when session is created' do
       let(:session_net_smtp) { request_instance.send(:session).send(:net_smtp) }
 
       before do
@@ -112,7 +112,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
         .and_return(session)
     end
 
-    context 'when smtp communication complete successfully' do
+    context 'when smtp communication completes successfully' do
       let(:session) do
         instance_double(
           'Net::SMTP',
@@ -224,7 +224,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
         include_examples 'request retry behavior'
       end
 
-      context 'when connection other errors' do
+      context 'when other connection errors occur' do
         let(:error_stubs) do
           allow(session).to receive(:start).with(verifier_domain).and_raise(::StandardError, error_message)
         end
@@ -247,7 +247,7 @@ RSpec.describe Truemail::Validate::Smtp::Request do
         include_examples 'request retry behavior'
       end
 
-      context 'when smtp response errors' do
+      context 'when smtp response has errors' do
         it 'mailfrom smtp server error' do
           allow(session).to receive(:start).with(verifier_domain).and_yield(session)
           allow(session).to receive(:helo).and_return(true)
@@ -370,7 +370,7 @@ RSpec.describe Truemail::Validate::Smtp::Request::Session do
         allow(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
       end
 
-      it 'passes helo domain as position argument' do
+      it 'passes helo domain as positional argument' do
         expect(net_smtp_instance).to receive(:start).with(helo_domain, &session_actions)
         session_start
       end
@@ -382,7 +382,7 @@ RSpec.describe Truemail::Validate::Smtp::Request::Session do
         allow(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
       end
 
-      it 'passes helo domain as position argument' do
+      it 'passes helo domain as positional argument' do
         expect(net_smtp_instance).to receive(:start).with(helo_domain, &session_actions)
         session_start
       end
@@ -394,7 +394,7 @@ RSpec.describe Truemail::Validate::Smtp::Request::Session do
         allow(::Net::SMTP).to receive(:new).with(host, port).and_return(net_smtp_instance)
       end
 
-      it 'passes helo domain as position argument' do
+      it 'passes helo domain as positional argument' do
         expect(net_smtp_instance).to receive(:start).with(helo_domain, tls_verify: false, &session_actions)
         session_start
       end

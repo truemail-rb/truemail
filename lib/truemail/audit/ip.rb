@@ -4,7 +4,7 @@ module Truemail
   module Audit
     class Ip < Truemail::Audit::Base
       GET_MY_IP_URL = 'https://api.ipify.org'
-      IPIFY_ERROR = 'impossible to detect current host address via third party service'
+      IPIFY_ERROR = 'unable to detect current host IP address via third-party service'
 
       def run
         return add_warning(Truemail::Audit::Ip::IPIFY_ERROR) unless detect_current_host_ip

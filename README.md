@@ -1,4 +1,4 @@
-# ![Truemail - configurable framework agnostic plain Ruby email validator](https://truemail-rb.org/assets/images/truemail_logo.png)
+# ![Truemail - configurable, framework-agnostic plain Ruby email validator](https://truemail-rb.org/assets/images/truemail_logo.png)
 
 [![Codecov](https://codecov.io/gh/truemail-rb/truemail/branch/master/graph/badge.svg)](https://codecov.io/gh/truemail-rb/truemail)
 [![CircleCI](https://circleci.com/gh/truemail-rb/truemail/tree/master.svg?style=svg)](https://circleci.com/gh/truemail-rb/truemail/tree/master)
@@ -9,9 +9,9 @@
 [![GitHub](https://img.shields.io/github/license/truemail-rb/truemail)](LICENSE.txt)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
-Configurable framework agnostic plain Ruby email validator. Verify email via Regex, DNS, SMTP and even more. Be sure that email address valid and exists.
+Configurable, framework-agnostic plain Ruby email validator. Verify emails via regex, DNS, SMTP and more. Be sure that an email address is valid and actually exists.
 
-> Actual and maintainable documentation :books: for developers is living [here](https://truemail-rb.org/truemail-gem).
+> The current, maintained developer documentation :books: lives [here](https://truemail-rb.org/truemail-gem).
 
 ## Table of Contents
 
@@ -37,7 +37,7 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
       - [With custom regex pattern](#with-custom-regex-pattern)
     - [DNS (MX) validation](#mx-validation)
       - [RFC MX lookup flow](#rfc-mx-lookup-flow)
-      - [Not RFC MX lookup flow](#not-rfc-mx-lookup-flow)
+      - [Non-RFC MX lookup flow](#non-rfc-mx-lookup-flow)
     - [MX blacklist validation](#mx-blacklist-validation)
     - [SMTP validation](#smtp-validation)
       - [SMTP fail fast enabled](#smtp-fail-fast-enabled)
@@ -47,7 +47,7 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
     - [IP audit](#ip-audit)
     - [DNS audit](#dns-audit)
     - [PTR audit](#ptr-audit)
-    - [Example of using](#example-of-using)
+    - [Usage example](#usage-example)
   - [Event logger](#event-logger)
     - [Using custom logger](#using-custom-logger)
     - [Available tracking events](#available-tracking-events)
@@ -68,28 +68,28 @@ Configurable framework agnostic plain Ruby email validator. Verify email via Reg
 
 ## Synopsis
 
-Email validation is a tricky thing. There are a number of different ways to validate an email address and all mechanisms must conform with the best practices and provide proper validation. The Truemail gem helps you validate emails via regex pattern, presence of DNS records, and real existence of email account on a current email server.
+Email validation is a tricky thing. There are a number of different ways to validate an email address, and all of them must follow best practices and provide proper validation. The Truemail gem helps you validate emails via a regex pattern, the presence of DNS records, and the real existence of the email account on the target mail server.
 
-**Syntax Checking**: Checks the email addresses via regex pattern.
+**Syntax check**: checks the email address against a regex pattern.
 
-**Mail Server Existence Check**: Checks the availability of the email address domain using DNS records.
+**Mail server existence check**: checks that the email address domain has mail servers, using DNS records.
 
-**Mail Existence Check**: Checks if the email address really exists and can receive email via SMTP connections and email-sending emulation techniques.
+**Mailbox existence check**: checks whether the email address really exists and can receive email, using SMTP connections and email-sending emulation.
 
-Also Truemail gem allows performing an audit of the host in which runs.
+Truemail can also audit the host it runs on.
 
 ## Features
 
 - Configurable validator, validate only what you need
-- Supporting of internationalized emails ([EAI](https://en.wikipedia.org/wiki/Email_address#Internationalization))
+- Support for internationalized emails ([EAI](https://en.wikipedia.org/wiki/Email_address#Internationalization))
 - Whitelist/blacklist validation layers
 - Ability to configure different MX/SMTP validation flows
-- Ability to configure [DEA](https://en.wikipedia.org/wiki/Disposable_email_address) validation flow
+- Ability to configure a [DEA](https://en.wikipedia.org/wiki/Disposable_email_address) validation flow
 - Simple SMTP debugger
 - Event logger
-- Host auditor tools (helps to detect common host problems interfering to proper email verification)
+- Host auditor tools (help detect common host problems that interfere with proper email verification)
 - JSON serializers
-- Ability to use the library as independent stateless microservice ([Truemail Server](https://truemail-rb.org/truemail-rack))
+- Ability to use the library as an independent, stateless microservice ([Truemail Server](https://truemail-rb.org/truemail-rack))
 
 ## Requirements
 
@@ -119,7 +119,7 @@ gem install truemail
 
 ### Configuration features
 
-You can use global gem configuration or custom independent configuration. Available configuration options:
+You can use a global gem configuration or a custom, independent configuration. Available configuration options:
 
 - verifier email
 - verifier domain
@@ -135,7 +135,7 @@ You can use global gem configuration or custom independent configuration. Availa
 - whitelisted domains
 - blacklisted domains
 - whitelist validation
-- blacklisted mx ip-addresses
+- blacklisted MX IP addresses
 - custom DNS gateway(s)
 - RFC MX lookup flow
 - SMTP port number
@@ -146,114 +146,114 @@ You can use global gem configuration or custom independent configuration. Availa
 
 #### Setting global configuration
 
-To have an access for `Truemail.configuration` and gem configuration features, you must configure it first as in the example below:
+To get access to `Truemail.configuration` and the gem's configuration features, you must configure it first, as in the example below:
 
 ```ruby
 require 'truemail'
 
 Truemail.configure do |config|
-  # Required parameter. Must be an existing email on behalf of which verification will be performed
+  # Required parameter. Must be an existing email address on whose behalf verification will be performed
   config.verifier_email = 'verifier@example.com'
 
-  # Optional parameter. Must be an existing domain on behalf of which verification will be performed.
-  # By default verifier domain based on verifier email
+  # Optional parameter. Must be an existing domain on whose behalf verification will be performed.
+  # By default the verifier domain is derived from the verifier email
   config.verifier_domain = 'somedomain.com'
 
-  # Optional parameter. You can override default regex pattern
+  # Optional parameter. You can override the default regex pattern
   config.email_pattern = /regex_pattern/
 
-  # Optional parameter. You can override default regex pattern
+  # Optional parameter. You can override the default regex pattern
   config.smtp_error_body_pattern = /regex_pattern/
 
   # Optional parameter. Connection timeout in seconds.
-  # It is equal to 2 by default.
+  # It defaults to 2.
   config.connection_timeout = 1
 
-  # Optional parameter. A SMTP server response timeout in seconds.
-  # It is equal to 2 by default.
+  # Optional parameter. SMTP server response timeout in seconds.
+  # It defaults to 2.
   config.response_timeout = 1
 
-  # Optional parameter. Total of connection attempts. It is equal to 2 by default.
-  # This parameter uses in mx lookup timeout error and smtp request (for cases when
-  # there is one mx server).
+  # Optional parameter. Total number of connection attempts. It defaults to 2.
+  # This parameter is used on MX lookup timeout errors and for SMTP requests (when
+  # there is only one MX server).
   config.connection_attempts = 3
 
-  # Optional parameter. You can predefine default validation type for
-  # Truemail.validate('email@email.com') call without with-parameter
+  # Optional parameter. You can predefine the default validation type for
+  # Truemail.validate('email@email.com') calls made without the with: parameter.
   # Available validation types: :regex, :mx, :mx_blacklist, :smtp
   config.default_validation_type = :mx
 
-  # Optional parameter. You can predefine which type of validation will be used for domains.
-  # Also you can skip validation by domain.
+  # Optional parameter. You can predefine which validation type will be used for specific domains.
+  # You can also skip validation for a domain.
   # Available validation types: :regex, :mx, :mx_blacklist, :smtp
-  # This configuration will be used over current or default validation type parameter
-  # All of validations for 'somedomain.com' will be processed with regex validation only.
-  # And all of validations for 'otherdomain.com' will be processed with mx validation only.
-  # It is equal to empty hash by default.
+  # This setting takes precedence over the current or default validation type.
+  # All validations for 'somedomain.com' will be performed with regex validation only,
+  # and all validations for 'otherdomain.com' with MX validation only.
+  # It defaults to an empty hash.
   config.validation_type_for = { 'somedomain.com' => :regex, 'otherdomain.com' => :mx }
 
-  # Optional parameter. Validation of email which contains whitelisted emails always will
-  # return true. Other validations will not processed even if it was defined in validation_type_for
-  # It is equal to empty array by default.
+  # Optional parameter. Validation of a whitelisted email will always return true.
+  # Other validations will not be performed, even if defined in validation_type_for.
+  # It defaults to an empty array.
   config.whitelisted_emails = %w[user@somedomain1.com user@somedomain2.com]
 
-  # Optional parameter. Validation of email which contains blacklisted emails always will
-  # return false. Other validations will not processed even if it was defined in validation_type_for
-  # It is equal to empty array by default.
+  # Optional parameter. Validation of a blacklisted email will always return false.
+  # Other validations will not be performed, even if defined in validation_type_for.
+  # It defaults to an empty array.
   config.blacklisted_emails = %w[user@somedomain3.com user@somedomain4.com]
 
-  # Optional parameter. Validation of email which contains whitelisted domain always will
-  # return true. Other validations will not processed even if it was defined in validation_type_for
-  # It is equal to empty array by default.
+  # Optional parameter. Validation of an email with a whitelisted domain will always return true.
+  # Other validations will not be performed, even if defined in validation_type_for.
+  # It defaults to an empty array.
   config.whitelisted_domains = %w[somedomain1.com somedomain2.com]
 
-  # Optional parameter. Validation of email which contains blacklisted domain always will
-  # return false. Other validations will not processed even if it was defined in validation_type_for
-  # It is equal to empty array by default.
+  # Optional parameter. Validation of an email with a blacklisted domain will always return false.
+  # Other validations will not be performed, even if defined in validation_type_for.
+  # It defaults to an empty array.
   config.blacklisted_domains = %w[somedomain3.com somedomain4.com]
 
-  # Optional parameter. With this option Truemail will validate email which contains whitelisted
-  # domain only, i.e. if domain whitelisted, validation will passed to Regex, MX or SMTP validators.
-  # Validation of email which not contains whitelisted domain always will return false.
-  # It is equal false by default.
+  # Optional parameter. With this option Truemail will only validate emails with a whitelisted
+  # domain, i.e. if the domain is whitelisted, validation is passed on to the regex, MX or SMTP
+  # validators. Validation of an email whose domain is not whitelisted will always return false.
+  # It defaults to false.
   config.whitelist_validation = true
 
-  # Optional parameter. With this option Truemail will filter out unwanted mx servers via
-  # predefined list of ip addresses. It can be used as a part of DEA (disposable email
-  # address) validations. It is equal to empty array by default.
+  # Optional parameter. With this option Truemail will filter out unwanted MX servers using
+  # a predefined list of IP addresses. It can be used as part of DEA (disposable email
+  # address) validation. It defaults to an empty array.
   config.blacklisted_mx_ip_addresses = %w[1.1.1.1 2.2.2.2]
 
-  # Optional parameter. This option will provide to use custom DNS gateway when Truemail
-  # interacts with DNS. Valid port numbers are in the range 1-65535. If you won't specify
-  # nameserver's ports Truemail will use default DNS TCP/UDP port 53. By default Truemail
-  # uses DNS gateway from system settings and this option is equal to empty array.
+  # Optional parameter. This option makes Truemail use custom DNS gateways when it
+  # interacts with DNS. Valid port numbers are in the range 1-65535. If you don't specify
+  # a nameserver port, Truemail will use the default DNS TCP/UDP port 53. By default Truemail
+  # uses the DNS gateway from the system settings, and this option is an empty array.
   config.dns = %w[10.0.0.1 10.0.0.2:54]
 
-  # Optional parameter. This option will provide to use not RFC MX lookup flow.
-  # It means that MX and Null MX records will be cheked on the DNS validation layer only.
-  # By default this option is disabled.
+  # Optional parameter. This option enables the non-RFC MX lookup flow.
+  # It means that only MX and Null MX records will be checked on the DNS validation layer.
+  # This option is disabled by default.
   config.not_rfc_mx_lookup_flow = true
 
-  # Optional parameter. SMTP port number. It is equal to 25 by default.
+  # Optional parameter. SMTP port number. It defaults to 25.
   config.smtp_port = 2525
 
-  # Optional parameter. This option will provide to use smtp fail fast behavior. When
-  # smtp_fail_fast = true it means that Truemail ends smtp validation session after first
-  # attempt on the first mx server in any fail cases (network connection/timeout error,
-  # smtp validation error). This feature helps to reduce total time of SMTP validation
-  # session up to 1 second. By default this option is disabled.
+  # Optional parameter. This option enables SMTP fail-fast behavior. When
+  # smtp_fail_fast = true, Truemail ends the SMTP validation session after the first
+  # attempt on the first MX server in any failure case (network connection/timeout error,
+  # SMTP validation error). This feature helps reduce the total time of an SMTP validation
+  # session to about 1 second. This option is disabled by default.
   config.smtp_fail_fast = true
 
-  # Optional parameter. This option will be parse bodies of SMTP errors. It will be helpful
-  # if SMTP server does not return an exact answer that the email does not exist
-  # By default this option is disabled, available for SMTP validation only.
+  # Optional parameter. This option makes Truemail parse the bodies of SMTP errors. It is helpful
+  # when the SMTP server does not return an explicit answer that the email does not exist.
+  # This option is disabled by default and applies to SMTP validation only.
   config.smtp_safe_check = true
 
-  # Optional parameter. This option will enable tracking events. You can print tracking
-  # events to stdout, write to file or both of these. Logger instance by default is Logger
-  # instance from Ruby stdlib. You can override this behavior. See how to do it in the
-  # examples below. Tracking event by default is :error
-  # Available tracking event: :all, :unrecognized_error, :recognized_error, :error
+  # Optional parameter. This option enables event tracking. You can print tracking
+  # events to stdout, write them to a file, or both. The default logger instance is the Logger
+  # from the Ruby stdlib. You can override this behavior; see the examples below.
+  # The default tracking event is :error.
+  # Available tracking events: :all, :unrecognized_error, :recognized_error, :error
   config.logger = {
     tracking_event: :all,
     stdout: true,
@@ -264,7 +264,7 @@ end
 
 ##### Read global configuration
 
-After successful configuration, you can read current Truemail configuration instance anywhere in your application.
+After successful configuration, you can read the current Truemail configuration instance anywhere in your application.
 
 ```ruby
 Truemail.configuration
@@ -332,7 +332,7 @@ Truemail.configuration
 
 ##### Reset global configuration
 
-Also you can reset Truemail configuration.
+You can also reset the Truemail configuration.
 
 ```ruby
 Truemail.reset_configuration!
@@ -343,7 +343,7 @@ Truemail.configuration
 
 #### Using custom independent configuration
 
-Allows to use independent configuration for each validation/audition instance. When using this feature you do not need to have Truemail global configuration.
+Allows you to use an independent configuration for each validation/audit instance. When using this feature you do not need a global Truemail configuration.
 
 ```ruby
 custom_configuration = Truemail::Configuration.new do |config|
@@ -355,17 +355,17 @@ Truemail.valid?('email@example.com', custom_configuration: custom_configuration)
 Truemail.host_audit('email@example.com', custom_configuration: custom_configuration)
 ```
 
-Please note, you should have global or custom configuration for use Truemail gem.
+Please note that you need either a global or a custom configuration to use the Truemail gem.
 
 ### Validation features
 
 #### Whitelist/Blacklist check
 
-Whitelist/Blacklist check is zero validation level. You can define white and black emails/domains lists. It means that validation of email which contains whitelisted email or domain always will return `true`, and for blacklisted email or domain will return `false`.
+The whitelist/blacklist check is validation level zero. You can define lists of whitelisted and blacklisted emails/domains. Validation of a whitelisted email or domain will always return `true`, and validation of a blacklisted email or domain will always return `false`.
 
-Please note, other validations will not processed even if it was defined in `validation_type_for`.
+Please note that other validations will not be performed, even if defined in `validation_type_for`.
 
-**Sequence of domain list check:**
+**Sequence of list checks:**
 
 1. Whitelist check
 2. Whitelist validation check
@@ -388,7 +388,7 @@ end
 
 ##### Whitelist case
 
-When email in whitelist, validation type will be redefined. Validation result returns ```true```
+When the email is whitelisted, the validation type is redefined. The validation result is `true`.
 
 ```ruby
 Truemail.validate('email@white-domain.com')
@@ -437,9 +437,9 @@ Truemail.configure do |config|
 end
 ```
 
-When email domain in whitelist and `whitelist_validation` is sets equal to `true` validation type will be passed to other validators. Validation of email which not contains whitelisted domain always will return `false`.
+When the email domain is whitelisted and `whitelist_validation` is set to `true`, validation is passed on to the other validators. Validation of an email whose domain is not whitelisted will always return `false`.
 
-###### Email has whitelisted domain
+###### Email has a whitelisted domain
 
 ```ruby
 Truemail.validate('email@white-domain.com', with: :regex)
@@ -477,7 +477,7 @@ Truemail.validate('email@white-domain.com', with: :regex)
   @validation_type=:regex>
 ```
 
-###### Email hasn't whitelisted domain
+###### Email does not have a whitelisted domain
 
 ```ruby
 Truemail.validate('email@domain.com', with: :regex)
@@ -517,7 +517,7 @@ Truemail.validate('email@domain.com', with: :regex)
 
 ##### Blacklist case
 
-When email in blacklist, validation type will be redefined too. Validation result returns `false`.
+When the email is blacklisted, the validation type is redefined too. The validation result is `false`.
 
 ```ruby
 Truemail.validate('email@black-domain.com')
@@ -557,7 +557,7 @@ Truemail.validate('email@black-domain.com')
 
 ##### Duplication case
 
-Validation result for this email returns `true`, because it was found in whitelisted domains list first. Also `validation_type` for this case will be redefined.
+The validation result for this email is `true`, because it was found in the whitelisted domains list first. The `validation_type` is redefined in this case as well.
 
 ```ruby
 Truemail.validate('email@somedomain.com')
@@ -597,13 +597,13 @@ Truemail.validate('email@somedomain.com')
 
 #### Regex validation
 
-Validation with regex pattern is the first validation level. It uses whitelist/blacklist check before running itself.
+Validation with a regex pattern is the first validation level. It runs the whitelist/blacklist check before running itself.
 
 ```code
 [Whitelist/Blacklist] -> [Regex validation]
 ```
 
-By default this validation not performs strictly following [RFC 5322](https://www.ietf.org/rfc/rfc5322.txt) standard, so you can override Truemail default regex pattern if you want.
+By default this validation does not strictly follow the [RFC 5322](https://www.ietf.org/rfc/rfc5322.txt) standard, so you can override Truemail's default regex pattern if you want.
 
 Example of usage:
 
@@ -654,7 +654,7 @@ Truemail.validate('email@example.com', with: :regex)
 
 ##### With custom regex pattern
 
-You should define your custom regex pattern in a gem configuration before.
+You should define your custom regex pattern in the gem configuration first.
 
 ```ruby
 require 'truemail'
@@ -702,17 +702,17 @@ Truemail.validate('email@example.com', with: :regex)
 
 #### MX validation
 
-In fact it's DNS validation because it checks not MX records only. DNS validation is the second validation level, historically named as MX validation. It uses Regex validation before running itself. When regex validation has completed successfully then runs itself.
+This is in fact DNS validation, because it checks more than just MX records. DNS validation is the second validation level, historically named MX validation. It runs regex validation first, and only runs itself once regex validation has completed successfully.
 
 ```code
 [Whitelist/Blacklist] -> [Regex validation] -> [MX validation]
 ```
 
-Please note, Truemail MX validator [not performs](https://github.com/truemail-rb/truemail/issues/26) strict compliance of the [RFC 5321](https://tools.ietf.org/html/rfc5321#section-5) standard for best validation outcome.
+Please note that the Truemail MX validator [does not enforce](https://github.com/truemail-rb/truemail/issues/26) strict compliance with the [RFC 5321](https://tools.ietf.org/html/rfc5321#section-5) standard, for the best validation outcome.
 
 ##### RFC MX lookup flow
 
-[Truemail MX lookup](https://slides.com/vladislavtrotsenko/truemail#/0/9) based on RFC 5321. It consists of 3 substeps: MX, CNAME and A record resolvers. The point of each resolver is attempt to extract the mail servers from email domain. If at least one server exists that validation is successful. Iteration is processing until resolver returns true.
+[Truemail MX lookup](https://slides.com/vladislavtrotsenko/truemail#/0/9) is based on RFC 5321. It consists of 3 sub-steps: the MX, CNAME and A record resolvers. Each resolver attempts to extract the mail servers from the email domain. If at least one server exists, validation is successful. Iteration continues until a resolver returns true.
 
 Example of usage:
 
@@ -759,9 +759,9 @@ Truemail.validate('email@example.com', with: :mx)
   @validation_type=:mx>
 ```
 
-##### Not RFC MX lookup flow
+##### Non-RFC MX lookup flow
 
-Also Truemail has possibility to use not RFC MX lookup flow. It means that will be used only one MX resolver on the DNS validation layer. By default this option is disabled.
+Truemail can also use a non-RFC MX lookup flow. It runs the MX resolver only, skipping the CNAME and A record fallbacks that RFC 5321 prescribes, so a domain without MX records is treated as having no mail servers. This option is disabled by default.
 
 Example of usage:
 
@@ -811,7 +811,7 @@ Truemail.validate('email@example.com', with: :mx)
 
 #### MX blacklist validation
 
-MX blacklist validation is the third validation level. This layer provides checking extracted mail server(s) IP address from MX validation with predefined blacklisted IP addresses list. It can be used as a part of DEA ([disposable email address](https://en.wikipedia.org/wiki/Disposable_email_address)) validations.
+MX blacklist validation is the third validation level. This layer checks the mail server IP address(es) extracted during MX validation against a predefined list of blacklisted IP addresses. It can be used as part of DEA ([disposable email address](https://en.wikipedia.org/wiki/Disposable_email_address)) validation.
 
 ```code
 [Whitelist/Blacklist] -> [Regex validation] -> [MX validation] -> [MX blacklist validation]
@@ -865,19 +865,19 @@ Truemail.validate('email@example.com', with: :mx_blacklist)
 
 #### SMTP validation
 
-SMTP validation is a final, fourth validation level. This type of validation tries to check real existence of email account on a current email server. This validation runs a chain of previous validations and if they're complete successfully then runs itself.
+SMTP validation is the final, fourth validation level. This type of validation tries to check the real existence of the email account on the target mail server. It runs the chain of previous validations and, if they complete successfully, runs itself.
 
 ```code
 [Whitelist/Blacklist] -> [Regex validation] -> [MX validation] -> [MX blacklist validation] -> [SMTP validation]
 ```
 
-If total count of MX servers is equal to one, `Truemail::Smtp` validator will use value from `Truemail.configuration.connection_attempts` as connection attempts. By default it's equal `2`.
+If there is exactly one MX server, the `Truemail::Smtp` validator will use the value of `Truemail.configuration.connection_attempts` as the number of connection attempts. It defaults to `2`.
 
-By default, you don't need pass with-parameter to use it. Example of usage is specified below:
+By default you don't need to pass the `with:` parameter to use it. Examples of usage are below:
 
 ##### SMTP fail fast enabled
 
-Truemail can use fail fast behavior for SMTP validation layer. When `smtp_fail_fast = true` it means that `truemail` ends smtp validation session after first attempt on the first mx server in any fail cases (network connection/timeout error, smtp validation error). This feature helps to reduce total time of SMTP validation session up to 1 second.
+Truemail can use fail-fast behavior for the SMTP validation layer. When `smtp_fail_fast = true`, `truemail` ends the SMTP validation session after the first attempt on the first MX server in any failure case (network connection/timeout error, SMTP validation error). This feature helps reduce the total time of an SMTP validation session to about 1 second.
 
 ```ruby
 require 'truemail'
@@ -899,7 +899,7 @@ Truemail.validate('email@example.com')
         mail_servers=["127.0.1.1", "127.0.1.2", "127.0.1.3"], # there are 3 mail servers in a row
         errors={:smtp=>"smtp error"},
         smtp_debug=
-          [#<Truemail::Validate::Smtp::Request:0x00007fdc43150b90 # but iteration has been stopped after the first failure
+          [#<Truemail::Validate::Smtp::Request:0x00007fdc43150b90 # but iteration stopped after the first failure
             @attempts=nil,
             @configuration=
               #<Truemail::Validate::Smtp::Request::Configuration:0x00007fdc43150b18
@@ -1164,23 +1164,23 @@ Truemail.validate('email@example.com')
 
 ### Host audit features
 
-Truemail gem allows performing an audit of the host in which runs. It will help to detect common host problems interfering to proper email verification.
+The Truemail gem can audit the host it runs on. This helps detect common host problems that interfere with proper email verification.
 
 #### IP audit
 
-Checks is current Truemail host has proper internet connection and detects current host ip address.
+Checks whether the current Truemail host has a working internet connection and detects the current host IP address.
 
 #### DNS audit
 
-Checks is verifier domain refer to current Truemail host IP address.
+Checks whether the verifier domain points to the current Truemail host IP address.
 
 #### PTR audit
 
-So what is a PTR record? A PTR record, or pointer record, enables someone to perform a reverse DNS lookup. This allows them to determine your domain name based on your IP address. Because generic domain names without a PTR are often associated with spammers, incoming mail servers identify email from hosts without PTR records as spam and you can't verify yours emails qualitatively.
+So what is a PTR record? A PTR record, or pointer record, enables someone to perform a reverse DNS lookup. This allows them to determine your domain name based on your IP address. Because generic domain names without a PTR record are often associated with spammers, incoming mail servers identify email from hosts without PTR records as spam, and you can't verify your emails reliably.
 
-Checks is PTR record exists for your Truemail host ip address exists and refers to current verifier domain.
+Checks whether a PTR record exists for your Truemail host IP address and whether it points to the current verifier domain.
 
-#### Example of using
+#### Usage example
 
 ```ruby
 Truemail.host_audit
@@ -1219,8 +1219,8 @@ Truemail.host_audit
      #<struct Truemail::Auditor::Result
        current_host_ip="127.0.0.1",
        warnings={
-         :dns=>"A-record of verifier domain not refers to current host ip address",
-         :ptr=>"PTR-record does not reference to current verifier domain"
+         :dns=>"A record of verifier domain does not refer to current host IP address",
+         :ptr=>"PTR record does not refer to current verifier domain"
        },
        configuration=
         #<Truemail::Configuration:0x00005615e86327a8
@@ -1248,7 +1248,7 @@ Truemail.host_audit
 
 ### Event logger
 
-Truemail gem allows to output tracking events to stdout/file or both of these. Please note, at least one of the outputs (stdout or file path) must exists. Tracking event by default is `:error`.
+The Truemail gem can output tracking events to stdout, to a file, or both. Please note that at least one of the outputs (stdout or a file path) must be configured. The default tracking event is `:error`.
 
 ```ruby
 Truemail.configure do |config|
@@ -1262,7 +1262,7 @@ end
 
 #### Using custom logger
 
-By default Truemail uses `Logger`, default logger instance from Ruby stdlib. But you can override this behavior passing your logger instance in event logger configuration. Please note, your own logger instance should have the same interface as builtin stdlib `Logger` instance. In this case `custom_logger` is only one required field for logger configuration (you don't have to use `stdout` and `log_absolute_path`).
+By default Truemail uses `Logger`, the default logger from the Ruby stdlib. You can override this behavior by passing your own logger instance in the event logger configuration. Please note that your logger instance should have the same interface as the built-in stdlib `Logger`. In this case `custom_logger` is the only required field in the logger configuration (you don't have to use `stdout` and `log_absolute_path`).
 
 ```ruby
 Truemail.configure do |config|
@@ -1272,14 +1272,14 @@ end
 
 #### Available tracking events
 
-- `:all`, all detected events including success validation cases
-- `:unrecognized_error`, unrecognized errors only (when `smtp_safe_check = true` and SMTP server does not return an exact answer that the email does not exist)
+- `:all`, all detected events, including successful validations
+- `:unrecognized_error`, unrecognized errors only (when `smtp_safe_check = true` and the SMTP server does not return an explicit answer that the email does not exist)
 - `:recognized_error`, recognized errors only
 - `:error`, recognized and unrecognized errors only
 
 ### JSON serializers
 
-Truemail has built in JSON serializers for `Truemail::Auditor` and `Truemail::Validator` instances, so you can represent your host audition or email validation result as json. Also you can use [#as_json](#as_json) helper for shortcuting.
+Truemail has built-in JSON serializers for `Truemail::Auditor` and `Truemail::Validator` instances, so you can represent your host audit or email validation result as JSON. You can also use the [#as_json](#as_json) helper as a shortcut.
 
 #### Auditor JSON serializer
 
@@ -1292,7 +1292,7 @@ Truemail::Log::Serializer::AuditorJson.call(Truemail.host_audit)
   "date": "2020-08-31 22:33:43 +0300",
   "current_host_ip": "127.0.0.1",
   "warnings": {
-    "dns": "A-record of verifier domain not refers to current host ip address", "ptr": "PTR-record does not reference to current verifier domain"
+    "dns": "A record of verifier domain does not refer to current host IP address", "ptr": "PTR record does not refer to current verifier domain"
   },
  "configuration": {
     "whitelisted_emails": null,
@@ -1359,17 +1359,17 @@ Truemail::Log::Serializer::ValidatorJson.call(Truemail.validate('nonexistent_ema
 
 #### `.valid?`
 
-You can use the `.valid?` helper for quick validation of email address. It returns a boolean:
+You can use the `.valid?` helper for quick validation of an email address. It returns a boolean:
 
 ```ruby
-# It is shortcut for Truemail.validate('email@example.com').result.valid?
+# It is a shortcut for Truemail.validate('email@example.com').result.valid?
 Truemail.valid?('email@example.com')
 => true
 ```
 
 #### `#as_json`
 
-You can use `#as_json` helper for represent `Truemail::Auditor` or `Truemail::Validator` instances as json. Under the hood it uses internal json `Truemail::Log::Serializer::AuditorJson` and `Truemail::Log::Serializer::ValidatorJson` [serializers](#json-serializers):
+You can use the `#as_json` helper to represent `Truemail::Auditor` or `Truemail::Validator` instances as JSON. Under the hood it uses the internal `Truemail::Log::Serializer::AuditorJson` and `Truemail::Log::Serializer::ValidatorJson` JSON [serializers](#json-serializers):
 
 ```ruby
 Truemail.host_audit.as_json
@@ -1380,7 +1380,7 @@ Truemail.host_audit.as_json
   "date": "2020-08-31 22:33:43 +0300",
   "current_host_ip": "127.0.0.1",
   "warnings": {
-    "dns": "A-record of verifier domain not refers to current host ip address", "ptr": "PTR-record does not reference to current verifier domain"
+    "dns": "A record of verifier domain does not refer to current host IP address", "ptr": "PTR record does not refer to current verifier domain"
   },
  "configuration": {
     "whitelisted_emails": null,
@@ -1442,7 +1442,7 @@ Truemail.validate('nonexistent_email@bestweb.com.ua').as_json
 
 ### Test environment
 
-You can stub out that validation for your test environment. Just add RSpec before action:
+You can stub out validation in your test environment. Just add an RSpec `before` hook:
 
 ```ruby
 # spec_helper.rb
@@ -1456,7 +1456,7 @@ RSpec.configure do |config|
 end
 ```
 
-Or with [whitelist/blacklist Truemail feature](#whitelistblacklist-check) you can define validation behavior for test and staging environment:
+Or, with the [whitelist/blacklist feature](#whitelistblacklist-check), you can define validation behavior for your test and staging environments:
 
 ```ruby
 # config/initializers/truemail.rb
@@ -1471,7 +1471,7 @@ Truemail.configure do |config|
 end
 ```
 
-Or you can use end-to-end approach and mock DNS and SMTP services with [`dns_mock`](https://github.com/mocktools/ruby-dns-mock), [`smtp_mock`](https://github.com/mocktools/ruby-smtp-mock) for your test environment like in example below:
+Or you can take an end-to-end approach and mock the DNS and SMTP services with [`dns_mock`](https://github.com/mocktools/ruby-dns-mock) and [`smtp_mock`](https://github.com/mocktools/ruby-smtp-mock) in your test environment, as in the example below:
 
 ```ruby
 # Gemfile
@@ -1507,13 +1507,13 @@ RSpec.describe 'integration tests' do
     end
   end
 
-  context 'when checks real email' do
+  context 'when checking a real email' do
     let(:smtp_mock_server_options) { {} }
 
     it { expect(Truemail.validate(target_email).result).to be_valid }
   end
 
-  context 'when checks fake email' do
+  context 'when checking a fake email' do
     let(:smtp_mock_server_options) { { not_registered_emails: [target_email] } }
 
     it { expect(Truemail.validate(target_email).result).not_to be_valid }
@@ -1529,9 +1529,9 @@ All Truemail solutions: <https://truemail-rb.org>
 
 | Name | Type | Description |
 | --- | --- | --- |
-| [truemail-go](https://github.com/truemail-rb/truemail-go) | go package | Configurable Golang email validator, main core |
-| [truemail server](https://github.com/truemail-rb/truemail-rack) | ruby app | Lightweight rack based web API wrapper for Truemail gem |
-| [truemail-rack-docker](https://github.com/truemail-rb/truemail-rack-docker-image) | docker image | Lightweight rack based web API [dockerized image](https://hub.docker.com/r/truemail/truemail-rack) :whale: of Truemail server |
+| [truemail-go](https://github.com/truemail-rb/truemail-go) | go package | Configurable Go email validator, the main core |
+| [truemail server](https://github.com/truemail-rb/truemail-rack) | ruby app | Lightweight Rack-based web API wrapper for the Truemail gem |
+| [truemail-rack-docker](https://github.com/truemail-rb/truemail-rack-docker-image) | docker image | Lightweight Rack-based web API [Docker image](https://hub.docker.com/r/truemail/truemail-rack) :whale: of Truemail server |
 | [truemail-ruby-client](https://github.com/truemail-rb/truemail-ruby-client) | ruby gem | Web API Ruby client for Truemail Server |
 | [truemail-crystal-client](https://github.com/truemail-rb/truemail-crystal-client) | crystal shard | Web API Crystal client for Truemail Server |
 | [truemail-java-client](https://github.com/truemail-rb/truemail-java-client) | java lib | Web API Java client for Truemail Server |
@@ -1539,7 +1539,7 @@ All Truemail solutions: <https://truemail-rb.org>
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at <https://github.com/truemail-rb/truemail>. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct. Please check the [open tickets](https://github.com/truemail-rb/truemail/issues). Be sure to follow Contributor Code of Conduct below and our [Contributing Guidelines](CONTRIBUTING.md).
+Bug reports and pull requests are welcome on GitHub at <https://github.com/truemail-rb/truemail>. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct. Please check the [open tickets](https://github.com/truemail-rb/truemail/issues). Be sure to follow the Contributor Code of Conduct below and our [Contributing Guidelines](CONTRIBUTING.md).
 
 ## License
 

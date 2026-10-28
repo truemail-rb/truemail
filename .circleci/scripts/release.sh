@@ -38,7 +38,7 @@ is_an_existing_github_release() {
 release_to_rubygems() {
   echo "Setting RubyGems publisher credentials..."
   ./.circleci/scripts/set_publisher_credentials.sh
-  echo "Preparation for release..."
+  echo "Preparing for release..."
   git config --global user.email "${PUBLISHER_EMAIL}"
   git config --global user.name "${PUBLISHER_NAME}"
   git stash
@@ -64,6 +64,6 @@ update_develop_branch() {
 }
 
 if is_an_existing_github_release
-then echo "Tag $release_candidate_tag already exists on GitHub. Skipping releasing flow..."
+then echo "Tag $release_candidate_tag already exists on GitHub. Skipping release flow..."
 else release_to_rubygems; release_to_github; update_develop_branch
 fi

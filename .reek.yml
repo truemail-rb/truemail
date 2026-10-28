@@ -7,13 +7,13 @@ detectors:
   NestedIterators:
     exclude:
       - Truemail::ConfigurationHelper#configuration_block
-      - Truemail::Validate::Smtp#not_includes_user_not_found_errors
+      - Truemail::Validate::Smtp#no_user_not_found_errors?
 
   TooManyStatements:
     exclude:
       - Truemail::Validate::Smtp::Request#run
       - Truemail::Validate::Smtp#run
-      - Truemail::Validate::Smtp#not_includes_user_not_found_errors?
+      - Truemail::Validate::Smtp#no_user_not_found_errors?
       - Truemail::Validate::Mx#hosts_from_cname_records
       - Truemail::Validate::Smtp::Request#initialize
       - Truemail::Validate::Smtp::Request::Session#initialize
@@ -63,7 +63,7 @@ detectors:
 
   FeatureEnvy:
     exclude:
-      - Truemail::Validate::Smtp#not_includes_user_not_found_errors
+      - Truemail::Validate::Smtp#no_user_not_found_errors?
       - Truemail::RspecHelper::GenerateEmail#prepare_user_name
       - Truemail::ConfigurationHelper#create_configuration
       - Truemail::Log::Serializer::Base#smtp_debug

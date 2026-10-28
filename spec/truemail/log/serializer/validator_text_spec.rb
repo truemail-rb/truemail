@@ -108,7 +108,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
       end
     end
 
-    context 'with fail validation result' do
+    context 'with failed validation result' do
       let(:success_status)  { false }
       let(:expected_output) do
         <<~EXPECTED_OUTPUT
@@ -206,7 +206,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
         let(:validation_type) { :smtp }
         let(:error) { 'smtp: smtp error' }
 
-        context 'when smtp errors not includes ASCII-8BIT chars' do
+        context 'when smtp errors do not include ASCII-8BIT chars' do
           let(:expected_output) do
             <<~EXPECTED_OUTPUT
               Truemail #{validation_type} validation for #{email} failed (#{error})
@@ -231,7 +231,7 @@ RSpec.describe Truemail::Log::Serializer::ValidatorText do
           include_examples 'formatted text output'
         end
 
-        context 'when smtp errors includes ASCII-8BIT chars' do
+        context 'when smtp errors include ASCII-8BIT chars' do
           let(:error_context_with_ascii_8bit) { "\xD3\xE4\xB2\xBB\xD4" }
           let(:validator_instance) do
             create_validator(

@@ -10,7 +10,7 @@
           "date": "2020-08-31 21:47:10 +0300",
           "current_host_ip": null,
           "warnings": {
-              "ip": "impossible to detect current host address via third party service"
+              "ip": "unable to detect current host IP address via third-party service"
           },
           "configuration": {
               "validation_type_by_domain": null,
@@ -63,7 +63,7 @@
           "description": "An explanation about the purpose of this instance.",
           "examples": [
               {
-                  "ip": "impossible to detect current host address via third party service"
+                  "ip": "unable to detect current host IP address via third-party service"
               }
           ],
           "required": [],
@@ -77,7 +77,7 @@
                   "default": "",
                   "description": "An explanation about the purpose of this instance.",
                   "examples": [
-                      "impossible to detect current host address via third party service"
+                      "unable to detect current host IP address via third-party service"
                   ],
                   "title": "The ip schema",
                   "type": [

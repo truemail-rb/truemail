@@ -134,7 +134,7 @@ RSpec.describe Truemail::Configuration do
   describe 'configuration cases' do
     let(:default_verifier_domain) { valid_email[/\A(.+)@(.+)\z/, 2] }
 
-    context 'when auto configuration' do
+    context 'with automatic configuration' do
       let(:configuration_instance_expectaions) do
         expect(configuration_instance.email_pattern).to eq(Truemail::RegexConstant::REGEX_EMAIL_PATTERN)
         expect(configuration_instance.smtp_error_body_pattern).to eq(Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN)
@@ -187,7 +187,7 @@ RSpec.describe Truemail::Configuration do
         configuration_instance_expectaions
       end
 
-      it 'sets configuration instance with default configuration template for upcase email' do
+      it 'sets configuration instance with default configuration template for uppercase email' do
         expect { configuration_instance.verifier_email = valid_email.upcase }
           .to change(configuration_instance, :verifier_email)
           .from(nil).to(valid_email)
@@ -217,7 +217,7 @@ RSpec.describe Truemail::Configuration do
         configuration_instance_expectaions
       end
 
-      it 'sets configuration instance with default configuration template for mixcase email' do
+      it 'sets configuration instance with default configuration template for mixed-case email' do
         expect { configuration_instance.verifier_email = valid_email.capitalize }
           .to change(configuration_instance, :verifier_email)
           .from(nil).to(valid_email)
@@ -248,7 +248,7 @@ RSpec.describe Truemail::Configuration do
       end
     end
 
-    context 'when manual independent configuration' do
+    context 'with manual independent configuration' do
       let(:valid_domain) { random_domain_name }
 
       describe '#verifier_email=' do
@@ -278,13 +278,13 @@ RSpec.describe Truemail::Configuration do
               .from(nil).to(valid_domain)
           end
 
-          it 'sets custom verifier domain for upcase domain' do
+          it 'sets custom verifier domain for uppercase domain' do
             expect { configuration_instance.verifier_domain = valid_domain.upcase }
               .to change(configuration_instance, :verifier_domain)
               .from(nil).to(valid_domain)
           end
 
-          it 'sets custom verifier domain for mixcase domain' do
+          it 'sets custom verifier domain for mixed-case domain' do
             expect { configuration_instance.verifier_domain = valid_domain.capitalize }
               .to change(configuration_instance, :verifier_domain)
               .from(nil).to(valid_domain)
@@ -320,7 +320,7 @@ RSpec.describe Truemail::Configuration do
         context 'with valid value' do
           let(:valid_smtp_error_body_pattern) { /\d+/ }
 
-          it 'sets custom email pattern' do
+          it 'sets custom smtp error body pattern' do
             expect { configuration_instance.smtp_error_body_pattern = valid_smtp_error_body_pattern }
               .to change(configuration_instance, :smtp_error_body_pattern)
               .from(Truemail::RegexConstant::REGEX_SMTP_ERROR_BODY_PATTERN).to(valid_smtp_error_body_pattern)
@@ -343,7 +343,7 @@ RSpec.describe Truemail::Configuration do
           end
         end
 
-        context 'with invalid connection attempts' do
+        context 'with invalid connection timeout' do
           let(:setter) { :connection_timeout= }
 
           include_examples 'raises argument error'
@@ -403,7 +403,7 @@ RSpec.describe Truemail::Configuration do
 
           let(:setter) { :default_validation_type= }
 
-          context 'when value in not symbol' do
+          context 'when value is not a symbol' do
             let(:invalid_validation_type) { 'mx' }
 
             include_examples 'raises argument error'
@@ -465,7 +465,7 @@ RSpec.describe Truemail::Configuration do
           let(:emails_list) { ::Array.new(2) { random_uniq_email } }
 
           context "with valid #{email_list_type} parameter type and context" do
-            it 'sets whitelisted emails list' do
+            it "sets #{email_list_type[0...-1]} list" do
               expect { configuration_instance.public_send(setter, emails_list) }
                 .to change(configuration_instance, setter[0...-1].to_sym)
                 .from([]).to(emails_list)
@@ -492,7 +492,7 @@ RSpec.describe Truemail::Configuration do
           let(:domains_list) { ::Array.new(2) { random_uniq_domain_name } }
 
           context "with valid #{domain_list_type} parameter type and context" do
-            it 'sets whitelisted domains list' do
+            it "sets #{domain_list_type[0...-1]} list" do
               expect { configuration_instance.public_send(setter, domains_list) }
                 .to change(configuration_instance, setter[0...-1].to_sym)
                 .from([]).to(domains_list)
@@ -533,13 +533,13 @@ RSpec.describe Truemail::Configuration do
         end
 
         context 'with invalid blacklisted mx ip addresses parameter context' do
-          context 'when includes not a String' do
+          context 'when it includes a non-String' do
             let(:invalid_argument) { [42, random_ip_address] }
 
             include_examples 'raises extended argument error'
           end
 
-          context 'when includes wrong ip address' do
+          context 'when it includes a wrong ip address' do
             let(:invalid_argument) { ['not_ip_address', random_ip_address] }
 
             include_examples 'raises extended argument error'
@@ -572,19 +572,19 @@ RSpec.describe Truemail::Configuration do
         end
 
         context 'with invalid dns parameter context' do
-          context 'when includes not a String' do
+          context 'when it includes a non-String' do
             let(:invalid_argument) { [42, random_ip_address] }
 
             include_examples 'raises extended argument error'
           end
 
-          context 'when includes wrong ip address' do
+          context 'when it includes a wrong ip address' do
             let(:invalid_argument) { ['not_ip_address', random_ip_address] }
 
             include_examples 'raises extended argument error'
           end
 
-          context 'when includes wrong port' do
+          context 'when it includes a wrong port' do
             let(:invalid_argument) { [random_ip_address, "#{random_ip_address}:0"] }
 
             include_examples 'raises extended argument error'
@@ -751,7 +751,7 @@ RSpec.describe Truemail::Configuration do
             include_examples 'raises logger argument error'
           end
 
-          context 'when attempt configure logger without output' do
+          context 'when attempting to configure logger without output' do
             let(:stdout) { false }
             let(:logger_params) { { stdout: stdout } }
             let(:error_message) { error_message_wrong_logger_output }
@@ -759,7 +759,7 @@ RSpec.describe Truemail::Configuration do
             include_examples 'raises logger argument error'
           end
 
-          context 'with not existing tracking event' do
+          context 'with non-existent tracking event' do
             let(:tracking_event) { :not_existing_tracking_event }
             let(:logger_params) { { tracking_event: tracking_event } }
             let(:error_message) { "#{tracking_event} is not a valid tracking_event=" }

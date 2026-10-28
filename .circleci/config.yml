@@ -25,7 +25,7 @@ references:
 
   install_linters: &install_linters
     run:
-      name: Installing bunch of linters
+      name: Installing a bunch of linters
       command: |
             curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' | sudo -E bash
             sudo apt-get update -y

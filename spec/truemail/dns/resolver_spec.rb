@@ -15,7 +15,7 @@ RSpec.describe Truemail::Dns::Resolver do
       let(:configuration_instance) { create_configuration }
       let(:dns_resolver_worker_instance) { instance_double('DnsResolverWorker') }
 
-      specify "creates Truemail::DnsResolver::Worker##{method}" do
+      specify "calls Truemail::Dns::Worker##{method}" do
         expect(Truemail::Dns::Worker)
           .to receive(:new)
           .with(configuration_instance.dns)

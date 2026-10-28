@@ -23,7 +23,7 @@ RSpec.describe Truemail::Wrapper do
 
     before { allow(resolver_execution_wrapper_instance).to receive(:call).and_call_original }
 
-    context 'when not raises exception' do
+    context 'when no exception is raised' do
       specify do
         allow(mx_instance).to receive(method).and_return(true)
         expect(resolver_execution_wrapper).to be(true)
@@ -35,7 +35,7 @@ RSpec.describe Truemail::Wrapper do
       end
     end
 
-    context 'when raises exception' do
+    context 'when an exception is raised' do
       context 'with Resolv::ResolvError exception' do
         specify do
           allow(mx_instance).to receive(method).and_raise(::Resolv::ResolvError)

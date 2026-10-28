@@ -60,14 +60,14 @@ RSpec.describe Truemail::Log::Serializer::ValidatorJson do
       include_context 'serialized json'
     end
 
-    context 'with fail validation result' do
+    context 'with failed validation result' do
       let(:success_status) { false }
 
-      context 'when smtp errors not includes ASCII-8BIT chars' do
+      context 'when smtp errors do not include ASCII-8BIT chars' do
         include_context 'serialized json'
       end
 
-      context 'when smtp errors includes ASCII-8BIT chars' do
+      context 'when smtp errors include ASCII-8BIT chars' do
         let(:error_context_with_ascii_8bit) { "\xD3\xE4\xB2\xBB\xD4" }
         let(:validator_instance) do
           create_validator(

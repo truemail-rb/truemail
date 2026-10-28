@@ -3,8 +3,8 @@
 require_relative 'truemail/core'
 
 module Truemail
-  INCOMPLETE_CONFIG = 'verifier_email is required parameter'
-  NOT_CONFIGURED = 'use Truemail.configure before or pass custom configuration'
+  INCOMPLETE_CONFIG = 'verifier_email is a required parameter'
+  NOT_CONFIGURED = 'call Truemail.configure first or pass a custom configuration'
   INVALID_TYPE = 'email should be a String'
 
   class << self

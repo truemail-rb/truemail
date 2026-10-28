@@ -2,9 +2,9 @@
 
 ## Branch naming
 
-> Please note for new pull requests create new branches from current `develop` branch only.
+> Please note: for new pull requests, create new branches from the current `develop` branch only.
 
-Branch name should include type of your contribution and context. Please follow next pattern for naming your branches:
+The branch name should include the type of your contribution and its context. Please follow this pattern when naming your branches:
 
 ```bash
 feature/add-some-feature
@@ -12,23 +12,23 @@ technical/some-technical-improvements
 bugfix/fix-some-bug-name
 ```
 
-## Before PR actions
+## Before opening a PR
 
 ### Squash commits
 
-Please squash all branch commits into the one before opening your PR from your fork. It's simple to do with the git:
+Please squash all branch commits into one before opening your PR from your fork. It's simple to do with git:
 
 ```bash
-git rebase -i [hash your first commit of your branch]~1
+git rebase -i [hash of the first commit of your branch]~1
 git rebase -i 6467fe36232401fa740af067cfd8ac9ec932fed2~1 # example
 ```
 
 ### Add commit description
 
-Please complete your commit description following next pattern:
+Please write your commit description following this pattern:
 
 ```
-Technical/Add info files # should be the same name as your branch name
+Technical/Add info files # should be the same as your branch name
 
 * Added license, changelog, contributing, code of conduct docs
 * Added GitHub templates
